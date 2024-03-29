@@ -145,11 +145,18 @@ function filterButtons(){
       >
       <Text style = {styles.homeButtonText}>FAQ</Text>
     </TouchableOpacity>
+    var newClientInfo2 = <TouchableOpacity
+      style = {styles.homeButton}
+      onPress={() => navigation.navigate('newClientInfo', {userData})}
+      >
+      <Text style = {styles.backButtonText}>New Client Info</Text>
+      </TouchableOpacity>
     buttons.push(scheduleAppointmentButton2);
     buttons.push(yourAppointmentsButton);
     buttons.push(servicesOfferedButton2);
     buttons.push(aboutMeButton2);
     buttons.push(FAQButton2);
+    buttons.push(newClientInfo2);
     setButtonDisplay(buttons);
   }
   //This block constructs buttons that the new clients can see
