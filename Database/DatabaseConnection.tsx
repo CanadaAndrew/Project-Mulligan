@@ -134,7 +134,7 @@ async function queryUsers(){
     try {
         //First tries to connect to the dbs using the connect method, await is important
         var poolConnection = await connect();
-        //Sends a request ussing the object given from connect, await is important, type in a query command that you would use in SQL
+        //Sends a request using the object given from connect, await is important, type in a query command that you would use in SQL
         var resultSet = await poolConnection.request().query(`
         SELECT *
         FROM Users;`);

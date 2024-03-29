@@ -4,7 +4,11 @@ import React, { useEffect } from 'react';
 import axios from 'axios';
 import { SearchBar } from 'react-native-screens';
 
-export default function ModifyClientInfoSearch() {
+const windowDimensions = Dimensions.get('window')
+
+export default function ModifyClientInfoSearch({navigation, route}) {
+
+    //const navigation = useNavigation<any>(); //Initialize navigation hook
 
     const windowDimensions = Dimensions.get('window')
     const database = axios.create({
@@ -14,6 +18,29 @@ export default function ModifyClientInfoSearch() {
         //baseURL: 'http://10.0.0.14:3000', //Cameron Local
         baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
     })
+
+    const handleNamePress = async (item) => {
+        let id; //Temporary variable to send to next page
+
+        //Loops and compares objects queried to find user id
+        let i = 0;
+        while (i < clientList.length) {
+            if (clientList[i].FirstName + ' ' + clientList[i].MiddleName + ' ' + clientList[i].LastName == item) {
+                id = clientList[i].UserID;
+                console.log(id); //Test to confirm correct ID
+                break;
+            }
+            i++;
+        }
+
+       try {
+            //Navigate to the next page, passing client id as a parameter. Right now set to navigate to home
+            navigation.navigate("NaviagateHome", { id });
+        } catch (error) {
+            console.error('Error fetching client information:', error);
+        }
+    };
+
 
     const [nameInput, newNameInput] = React.useState('');
     const [clientList, setClientList] = React.useState([]);
@@ -138,8 +165,13 @@ export default function ModifyClientInfoSearch() {
                                             renderItem={({item}) => (
                                                 <View style={[styles.nameContainer, styles.boxShadowIOS, styles.boxShadowAndroid]}>
                                                     <TouchableOpacity
-                                                    style={styles.nameButton}>
+                                                        style={styles.nameButton}
+                                                        onPress={() => handleNamePress(item)}
+                                                        
+                                                        >
+
                                                         <Text style={styles.nameText}>{item}</Text>  
+
                                                     </TouchableOpacity>
 
                                                 </View>
