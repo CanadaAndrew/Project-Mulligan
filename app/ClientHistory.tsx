@@ -69,7 +69,6 @@ export default function ClientHistory() {
 
     //filteredAps is used as an global array to hold the filtered appointments if there is any that need to be filtered by date
     let filteredAps: Appointment[] = [];
-
     const [upcomingClientAppointments, setUpcomingClientAppointments] = useState([]);
     const [pastClientAppointments, setPastClientAppointments] = useState([]);
 

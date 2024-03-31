@@ -19,6 +19,8 @@ import NewClientApproval from './NewClientApproval';
 import Login from './Login'
 import ForgotLogin from './ForgotLogin';
 import SignUp from './SignUp';
+import Login from './Login';
+import newClientInfo_AdminView from './newClientInfo_AdminView';
 
 const Stack = createNativeStackNavigator()
 
@@ -100,6 +102,11 @@ export default function index() {
             }}
          />
         <Stack.Screen name = "Login" component={Login}/>
+         <Stack.Screen name = "newClientInfo_AdminView" component={newClientInfo_AdminView}
+           options={{
+              title: "New Client Info Admin View"
+           }}
+         />
       </Stack.Navigator>
    </NavigationContainer>
   
