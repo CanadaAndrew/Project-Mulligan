@@ -34,7 +34,8 @@ export default function Login({ route, navigation }) {
     const userData = {
         userID: undefined, // You can omit this line, it will default to undefined
         adminPriv: undefined, // You can omit this line, it will default to undefined
-        newClient: undefined // You can omit this line, it will default to undefined
+        newClient: undefined, // You can omit this line, it will default to undefined
+        approved: true
     };
 
       
@@ -129,10 +130,17 @@ export default function Login({ route, navigation }) {
                     type: 'get'
                 };
                 const response = await functionGetRetry(funcObj);
+                alert(JSON.stringify(response.data[0]));
                 userData.userID = response.data[0].UserID;
+                if(response.data[0].ApprovalStatus == 1){
+                    userData.approved = false;
+                }else{
+                    userData.approved = true;
+                }
             } catch (error) {
                 console.log(error);
             }
+
         }
 
     }

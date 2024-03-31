@@ -194,7 +194,8 @@ function filterButtons(){
     buttons.push(servicesOfferedButton3);
     buttons.push(aboutMeButton3);
     buttons.push(FAQButton3);
-    buttons.push(newClientInfoButton);
+    if(userData.approved == true)
+      buttons.push(newClientInfoButton);
     setButtonDisplay(buttons);
   }
 }

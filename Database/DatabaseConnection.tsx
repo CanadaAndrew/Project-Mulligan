@@ -266,13 +266,13 @@ async function updateAppointment(date, time, userID, type){
 }
 
 //adds new user to database
-async function newUserPost(email, phoneNumber, adminPrive) {
+async function newUserPost(email, phoneNumber, adminPriv) {
     try {
         const poolConnection = await connect();
         const query = 
             `INSERT INTO Users (Email, PhoneNumber, AdminPriv)
             OUTPUT INSERTED.UserID
-            VALUES ('${email}', '${phoneNumber}', ${adminPrive});`;
+            VALUES ('${email}', '${phoneNumber}', ${adminPriv});`;
         const result = await poolConnection.request().query(query);
         poolConnection.close();
 
@@ -292,6 +292,7 @@ async function newClientPost(userID, firstName, middleName, lastName, preferredW
         const query = 
             `INSERT INTO Clients (UserID, FirstName, MiddleName, LastName, PreferredWayOfContact)
             VALUES (${userID}, '${firstName}', '${middleName}', '${lastName}', '${preferredWayOfContact}');`;
+            console.log(query);
         await poolConnection.request().query(query);
         poolConnection.close();
     } catch (err) {
@@ -307,6 +308,7 @@ async function new_newClientPost(userID, approvalStatus) {
         const query = 
             `INSERT INTO NewClients (UserID, ApprovalStatus)
             VALUES (${userID}, ${approvalStatus});`;
+            console.log(query);
         await poolConnection.request().query(query);
         poolConnection.close();
     } catch (err) {
@@ -322,6 +324,7 @@ async function servicesWantedPost(userID, serviceName) {
         const query = 
             `INSERT INTO ServicesWanted (UserID, ServiceName)
             VALUES (${userID}, '${serviceName}');`;
+            console.log(query);
         await poolConnection.request().query(query);
         poolConnection.close();
     }
@@ -460,7 +463,7 @@ async function queryNewUserFromEmail(email) {
 
     try {
         const poolConnection = await connect();
-        const query = `SELECT UserID FROM NewClientView WHERE Email = '${email}';`;
+        const query = `SELECT UserID, ApprovalStatus FROM NewClientView WHERE Email = '${email}';`;
         const resultSet = await poolConnection
             .request()
             .query(query);

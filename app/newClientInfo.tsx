@@ -25,6 +25,7 @@ export default function newClientInfo({route}) {
     //server connection
     const database = axios.create({
         baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
+        //baseURL: 'http://10.0.0.192:3000'
         //baseURL: 'http://192.168.1.150:3000', //Chris pc local
         //baseURL: 'http://10.0.0.112:3000',
     });
@@ -35,28 +36,21 @@ export default function newClientInfo({route}) {
 
     async function getName(userID){
         let funcObj:funcObj = {
-            entireFunction: () => database.get('/findCurrentClientFullNameByID', {
+            entireFunction: () => database.get('/findNewClientViewByID', {
                 params: {
-                    queryId : userID
+                    Id : userID
                 }
             }),
             type: 'get'
         };
         let name
         try{
-            name = await funcObj.entireFunction()
-        }catch{
-            try{
-                name = await functionGetRetry(funcObj)
-            }catch(error){
+            name = await functionGetRetry(funcObj)
+        }catch(error){
                 alert(error)
                 return 'NA'
             }
-        }
-    
             return name.data[0].FirstName;
-      
-        
     }
 
     
@@ -170,7 +164,9 @@ export default function newClientInfo({route}) {
         }
     }
     
-
+    useEffect(() => {
+        setFirstName()
+    }, [])
     return (
 
     <>
