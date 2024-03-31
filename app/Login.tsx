@@ -27,6 +27,7 @@ export default function Login({ route, navigation }) {
         //baseURL: 'http://10.0.0.192:3000'
         //baseURL: 'http://192.168.1.150:3000', //Chris pc local
         //baseURL: 'http://10.0.0.133:3000',
+        //baseURL: 'http://10.0.0.112:3000',
     });
 
    
