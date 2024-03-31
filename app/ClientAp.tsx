@@ -255,6 +255,10 @@ export default function ClientAp({ route }){
 
             </View>
 
+            <View>
+                <Text >{'\n'}</Text>
+            </View>
+
             {/*drop down list formatting and rendering */}
             <View style = {styles.dropdowncont}>
                 <SelectList

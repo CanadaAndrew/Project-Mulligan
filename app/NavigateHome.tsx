@@ -69,7 +69,7 @@ export default function NavigateHome(){
                 })}  
             />
             <Button  
-                title = "newClientInfo page"
+                title = "newClientInfo page Client View"
                 onPress={() => navigation.navigate("newClientInfo", {
                     userData,
                     hairStyleData: "",
@@ -83,6 +83,10 @@ export default function NavigateHome(){
             <Button
                 title = "Sign Up page"
                 onPress = {() => navigation.navigate("SignUp", {userData})}
+            />
+            <Button
+                title = "New Client Info Admin View"
+                onPress={() => navigation.navigate("newClientInfo_AdminView")}
             />
             
         </View>
