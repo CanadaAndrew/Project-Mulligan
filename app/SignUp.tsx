@@ -166,8 +166,8 @@ export default function SignUp({ navigation, route }) { // added route for page 
     ];
 
     const database = axios.create({
-        baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
-        //baseURL: 'http://10.0.0.192:3000'
+        //baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
+        baseURL: 'http://10.0.0.192:3000'
         //baseURL: 'http://10.0.0.199:3000',
         //baseURL: 'http://10.0.0.14:3000', // Cameron's IP address for testing
         //baseURL: 'http://192.168.1.150:3000', //Chris pc local
@@ -219,7 +219,7 @@ export default function SignUp({ navigation, route }) { // added route for page 
                     firstName: firstName,
                     middleName: middleName, //form info?
                     lastName: lastName,
-                    preferredWayOfContact:"filler", //form info?
+                    preferredWayOfContact:contactSelected.join(", "), //form info?
                 }),
                 type: 'post'
             };

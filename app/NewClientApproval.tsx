@@ -11,8 +11,9 @@ export default function NewClientApproval() {
 
     //server connection
     const database = axios.create({
-        baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
+        //baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
         //baseURL: 'http://192.168.1.150:3000', //Chris pc local
+        baseURL: 'http://10.0.0.192:3000'
     });
 
 
@@ -75,7 +76,7 @@ export default function NewClientApproval() {
     }
 
     function updateClientDisplay(data) {
-        //alert("Here is the data: " + JSON.stringify(data));
+        alert("Here is the data: " + JSON.stringify(data));
         let clientList: Client[] = [];
         let i = 0;
         data.forEach((client) => {

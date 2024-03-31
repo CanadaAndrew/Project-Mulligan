@@ -254,7 +254,7 @@ async function updateAppointment(date, time, userID, type){
     try {
         var poolConnection = await connect();//
         let query = 'UPDATE Appointments SET VacancyStatus = 1, UserID = \''+ userID + '\', TypeOfAppointment = \''+ type + '\' WHERE AppointmentDate = '+'\''+date+' '+time+'\'';
-        await poolConnection.request().query('UPDATE Appointments SET VacancyStatus = 1, UserID = \''+ userID + '\' WHERE AppointmentDate = '+'\''+date+' '+time+'\'');
+        await poolConnection.request().query(query);
         console.log(query);
         //await poolConnection.request().query('SELECT * FROM Appointments');
         poolConnection.close();
@@ -266,13 +266,13 @@ async function updateAppointment(date, time, userID, type){
 }
 
 //adds new user to database
-async function newUserPost(email, phoneNumber, pass, adminPrive) {
+async function newUserPost(email, phoneNumber, adminPrive) {
     try {
         const poolConnection = await connect();
         const query = 
-            `INSERT INTO Users (Email, PhoneNumber, Pass, AdminPriv)
+            `INSERT INTO Users (Email, PhoneNumber, AdminPriv)
             OUTPUT INSERTED.UserID
-            VALUES ('${email}', '${phoneNumber}', '${pass}', ${adminPrive});`;
+            VALUES ('${email}', '${phoneNumber}', ${adminPrive});`;
         const result = await poolConnection.request().query(query);
         poolConnection.close();
 
@@ -756,13 +756,13 @@ app.post('/addAvailability', async (req, res) => {
 
 app.post('/newUserPost', async (req, res) => {
     try {
-        const { email, phoneNumber, pass, adminPrive } = req.body;
-        if (!email || !phoneNumber || !pass || adminPrive === undefined || adminPrive === null) {
-            throw new Error('Invalid request body. Missing "email", "phoneNumber", "pass", or "adminPrive".');
+        const { email, phoneNumber, adminPriv } = req.body;
+        if (!email || !phoneNumber || adminPriv === undefined || adminPriv === null) {
+            throw new Error('Invalid request body. Missing "email", "phoneNumber", or "adminPriv".');
         }
 
         //create new user
-        const newUser = await newUserPost(email, phoneNumber, pass, adminPrive);
+        const newUser = await newUserPost(email, phoneNumber, adminPriv);
         //send userID in response
         res.status(201).json({ userID: newUser.userID, message: 'User created successfully' });
     } catch (error) {

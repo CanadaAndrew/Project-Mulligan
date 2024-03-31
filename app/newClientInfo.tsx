@@ -74,7 +74,7 @@ export default function newClientInfo(route) {
     const formComplete = StreetAddressValid && CityValid && StateValid && ZipValid;
 
     //dummy data for testing purposes
-    const user_ID = 7; //will need to be replaced with actual userID once ok'd from admin (ApprovalStatus in NewClients) -> do we need to check approval status?
+    const user_ID = 5; //will need to be replaced with actual userID once ok'd from admin (ApprovalStatus in NewClients) -> do we need to check approval status?
     const strt = "1234 Main St";
     const cty = "Anytown";
     const stat = "TX";
