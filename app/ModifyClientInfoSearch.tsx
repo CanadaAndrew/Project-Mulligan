@@ -3,6 +3,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect } from 'react';
 import axios from 'axios';
 import { SearchBar } from 'react-native-screens';
+import { SelectList } from 'react-native-dropdown-select-list';
 
 const windowDimensions = Dimensions.get('window')
 
@@ -55,7 +56,7 @@ export default function ModifyClientInfoSearch({navigation, route}) {
         setClientList2(filteredClients);
     };
 
-    async function displayClientList()
+    async function displayClientList(selectedOption)
     {
         let clientNames: string[] = [];
         let tempFirstLetterArr: string[] = [];
@@ -64,9 +65,14 @@ export default function ModifyClientInfoSearch({navigation, route}) {
 
         let clientData = response.data;
         let client1;
-        //sorts clientData to be in alphabetical order
-        clientData.sort((a, b) => a.FirstName.localeCompare(b.FirstName))
 
+        console.log(selectedOption);
+        //sorts clientData based on the dropdown menu. Ascending(A-Z) is the default option.
+       if(selectedOption == 'Ascending') 
+        clientData.sort((a, b) => a.FirstName.localeCompare(b.FirstName));
+        else if(selectedOption == 'Descending')
+        clientData.sort((a, b) => a.FirstName.localeCompare(b.FirstName)).reverse(); // reverse flips the array to Z-A
+      
         //this loop makes the array of all the first letters in first names to be used to sort the list later.
         for(client1 in clientData)
         {
@@ -127,9 +133,19 @@ export default function ModifyClientInfoSearch({navigation, route}) {
     }
 
     useEffect(() => {
-        displayClientList();
+        displayClientList('firstNameAscending');
     }, []);
     
+     //for the drop down list below
+     const [selected, setSelected] = React.useState(" ");
+
+     const dropdownList = [
+         {key:  'Ascending', value:'Ascending'},
+         {key: 'Descending', value: 'Descending'},
+        
+     ]
+
+     
     return (
         <SafeAreaView>
             
@@ -149,6 +165,21 @@ export default function ModifyClientInfoSearch({navigation, route}) {
                             placeholder="Search"
                         />
                     </View>
+
+                    <View style = {styles.dropdowncont}>
+                <SelectList
+                    setSelected = {(val) => setSelected(val)}
+                    data={dropdownList}
+                    boxStyles = {{backgroundColor:'white'}}
+                    dropdownStyles = {{backgroundColor:'white'}}
+                    save = 'value'
+                    search = {false}
+                    defaultOption = {{key: 'Ascending', value: 'Ascending'}}
+                    onSelect = {() => displayClientList(selected)  } //rebuild the list in ascending/descending order
+                    
+                />
+            </View>
+
                     <View>
                         <FlatList
                             data={firstLetterArr}
@@ -260,6 +291,9 @@ const styles = StyleSheet.create({
     },
     letterFlatListStyle: {
         height: useWindowDimensions().height*.78
+    },
+    dropdowncont: {
+        padding: 16
     },
 
 })
