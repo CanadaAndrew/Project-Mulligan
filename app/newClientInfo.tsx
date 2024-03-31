@@ -10,7 +10,8 @@ import {
     Pressable,
     FlatList,
     Image,
-    TextInput
+    TextInput,
+    Keyboard,
 } from 'react-native';
 import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-list';
 import { Link } from 'expo-router';
@@ -19,15 +20,18 @@ import axios from 'axios';
 import { listOfStates, funcObj, functionGetRetry } from './Enums/Enums';
 import Constants from 'expo-constants';
 
-export default function newClientInfo(route) {
+export default function newClientInfo({route}) {
 
     //server connection
     const database = axios.create({
-        baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
+        //baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
         //baseURL: 'http://192.168.1.150:3000', //Chris pc local
+        baseURL: 'http://10.0.0.112:3000',
     });
 
    const { userData } = route.params;
+
+   console.log(userData);
 
     async function getName(userID){
         let funcObj:funcObj = {
@@ -74,11 +78,13 @@ export default function newClientInfo(route) {
     const formComplete = StreetAddressValid && CityValid && StateValid && ZipValid;
 
     //dummy data for testing purposes
-    const user_ID = 5; //will need to be replaced with actual userID once ok'd from admin (ApprovalStatus in NewClients) -> do we need to check approval status?
-    const strt = "1234 Main St";
-    const cty = "Anytown";
-    const stat = "TX";
-    const zp = "12345";
+    //const user_ID = 10; //will need to be replaced with actual userID once ok'd from admin (ApprovalStatus in NewClients) -> do we need to check approval status?
+    // const strt = "1234 Main St";
+    // const cty = "Anytown";
+    // const stat = "TX";
+    // const zp = "12345";
+
+    const user_ID = userData.userID;
 
     //adds current client to database
     const handleCurrentClientPost = async () => {
@@ -122,6 +128,7 @@ export default function newClientInfo(route) {
             .catch(() => { alert("error"); });
     }
 
+
     function isApproved(data){
         if (data[0].ApprovalStatus == 0) {
             handleCurrentClientPost()
@@ -155,9 +162,12 @@ export default function newClientInfo(route) {
     }
     async function setFirstName()
     {
-        const updateName =  await getName(userData.userID)
-        if(firstName == '')
-        newFirstName(updateName);
+        const updateName =  await getName(userData.userID);
+        // if(firstName == '')
+        // newFirstName(updateName);
+        if ( typeof updateName === 'string' && firstName === '') {
+            newFirstName(updateName);
+        }
     }
     
 
@@ -165,7 +175,6 @@ export default function newClientInfo(route) {
 
     <>
     
-        {setFirstName()}
         <LinearGradient locations={[0.7, 1]} colors={['#DDA0DD', 'white']} style={styles.container}>  
             <Text >{'\n'}</Text>
             <View style = {[styles.appointBox, styles.boxShadowIOS, styles.boxShadowAndroid]}>
@@ -211,6 +220,7 @@ export default function newClientInfo(route) {
                             onChangeText={newZipCode}
                             onTextInput={() => checkZipValid()}
                             placeholder="Zip"
+                            onSubmitEditing={() => getApprovalStatus(user_ID)}
                         />
                     </View>
                 <Text >{'\n'}{'\n'}{'\n'}</Text>

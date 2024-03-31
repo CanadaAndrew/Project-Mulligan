@@ -14,9 +14,10 @@ export default function ClientHistory() {
 
     //server connection
     const database = axios.create({
-        baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
+        //baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
         //baseURL: 'http://192.168.1.150:3000', //Chris pc local
         //baseURL: 'http://10.0.0.192:3000'
+        baseURL: 'http://10.0.0.112:3000',
     });
 
 

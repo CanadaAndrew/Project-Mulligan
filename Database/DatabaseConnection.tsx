@@ -456,6 +456,23 @@ async function queryCurrentUserFromEmail(email) {
 
 }
 
+async function queryNewUserFromEmail(email) {
+
+    try {
+        const poolConnection = await connect();
+        const query = `SELECT UserID FROM NewClientView WHERE Email = '${email}';`;
+        const resultSet = await poolConnection
+            .request()
+            .query(query);
+        poolConnection.close();
+        return sortingResults(resultSet);
+    } catch (err) {
+        console.error(err.message);
+        throw err;
+    }
+
+}
+
 //gets all past appointments
 async function allPastAppointmentsQuery(todaysDate){
     try {
@@ -671,6 +688,19 @@ app.get('/queryCurrentUserFromEmail', async (req, res) => {
             throw new Error('Invalid request. Missing "email"');
         }
     const result = await queryCurrentUserFromEmail(email);
+    res.send(result);
+    } catch {
+        res.status(400).send('Bad Request');
+    }
+});
+
+app.get('/queryNewUserFromEmail', async (req, res) => {
+    try {
+        const email = req.query.email;
+        if (!email) {
+            throw new Error('Invalid request. Missing "email"');
+        }
+    const result = await queryNewUserFromEmail(email);
     res.send(result);
     } catch {
         res.status(400).send('Bad Request');
