@@ -166,11 +166,12 @@ export default function SignUp({ navigation, route }) { // added route for page 
     ];
 
     const database = axios.create({
-        //baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
-        baseURL: 'http://10.0.0.192:3000'
+        baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
+        //baseURL: 'http://10.0.0.192:3000'
         //baseURL: 'http://10.0.0.199:3000',
         //baseURL: 'http://10.0.0.14:3000', // Cameron's IP address for testing
         //baseURL: 'http://192.168.1.150:3000', //Chris pc local
+        //baseURL: 'http://10.0.0.112:3000',
     })
 
     //demo data for postNewUser function until Firebase authentication is set up
@@ -196,8 +197,7 @@ export default function SignUp({ navigation, route }) { // added route for page 
                     adminPrive: admin_priv*/
                     email: email,
                     phoneNumber: phoneNumber,
-                    pass: password,
-                    adminPriv: 0
+                    adminPriv: 1
                 }),
                 type: 'post'
             };

@@ -27,6 +27,7 @@ export default function Login({ route, navigation }) {
         //baseURL: 'http://10.0.0.192:3000'
         //baseURL: 'http://192.168.1.150:3000', //Chris pc local
         //baseURL: 'http://10.0.0.133:3000',
+        //baseURL: 'http://10.0.0.112:3000',
     });
 
    
@@ -117,7 +118,21 @@ export default function Login({ route, navigation }) {
             //console.error('Error finding User from email: ', error);
             userData.adminPriv = false;
             userData.newClient = true;
-            console.log(userData);
+            //console.log(userData);
+            try {
+                const funcObj:funcObj = {
+                    entireFunction: () => database.get('/queryNewUserFromEmail',{
+                        params: {
+                            email: email
+                        }
+                    }),
+                    type: 'get'
+                };
+                const response = await functionGetRetry(funcObj);
+                userData.userID = response.data[0].UserID;
+            } catch (error) {
+                console.log(error);
+            }
         }
 
     }
