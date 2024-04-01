@@ -145,11 +145,18 @@ function filterButtons(){
       >
       <Text style = {styles.homeButtonText}>FAQ</Text>
     </TouchableOpacity>
+    var newClientInfo2 = <TouchableOpacity
+      style = {styles.homeButton}
+      onPress={() => navigation.navigate('newClientInfo', {userData})}
+      >
+      <Text style = {styles.backButtonText}>New Client Info</Text>
+      </TouchableOpacity>
     buttons.push(scheduleAppointmentButton2);
     buttons.push(yourAppointmentsButton);
     buttons.push(servicesOfferedButton2);
     buttons.push(aboutMeButton2);
     buttons.push(FAQButton2);
+    buttons.push(newClientInfo2);
     setButtonDisplay(buttons);
   }
   //This block constructs buttons that the new clients can see
@@ -176,9 +183,19 @@ function filterButtons(){
       >
       <Text style = {styles.homeButtonText}>FAQ</Text>
     </TouchableOpacity>
+
+    var newClientInfoButton = <TouchableOpacity
+    style = {styles.homeButton}
+    onPress = {() => navigation.navigate("newClientInfo", {userData})}
+    >
+    <Text style = {styles.homeButtonText}>newClientInfo</Text>
+    </TouchableOpacity>
+
     buttons.push(servicesOfferedButton3);
     buttons.push(aboutMeButton3);
     buttons.push(FAQButton3);
+    if(userData.approved == true)
+      buttons.push(newClientInfoButton);
     setButtonDisplay(buttons);
   }
 }
@@ -196,7 +213,7 @@ function filterButtons(){
 
              <LinearGradient
               locations = {[0.7, 1]}
-              colors = {['#EB73C9', 'white']}
+              colors = {['#DDA0DD', 'white']}
               style = {styles.background}
              >
               <View style = {styles.background}>

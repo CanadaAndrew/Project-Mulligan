@@ -10,24 +10,54 @@ import {
     Pressable,
     FlatList,
     Image,
-    TextInput
+    TextInput,
+    Keyboard,
 } from 'react-native';
 import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-list';
 import { Link } from 'expo-router';
 import axios from 'axios';
 //import {initializeApp} from 'firebase/app';
-import { listOfStates } from './Enums/Enums';
+import { listOfStates, funcObj, functionGetRetry } from './Enums/Enums';
+import Constants from 'expo-constants';
 
-const database = axios.create({
-    //baseURL: 'http://10.0.0.192:3000',
-    baseURL: 'http://192.168.1.150:3000', //Chris pc local
-})
+export default function newClientInfo({route}) {
 
-export default function newClientInfo() {
+    //server connection
+    const database = axios.create({
+        baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
+        //baseURL: 'http://10.0.0.192:3000'
+        //baseURL: 'http://192.168.1.150:3000', //Chris pc local
+        //baseURL: 'http://10.0.0.112:3000',
+    });
+
+   const { userData } = route.params;
+
+   console.log(userData);
+
+    async function getName(userID){
+        let funcObj:funcObj = {
+            entireFunction: () => database.get('/findNewClientViewByID', {
+                params: {
+                    Id : userID
+                }
+            }),
+            type: 'get'
+        };
+        let name
+        try{
+            name = await functionGetRetry(funcObj)
+        }catch(error){
+                alert(error)
+                return 'NA'
+            }
+            return name.data[0].FirstName;
+    }
+
+    
 
     //temp name, need to import the client's name from somewhere else
-    const [firstName, newFirstName] = useState('Sam'); 
-    const welcomeMessage = 'Congratulations ' + firstName + '! You’ve been approved as a new client. Fill in some additional info to complete your sign up process.';
+    const [firstName, newFirstName] = useState(''); 
+    const welcomeMessage = 'Congratulations ' + firstName + '! You\'ve been approved as a new client. Fill in some additional info to complete your sign up process.';
 
     const [StreetAddress, newStreetAddress] = useState(''); 
     const [City, newCity] = useState('');
@@ -42,33 +72,62 @@ export default function newClientInfo() {
     const formComplete = StreetAddressValid && CityValid && StateValid && ZipValid;
 
     //dummy data for testing purposes
-    const user_ID = 10; //will need to be replaced with actual userID once ok'd from admin (ApprovalStatus in NewClients) -> do we need to check approval status?
-    const strt = "1234 Main St";
-    const cty = "Anytown";
-    const stat = "TX";
-    const zp = "12345";
+    //const user_ID = 10; //will need to be replaced with actual userID once ok'd from admin (ApprovalStatus in NewClients) -> do we need to check approval status?
+    // const strt = "1234 Main St";
+    // const cty = "Anytown";
+    // const stat = "TX";
+    // const zp = "12345";
+
+    const user_ID = userData.userID;
 
     //adds current client to database
     const handleCurrentClientPost = async () => {
         try {
-            const response = await database.post('/currentClientPost', { //userID, street, city, state, zip
-                userID: user_ID, //for demo -> need to replace with actual imported userID -> can use UserID 9-22 for testing but must increment after each use
-                //street: strt,
-                //city: cty,
-                //state: stat,
-                //zip: zp
-                street: StreetAddress,
-                city: City,
-                state: State,
-                zip: ZipCode
-            });
+            let funcObj:funcObj = {
+                entireFunction: () => database.post('/currentClientPost', { //userID, street, city, state, zip
+                    userID: user_ID, //for demo -> need to replace with actual imported userID -> can use UserID 9-22 for testing but must increment after each use
+                    //street: strt,
+                    //city: cty,
+                    //state: stat,
+                    //zip: zp
+                    street: StreetAddress,
+                    city: City,
+                    state: State,
+                    zip: ZipCode
+                }),
+                type: 'post'
+            };
+            const response = await functionGetRetry(funcObj);
             //console.log(response); //for testing purposes
             alert('Your information has been updated!');
             //should navigate to home page after successful submission -> need to implement
         } catch (error) {
             console.error('Error adding current client:', error.response.data);
         }
-    };  
+    }
+
+    function getApprovalStatus(userId){
+        let data;
+        let funcObj:funcObj = {
+            entireFunction: () => database.get('/customQuery', {
+                params: {
+                    query: 'SELECT UserID, ApprovalStatus FROM NewClientView WHERE UserID = ' + userId + ';'
+                }
+            }),
+            type: 'get'
+        };
+            functionGetRetry(funcObj)
+            .then((ret) => data = ret.data)
+            .then(() => { isApproved(data) })
+            .catch(() => { alert("error"); });
+    }
+
+
+    function isApproved(data){
+        if (data[0].ApprovalStatus == 0) {
+            handleCurrentClientPost()
+        }
+    }
 
     function checkStreetAddressValid()
     {
@@ -95,10 +154,23 @@ export default function newClientInfo() {
         //zip codes are 5 digits
         setZipValid(ZipCode.length == 5 ? true : false);
     }
-
+    async function setFirstName()
+    {
+        const updateName =  await getName(userData.userID);
+        // if(firstName == '')
+        // newFirstName(updateName);
+        if ( typeof updateName === 'string' && firstName === '') {
+            newFirstName(updateName);
+        }
+    }
+    
+    useEffect(() => {
+        setFirstName()
+    }, [])
     return (
 
     <>
+    
         <LinearGradient locations={[0.7, 1]} colors={['#DDA0DD', 'white']} style={styles.container}>  
             <Text >{'\n'}</Text>
             <View style = {[styles.appointBox, styles.boxShadowIOS, styles.boxShadowAndroid]}>
@@ -144,13 +216,14 @@ export default function newClientInfo() {
                             onChangeText={newZipCode}
                             onTextInput={() => checkZipValid()}
                             placeholder="Zip"
+                            onSubmitEditing={() => getApprovalStatus(user_ID)}
                         />
                     </View>
                 <Text >{'\n'}{'\n'}{'\n'}</Text>
                 <TouchableOpacity 
-                    //disabled={!formComplete} //until everything is filled out, button is disabled.
+                    disabled={!formComplete} //until everything is filled out, button is disabled.
                     style={styles.signUpButton}
-                    onPress={handleCurrentClientPost}
+                    onPress={() => getApprovalStatus(user_ID)}
                 >
                     <Text style={styles.signUpText}>Save Changes</Text>
                 </TouchableOpacity>                

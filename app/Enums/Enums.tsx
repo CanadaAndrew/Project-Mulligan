@@ -1,5 +1,10 @@
 import moment from 'moment-timezone';
+import axios, { AxiosResponse } from 'axios';
 
+const database = axios.create({
+    baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
+    //baseURL: 'http://192.168.1.150:3000', //Chris pc local
+});
 
 const monthsNum = {
     January: '01',
@@ -104,16 +109,16 @@ displayHours['21:00:00'] = '09:00PM';
 displayHours['22:00:00'] = '10:00PM';
 displayHours['23:00:00'] = '11:00PM';
 
-function UTCtoPST(today: Date)
+function UTCtoPST(date: Date)
 {
-    //get today's date and convert it to PST
-   
-    const pstDateString =  moment(today).tz('America/Los_Angeles').format('YYYY-MM-DDTHH:mm:ss.SSS');
-    const todaysDate = pstDateString.slice(11, 16); //cuts off the date section
-    //console.log('todaysDate: ', todaysDate); //for debugging
+    //get the date and convert it to PST
+    //returns the date in PST format
+    return new Date(moment(date).tz('America/Los_Angeles').format('YYYY-MM-DDTHH:mm:ss.SSS'));
+}
 
-    return todaysDate; //returns time as a string in HH:MM format
-   
+function UTCtoPSTString(date: Date)
+{
+    return moment(date).tz('America/Los_Angeles').format('YYYY-MM-DDTHH:mm:ss.SSS');
 }
 
 const listOfStates =
@@ -178,4 +183,30 @@ const listOfStates =
     "WI": "Wisconsin",
     "WY": "Wyoming"
 }
-export{monthsNum, monthsWritten, militaryHours, displayHours, UTCtoPST, listOfStates, SERVICES};
+interface funcObj{
+    entireFunction: () => Promise<AxiosResponse<any, any>>
+    type: String
+}
+async function functionGetRetry(jsonObj:funcObj){
+    const maxAttempts = 4;
+    let currentAttempts = 0;
+    let recentError;
+    while(currentAttempts < maxAttempts){
+        const wait = sec => new Promise(r => setTimeout(r, 1000*sec));
+        try{
+            let ret = await jsonObj.entireFunction();
+            if(jsonObj.type == "get" || jsonObj.type == "post"){
+                return ret;
+            }else{
+                return null;
+            }
+        }catch(error){
+            currentAttempts += 1;
+            recentError = error;
+            await wait(Math.pow(2, currentAttempts))
+        }
+    }
+    throw new Error(recentError);
+}
+
+export{monthsNum, monthsWritten, militaryHours, displayHours, UTCtoPST, UTCtoPSTString, listOfStates, SERVICES, functionGetRetry, funcObj};

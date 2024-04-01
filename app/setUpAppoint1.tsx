@@ -87,7 +87,7 @@ export default function setUpAppoint1({navigation, route}) { // add navigation t
             {/*linear gradient for background */}
             <LinearGradient
               locations = {[0.7, 1]}
-              colors = {['#EB73C9', 'white']}
+              colors = {['#DDA0DD', 'white']}
               style = {styles.background}
               >
             <View style = {styles.background}>

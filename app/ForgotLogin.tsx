@@ -5,6 +5,7 @@ import React, {useState} from 'react';
 import axios from 'axios';
 import firebase from './Firebase';
 import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
+import {funcObj, functionGetRetry} from './Enums/Enums'
 
 //Declaring Window as a global variable to be accessed
 declare global {
@@ -19,7 +20,8 @@ export default function ForgotLogin({ navigation }){
     auth.languageCode = 'en';
 
     const database = axios.create({
-        baseURL: 'http://10.0.0.192:3000', //Andrew pc local
+        baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
+        //baseURL: 'http://10.0.0.192:3000', //Andrew pc local
         //baseURL: 'http://192.168.1.150:3000', //Chris pc local
         //baseURL: 'http://10.0.0.133:3000',
     })
@@ -30,22 +32,28 @@ export default function ForgotLogin({ navigation }){
     const onClickLogin = async () => {
         let email = rawNum;
         if(rawNum.length == 12){
-            database.get('/findEmailByPhoneNumber', {
-                params: {
-                    PhoneNumber : rawNum,
-                }
-            })
+            const funcObj:funcObj = {
+                entireFunction: () => database.get('/findEmailByPhoneNumber', {
+                    params: {
+                        PhoneNumber : rawNum,
+                    }
+                }),
+                type: 'get'
+            };
+            functionGetRetry(funcObj)
             .then(async (ret) => {
-                email = ret.data[0].Email;
-                await sendPasswordResetEmail(auth, email);
-                loginErrorMsg('Password reset email send. Please check your inbox.');
+                if(ret.data[0] != null){
+                    email = ret.data[0].Email;
+                    await sendPasswordResetEmail(auth, email);
+                }
+                loginErrorMsg('Password reset email send if phone number was valid. Please check your inbox.');
             })
-            .catch(() => alert("error"));
+            .catch((err) => alert(err));
         }
         else if(rawNum.includes("@")){
             email = rawNum;
             await sendPasswordResetEmail(auth, email);
-            loginErrorMsg('Password reset email send. Please check your inbox.');
+            loginErrorMsg('Password reset email send if email was valid. Please check your inbox.');
             // For now goes to HomeScreen cause LoginPage doesnt exist yet in this branch
             navigation.navigate('HomeScreen');
         }
@@ -61,7 +69,7 @@ export default function ForgotLogin({ navigation }){
     const formattingPhoneNumber = (input) => {
         if (/^\d*$/.test(input)){
             if (input.length <=10){
-                return input.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
+                return input.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
             }
         }else{
             return input
@@ -83,7 +91,7 @@ export default function ForgotLogin({ navigation }){
 
             <LinearGradient
               locations = {[0.7, 1]}
-              colors = {['#EB73C9', 'white']}
+              colors = {['#DDA0DD', 'white']}
               style = {styles.background}
              >
 
