@@ -1,13 +1,12 @@
-import { StyleSheet, Text, View, TextInput, Pressable, Image, ImageBackground, ScrollView, Button, Touchable} from 'react-native';
+import { StyleSheet, Text, View, TextInput, Pressable, Image, ImageBackground, ScrollView, Button, Touchable } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 //import { MaterialCommunityIcons as Icon} from "@expo/vector-icons";
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import firebase from './Firebase.js'  // import firebase
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import axios from 'axios';
 import {funcObj, functionGetRetry} from './Enums/Enums'
-  
 export default function Login({ route, navigation }) {
 
     //test@fakemail.com
@@ -38,7 +37,7 @@ export default function Login({ route, navigation }) {
         approved: true
     };
 
-      
+
 
     const onClickLogin = async () => {
 
@@ -46,15 +45,15 @@ export default function Login({ route, navigation }) {
 
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
-            // Signed in
-            loginErrorMsg('Login successful!');
-            // Has no effect as far as I can tell, but good to leave it in the code anyway just in case
-            const user = userCredential.user;
-         })
-        .catch((error) => {
-            loginErrorMsg('Your email and password \n do not match. Please try again.');
-            console.log(error.message, error.code);
-        });
+                // Signed in
+                loginErrorMsg('Login successful!');
+                // Has no effect as far as I can tell, but good to leave it in the code anyway just in case
+                const user = userCredential.user;
+            })
+            .catch((error) => {
+                loginErrorMsg('Your email and password \n do not match. Please try again.');
+                console.log(error.message, error.code);
+            });
 
         //Since the previously declared user only exists in the scope of its function,
         //redeclare the variable and set the auth to the current user
@@ -82,7 +81,7 @@ export default function Login({ route, navigation }) {
     //const [rawNum, setNum] = useState('');
     const formattingPhoneNumber = (input) => {
         if (/^\d*$/.test(input)) {
-            if (input.length <=10){
+            if (input.length <= 10) {
                 return input.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
             }
         }else{
@@ -96,7 +95,7 @@ export default function Login({ route, navigation }) {
     }
 
     async function checkEmailExists(email) {
-        
+
         try {
             const funcObj:funcObj = {
                 entireFunction: () => database.get('/queryCurrentUserFromEmail',{
@@ -146,13 +145,13 @@ export default function Login({ route, navigation }) {
     }
 
     return (
-        <View style = {styles.container}>
+        <View style={styles.container}>
             {/*added logo image*/}
             <ImageBackground
-              style = {styles.logo}
-              source={require('./images/Hair_Done_Wright_LOGO.png')}
-             >
-             </ImageBackground>
+                style={styles.logo}
+                source={require('./images/Hair_Done_Wright_LOGO.png')}
+            >
+            </ImageBackground>
 
             <LinearGradient
               locations = {[0.7, 1]}
@@ -161,8 +160,8 @@ export default function Login({ route, navigation }) {
              >
 
                 {/*Login error loginError in brackets*/}
-                <Text style = {styles.errorTitle}>{loginError}</Text>
-                <Text style = {styles.objectTitle}>Login</Text>
+                <Text style={styles.errorTitle}>{loginError}</Text>
+                <Text style={styles.objectTitle}>Login</Text>
 
                 {/*user input for email or phone# partly functional //setEmail*/}
                 <TextInput 
@@ -175,46 +174,46 @@ export default function Login({ route, navigation }) {
                 />
 
                 <View>
-                 {/*user input for password partly functional*/}
-                  <TextInput 
-                      placeholder =' Password ' 
-                      placeholderTextColor={'gray'} 
-                      keyboardType = 'default'
-                      secureTextEntry = {showPassword}
-                      style = {styles.inputBox}
-                      value = {password}
-                      onChangeText={setPassword}
-                  />
-                 
-                 {/*button to show password is functional*/}
-                  <TouchableOpacity
-                      style = {styles.showButton}
-                      onPress = {onClickPW}
-                  >
-                    <Text style = {styles.showButtonText}>{buttonClick}</Text>
-                  </TouchableOpacity>
+                    {/*user input for password partly functional*/}
+                    <TextInput
+                        placeholder=' Password '
+                        placeholderTextColor={'gray'}
+                        keyboardType='default'
+                        secureTextEntry={showPassword}
+                        style={styles.inputBox}
+                        value={password}
+                        onChangeText={setPassword}
+                    />
 
-                  {/*button for forgot password no functionality yet WIP*/}
-                  <TouchableOpacity>
-                    <Text style = {styles.showButtonText}>forgot password?</Text>
-                  </TouchableOpacity>
-                  
+                    {/*button to show password is functional*/}
+                    <TouchableOpacity
+                        style={styles.showButton}
+                        onPress={onClickPW}
+                    >
+                        <Text style={styles.showButtonText}>{buttonClick}</Text>
+                    </TouchableOpacity>
+
+                    {/*button for forgot password no functionality yet WIP*/}
+                    <TouchableOpacity>
+                        <Text style={styles.showButtonText}>forgot password?</Text>
+                    </TouchableOpacity>
+
                 </View>
 
 
-                  {/*button to login limited functionality
+                {/*button to login limited functionality
                    Note from dru: to succesfully login, login button must be pressed twice. Not sure why*/}
-                  <View>
+                <View>
                     <TouchableOpacity
-                      style = {styles.loginButton}
-                      onPress = {onClickLogin}
+                        style={styles.loginButton}
+                        onPress={onClickLogin}
                     >
-                    <Text style = {styles.loginButtonText}>Login</Text>
+                        <Text style={styles.loginButtonText}>Login</Text>
                     </TouchableOpacity>
-                  </View>
+                </View>
 
 
-             </LinearGradient>
+            </LinearGradient>
         </View>
 
     );
@@ -258,8 +257,8 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.5,
         shadowRadius: 4
     },
-     // shadow for objects Android
-     boxShadowAndroid: {
+    // shadow for objects Android
+    boxShadowAndroid: {
         elevation: 10
     },
     // login button style
@@ -306,8 +305,8 @@ const styles = StyleSheet.create({
     },
     // show button style
     showButton: {
-        width: 90, 
-        height: 40, 
+        width: 90,
+        height: 40,
         paddingTop: 12,
         marginLeft: 25,
         marginBottom: 50,
@@ -332,8 +331,8 @@ const styles = StyleSheet.create({
     },
     // show button style
     forgotPWButton: {
-        width: 90, 
-        height: 40, 
+        width: 90,
+        height: 40,
         paddingTop: 12,
         marginLeft: 25,
         marginBottom: 50,

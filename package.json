@@ -15,6 +15,7 @@
     "@react-native-community/datetimepicker": "7.2.0",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.17",
+    "@react-navigation/stack": "^6.3.29",
     "@types/react": "~18.2.14",
     "axios": "^1.6.7",
     "cors": "^2.8.5",

@@ -16,7 +16,7 @@ import ClientHistory from './ClientHistory';
 import AboutMe from './AboutMe';
 import newClientInfo from './newClientInfo';
 import NewClientApproval from './NewClientApproval';
-import Login from './Login'
+import ModifyClientInfoSearch from './ModifyClientInfoSearch';
 import ForgotLogin from './ForgotLogin';
 import SignUp from './SignUp';
 import Login from './Login';
@@ -90,18 +90,23 @@ export default function index() {
           options = {{
             title: "About Me"
           }}
-          />
-          <Stack.Screen name = "ForgotLogin" component={ForgotLogin}
-          options = {{
-            title: "Forgot Login"
-          }}
          />
-         <Stack.Screen name="SignUp" component={SignUp}
+        <Stack.Screen name="ForgotLogin" component={ForgotLogin}
+            options={{
+                title: "Forgot Login"
+            }}
+        />
+        <Stack.Screen name="SignUp" component={SignUp}
             options={{
                 title: "Sign Up"
             }}
-         />
-        <Stack.Screen name = "Login" component={Login}/>
+        />
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="ModifyClientInfoSearch" component={ModifyClientInfoSearch}
+            options={{
+                title: "Search"
+            }}
+        />
          <Stack.Screen name = "newClientInfo_AdminView" component={newClientInfo_AdminView}
            options={{
               title: "New Client Info Admin View"

@@ -3,7 +3,7 @@
 
 
 //It was necessary to name this as a JS file due to TS having an error reading captchas
-import {initializeApp} from 'firebase/app';
+import { initializeApp } from 'firebase/app';
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries

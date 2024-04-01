@@ -97,9 +97,8 @@ export default function SignUp({ navigation, route }) { // added route for page 
 
     //check() functions set the letter/number/length requirement of each text field
     //TODO: determine each requirement for each field 
-    function checkfirstNameValid()
-    {
-        setfirstNameValid(firstName.length>0 ? true : false);
+    function checkfirstNameValid() {
+        setfirstNameValid(firstName.length > 0 ? true : false);
     }
 
     function checkmiddleNameValid()
@@ -112,35 +111,30 @@ export default function SignUp({ navigation, route }) { // added route for page 
         setlastNameValid(lastName.length>0 ? true : false);
     }
 
-    function checkemailValid()
-    {
+    function checkemailValid() {
         //reg expression checks for ---@---.--- format
-        setemailValid(/\S+@\S+\.\S+/.test(email)); 
+        setemailValid(/\S+@\S+\.\S+/.test(email));
     }
 
-    function checkphoneNumberValid()
-    {
+    function checkphoneNumberValid() {
         //add dashes to maintain ###-###-#### format
-        if(phoneNumber.length == 3 || phoneNumber.length == 7) 
-        {
+        if (phoneNumber.length == 3 || phoneNumber.length == 7) {
             newPhoneNumber(phoneNumber + '-');
         }
 
         //13 to account for international phones
         setphoneNumberValid(phoneNumber.length == 12 || phoneNumber.length == 13 ? true : false);
-       
+
     }
-    function checkpasswordValid()
-    {
+    function checkpasswordValid() {
         //if the password contains numbers and letters and is 8 chars or more in length...
-        if(password.match(/^[A-Za-z0-9]*$/))
+        if (password.match(/^[A-Za-z0-9]*$/))
             setpasswordValid(password.length > 7 ? true : false);
     }
-    function checkconfirmPasswordValid()
-    {
+    function checkconfirmPasswordValid() {
         setconfirmPasswordValid(password == confirmPassword ? true : false)
     }
-     
+
     //options for drop down menu
     const hairOptions = [
         { key: ' Mens Haircut', value: ' Mens Haircut' },
@@ -238,7 +232,7 @@ export default function SignUp({ navigation, route }) { // added route for page 
             await functionGetRetry(funcObj);
 
             //post to ServicesWanted
-            const servicePromises = hairStyleSelected.map(async (service)=> {
+            const servicePromises = hairStyleSelected.map(async (service) => {
                 try {
                     let funcObj:funcObj = {
                         entireFunction: () => database.post('/servicesWantedPost', {
@@ -253,7 +247,7 @@ export default function SignUp({ navigation, route }) { // added route for page 
                 }
             });
             await Promise.all(servicePromises); //wait for all services to be posted
-             
+
             console.log('New user and related data posted successfully.');
             alert('new account created successfully');
         } catch (error) {
@@ -262,19 +256,15 @@ export default function SignUp({ navigation, route }) { // added route for page 
         }
     };
 
-    function newUserSignUp()
-    {
+    function newUserSignUp() {
         //password conditionals if these are both false move onto setting the 
-        if(password != confirmPassword)
-        {
+        if (password != confirmPassword) {
             alert("Passwords did not match. Please try again.")
         }
-        else if(password == "" || confirmPassword == "")
-        {
+        else if (password == "" || confirmPassword == "") {
             alert("No password was entered. Please enter in a password.")
         }
-        else
-        {
+        else {
             /*
             IMPORTANT
 
@@ -284,17 +274,17 @@ export default function SignUp({ navigation, route }) { // added route for page 
             */
             //if(phoneNumber != "")
             //{
-                //not able to get the phone number verification to work. 
-                /*window.RecaptchaVerifier = new RecaptchaVerifier(auth, 'sign-in-button', {
-                    'size': 'invisible',
-                    'callback': (response) => {
-                    // reCAPTCHA solved, allow signInWithPhoneNumber.
-                    }
-                });*/
+            //not able to get the phone number verification to work. 
+            /*window.RecaptchaVerifier = new RecaptchaVerifier(auth, 'sign-in-button', {
+                'size': 'invisible',
+                'callback': (response) => {
+                // reCAPTCHA solved, allow signInWithPhoneNumber.
+                }
+            });*/
             //}
             //else
             //{
-                createUserWithEmailAndPassword(auth, email, password)
+            createUserWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
                     const user = userCredential.user;
                 })
@@ -313,14 +303,12 @@ export default function SignUp({ navigation, route }) { // added route for page 
         return 1;
     }
 
-    function handleSignUpPress()
-    {
+    function handleSignUpPress() {
         //registers the user with Firebase first then if the function returns 0 meaning a successful user creation
         //it will post the user to the database and route them back to the login page
         let verify = newUserSignUp();
 
-        if(verify == 0)
-        {
+        if (verify == 0) {
             postNewUser();
             navigation.navigate("Login")
         }
@@ -380,7 +368,7 @@ export default function SignUp({ navigation, route }) { // added route for page 
                                 secureTextEntry={true}
                                 value={password}
                                 onChangeText={newPassword}
-                                onTextInput={() => {checkpasswordValid(); checkconfirmPasswordValid()}} /*extra measure if user changes password*/
+                                onTextInput={() => { checkpasswordValid(); checkconfirmPasswordValid() }} /*extra measure if user changes password*/
                                 placeholder="Password"
                             />
                             <TextInput
@@ -439,9 +427,8 @@ export default function SignUp({ navigation, route }) { // added route for page 
                                 onSelect={() => contactSelection(selectedCont)}
                             />
                         </View>
-                        
                         <View style={styles.signUpContainer}>
-                            <TouchableOpacity 
+                            <TouchableOpacity
                                 disabled={formComplete}
                                 style={styles.signUpButton}
                                 onPress={handleSignUpPress}>
