@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 import firebase from './Firebase.js'  // import firebase
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import axios from 'axios';
-
+import {funcObj, functionGetRetry} from './Enums/Enums'
 export default function Login({ route, navigation }) {
 
     //test@fakemail.com
@@ -22,15 +22,19 @@ export default function Login({ route, navigation }) {
     const [loginError, loginErrorMsg] = useState('');
 
     const database = axios.create({
-        baseURL: 'http://10.0.0.192:3000'
+        baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
+        //baseURL: 'http://10.0.0.192:3000'
         //baseURL: 'http://192.168.1.150:3000', //Chris pc local
         //baseURL: 'http://10.0.0.133:3000',
+        //baseURL: 'http://10.0.0.112:3000',
     });
 
+   
     const userData = {
         userID: undefined, // You can omit this line, it will default to undefined
         adminPriv: undefined, // You can omit this line, it will default to undefined
-        newClient: undefined // You can omit this line, it will default to undefined
+        newClient: undefined, // You can omit this line, it will default to undefined
+        approved: true
     };
 
 
@@ -54,14 +58,14 @@ export default function Login({ route, navigation }) {
         //Since the previously declared user only exists in the scope of its function,
         //redeclare the variable and set the auth to the current user
         const user = auth.currentUser;
-        if (user !== null) {
-            //console.log(email);
-            await checkEmailExists(email);
-            console.log('Right Before Navigation');
-            navigation.navigate("HomeScreen", { userData });
-        } else {
-            //Once branches are merged change this to route to the signup page
-        }
+            if (user !== null) {
+                console.log(email);
+                await checkEmailExists(email);
+                console.log('Right Before Navigation');
+                navigation.navigate("HomeScreen", {userData});
+            } else {
+                //Once branches are merged change this to route to the signup page
+            }
     }
 
     // to show and hide password
@@ -74,31 +78,37 @@ export default function Login({ route, navigation }) {
     }
 
     //put user input into phone number format
-    const [rawNum, setNum] = useState('');
+    //const [rawNum, setNum] = useState('');
     const formattingPhoneNumber = (input) => {
         if (/^\d*$/.test(input)) {
             if (input.length <= 10) {
                 return input.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
             }
+        }else{
+            return input
         }
         //return input.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
     }
-    const setPhoneNumFormat = (input) => {
-        const formatPhoNum = formattingPhoneNumber(input);
-        setNum(formatPhoNum);
+    const setPhoneNumFormat = (input) => { 
+        const formatPhoNum = formattingPhoneNumber(input); 
+        setEmail(formatPhoNum);
     }
 
     async function checkEmailExists(email) {
 
         try {
-
-            const response = await database.get('/queryCurrentUserFromEmail', {
-                params: {
-                    email: email
-                }
-            });
+            const funcObj:funcObj = {
+                entireFunction: () => database.get('/queryCurrentUserFromEmail',{
+                    params: {
+                        email: email
+                    }
+                }),
+                type: 'get'
+            };
+            const response = await functionGetRetry(funcObj);
             //userData.userID = response.data.UserID;
             //setUser(response.data);
+            console.log('Look here dumbass');
             console.log('response', response.data); // For debugging
             userData.userID = response.data[0].UserID;
             userData.adminPriv = false;
@@ -108,7 +118,28 @@ export default function Login({ route, navigation }) {
             //console.error('Error finding User from email: ', error);
             userData.adminPriv = false;
             userData.newClient = true;
-            console.log(userData);
+            //console.log(userData);
+            try {
+                const funcObj:funcObj = {
+                    entireFunction: () => database.get('/queryNewUserFromEmail',{
+                        params: {
+                            email: email
+                        }
+                    }),
+                    type: 'get'
+                };
+                const response = await functionGetRetry(funcObj);
+                alert(JSON.stringify(response.data[0]));
+                userData.userID = response.data[0].UserID;
+                if(response.data[0].ApprovalStatus == 1){
+                    userData.approved = false;
+                }else{
+                    userData.approved = true;
+                }
+            } catch (error) {
+                console.log(error);
+            }
+
         }
 
     }
@@ -123,23 +154,23 @@ export default function Login({ route, navigation }) {
             </ImageBackground>
 
             <LinearGradient
-                locations={[0.7, 1]}
-                colors={['#EB73C9', 'white']}
-                style={styles.background}
-            >
+              locations = {[0.7, 1]}
+              colors = {['#DDA0DD', 'white']}
+              style = {styles.background}
+             >
 
                 {/*Login error loginError in brackets*/}
                 <Text style={styles.errorTitle}>{loginError}</Text>
                 <Text style={styles.objectTitle}>Login</Text>
 
-                {/*user input for email or phone# partly functional*/}
-                <TextInput
-                    placeholder=' Email or Phone '
-                    placeholderTextColor={'gray'}
-                    keyboardType='default'
-                    style={styles.inputBox}
-                    value={email}
-                    onChangeText={setEmail}
+                {/*user input for email or phone# partly functional //setEmail*/}
+                <TextInput 
+                  placeholder = ' Email or Phone ' 
+                  placeholderTextColor = {'gray'} 
+                  keyboardType = 'default'
+                  style = {styles.inputBox}
+                  value = {email}
+                  onChangeText = {setPhoneNumFormat}
                 />
 
                 <View>

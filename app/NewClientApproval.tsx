@@ -2,16 +2,21 @@ import { StyleSheet, Text, View, ScrollView, FlatList, TouchableOpacity, Dimensi
 import { LinearGradient } from 'expo-linear-gradient';
 import React, {useEffect} from 'react';
 import axios from 'axios';
+import Constants from 'expo-constants';
+import {funcObj, functionGetRetry} from './Enums/Enums'
 
 export default function NewClientApproval() {
 
     const windowDimensions = Dimensions.get('window')
+
+    //server connection
     const database = axios.create({
-        //baseURL: 'http://10.0.0.119:3000',  // Wilson local
-        //baseURL: 'http://10.0.0.192:3000',
+        baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
         //baseURL: 'http://192.168.1.150:3000', //Chris pc local
-        baseURL: 'http://10.0.0.14:3000', //Cameron Local
-    })
+        //baseURL: 'http://10.0.0.192:3000'
+        //baseURL: 'http://10.0.0.112:3000',
+    });
+
 
     const [first, setFirst] = React.useState(0);
 
@@ -57,18 +62,22 @@ export default function NewClientApproval() {
 
     function updateClient() {
         let data;
-        database.get('/customQuery', {
-            params: {
-                query: 'SELECT ServicesWanted.ServiceName, NewClientView.FirstName, NewClientView.MiddleName, NewClientView.LastName, NewClientView.Email, NewClientView.PhoneNumber, NewClientView.ApprovalStatus, NewClientView.UserID FROM ServicesWanted INNER JOIN NewClientView ON ServicesWanted.UserID = NewClientView.UserID WHERE ApprovalStatus = 1;'
-            }
-        })
-            .then((ret) => data = ret.data)
-            .then(() => { updateClientDisplay(data) })
-            .catch(() => { alert("error"); });
+        let funcObj:funcObj = {
+            entireFunction: () => database.get('/customQuery', {
+                params: {
+                    query: 'SELECT ServicesWanted.ServiceName, NewClientView.FirstName, NewClientView.MiddleName, NewClientView.LastName, NewClientView.Email, NewClientView.PhoneNumber, NewClientView.ApprovalStatus, NewClientView.UserID FROM ServicesWanted INNER JOIN NewClientView ON ServicesWanted.UserID = NewClientView.UserID WHERE ApprovalStatus = 1;'
+                }
+            }),
+            type: 'get'
+        };
+        functionGetRetry(funcObj)
+        .then((ret) => data = ret.data)
+        .then(() => { updateClientDisplay(data) })
+        .catch(() => { alert("error"); });
     }
 
     function updateClientDisplay(data) {
-        //alert("Here is the data: " + JSON.stringify(data));
+        alert("Here is the data: " + JSON.stringify(data));
         let clientList: Client[] = [];
         let i = 0;
         data.forEach((client) => {
@@ -104,11 +113,15 @@ export default function NewClientApproval() {
     }
     
     const handleAcceptClient = async (client) => {
-        database.put('/updateClientApproval', null, {
-            params: {
-                userID: client.ID
-            }
-        });
+        let funcObj:funcObj = {
+            entireFunction: () => database.put('/updateClientApproval', null, {
+                params: {
+                    userID: client.ID
+                }
+            }),
+            type: 'put'
+        };
+        functionGetRetry(funcObj)
         alert(`${client.name} has been accepted`);
         const updatedClients = newClient.filter((person) => person.name !== client.name);
         setNewClient(updatedClients);
@@ -119,7 +132,7 @@ export default function NewClientApproval() {
             <ScrollView>
                 <LinearGradient
                     locations={[0.7, 1]}
-                    colors={['#EB73C9', 'white']}
+                    colors={['#DDA0DD', 'white']}
                     //style={{ width: windowDimensions.width, height: windowDimensions.height - 85 }}
                     style={{ width: useWindowDimensions().width, height: useWindowDimensions().height - 85 }}
                 >
@@ -176,6 +189,7 @@ const styles = StyleSheet.create({
     container: {
         rowGap: 20,
         paddingVertical: 30,
+        //color: '#DDA0DD'
     },
     // shadow for objects IOS
     boxShadowIOS: {

@@ -17,10 +17,12 @@ import { Link } from 'expo-router';
 import axios from 'axios';
 //firebase imports VVV
 import firebase from './Firebase.js'
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword  } from "firebase/auth";
+import {funcObj, functionGetRetry} from './Enums/Enums'
 
 //made this available for all pages in the app
 export let hairStyleSelected: string[] = [];
+export let contactSelected: string[] = [];
 
 
 export default function SignUp({ navigation, route }) { // added route for page navigation
@@ -32,6 +34,7 @@ export default function SignUp({ navigation, route }) { // added route for page 
 
     //useState for drop down menu
     const [selected, setSelected] = React.useState("");
+    const [selectedCont, setSelectedCont] = React.useState("");
 
     // hair selection
     function handleHairSelection(selected) {
@@ -40,6 +43,15 @@ export default function SignUp({ navigation, route }) { // added route for page 
         var temp = selected.toString();
         temparr = temp.split(",");
         hairStyleSelected = temparr;
+    }
+
+    // contact selection
+    function contactSelection(selectedCont) {
+        let temparr: string[] = [];
+
+        var temp = selectedCont.toString();
+        temparr = temp.split(",");
+        contactSelected = temparr;
     }
 
     /*useEffect(() => { //for testing purposes -> prints to console whenever lists are updated
@@ -51,6 +63,7 @@ export default function SignUp({ navigation, route }) { // added route for page 
 
     // for text input fields
     const [firstName, newFirstName] = React.useState('');
+    const [middleName, newMiddleName] = React.useState('');
     const [lastName, newLastName] = React.useState('');
     const [email, newEmail] = React.useState('');
     const [phoneNumber, newPhoneNumber] = React.useState('');
@@ -60,16 +73,17 @@ export default function SignUp({ navigation, route }) { // added route for page 
     //set length and character checks for text input fields
     const [count, setCount] = useState(0);
 
-
-    const [firstNameValid, setfirstNameValid] = React.useState(false);
-    const [lastNameValid, setlastNameValid] = React.useState(false);
-    const [emailValid, setemailValid] = React.useState(false);
-    const [phoneNumberValid, setphoneNumberValid] = React.useState(false);
-    const [passwordValid, setpasswordValid] = React.useState(false);
-    const [confirmPasswordValid, setconfirmPasswordValid] = React.useState(false);
+    
+    const [firstNameValid, setfirstNameValid] =  React.useState(false);
+    const [middleNameValid, setmiddleNameValid] =  React.useState(false);
+    const [lastNameValid, setlastNameValid] =  React.useState(false);
+    const [emailValid, setemailValid] =  React.useState(false);
+    const [phoneNumberValid, setphoneNumberValid] =  React.useState(false);
+    const [passwordValid, setpasswordValid] =  React.useState(false);
+    const [confirmPasswordValid, setconfirmPasswordValid] =  React.useState(false);
 
     //is everything filled out? if so, unlock the sign up button
-    const formComplete = !(firstNameValid && lastNameValid && emailValid && phoneNumberValid && passwordValid && confirmPasswordValid && selected.length != 0);
+    const formComplete =  !(firstNameValid && middleNameValid && lastNameValid && emailValid && phoneNumberValid && passwordValid && confirmPasswordValid && selected.length != 0 && selectedCont.length != 0); 
 
     /*useEffect(() => { //for testing purposes -> prints to console whenever lists are updated
         console.log('firstNameValid', firstNameValid); //for testing purposes
@@ -87,8 +101,14 @@ export default function SignUp({ navigation, route }) { // added route for page 
         setfirstNameValid(firstName.length > 0 ? true : false);
     }
 
-    function checklastNameValid() {
-        setlastNameValid(lastName.length > 0 ? true : false);
+    function checkmiddleNameValid()
+    {
+        setmiddleNameValid(middleName.length>0 ? true : false);
+    }
+
+    function checklastNameValid()
+    {
+        setlastNameValid(lastName.length>0 ? true : false);
     }
 
     function checkemailValid() {
@@ -134,11 +154,18 @@ export default function SignUp({ navigation, route }) { // added route for page 
         { key: ' Blow Dry and Style', value: 'Blow Dry and Style' }
     ];
 
+    const contactPref = [
+        {key: ' Phone number ', value: ' Phone Number'},
+        {key: ' email ', value: ' Email '}
+    ];
+
     const database = axios.create({
+        baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
         //baseURL: 'http://10.0.0.192:3000'
         //baseURL: 'http://10.0.0.199:3000',
         //baseURL: 'http://10.0.0.14:3000', // Cameron's IP address for testing
-        baseURL: 'http://192.168.1.150:3000', //Chris pc local
+        //baseURL: 'http://192.168.1.150:3000', //Chris pc local
+        //baseURL: 'http://10.0.0.112:3000',
     })
 
     //demo data for postNewUser function until Firebase authentication is set up
@@ -156,49 +183,65 @@ export default function SignUp({ navigation, route }) { // added route for page 
     const postNewUser = async () => {
         try {
             //post data for new user
-            const userResponse = await database.post('/newUserPost', {
-                /*email: e_mail, //uses demo data
-                phoneNumber: phone_number,
-                pass: pass_word,
-                adminPrive: admin_priv*/
-                email: email,
-                phoneNumber: phoneNumber,
-                pass: password,
-                adminPrive: 0
-            });
-
+            let funcObj:funcObj = {
+                entireFunction:() => database.post('/newUserPost', {
+                    /*email: e_mail, //uses demo data
+                    phoneNumber: phone_number,
+                    pass: pass_word,
+                    adminPrive: admin_priv*/
+                    email: email,
+                    phoneNumber: phoneNumber,
+                    adminPriv: 1
+                }),
+                type: 'post'
+            };
+            const userResponse = await functionGetRetry(funcObj);
+                
             //get the userID from response
             const userID = userResponse.data.userID;
             //console.log('userID', userID); //for testing
             //post to Clients -> must post to Clients before NewClients because of foreign key constraint
-            await database.post('/newClientPost', {
-                /*userID: userID, //uses demo data
-                firstName: first_name,
-                middleName: middle_name,
-                lastName: last_name,
-                preferredWayOfContact: preferred_way_of_contact*/
-                userID: userID,
-                firstName: firstName,
-                middleName: "filler", //form info?
-                lastName: lastName,
-                preferredWayOfContact: "filler", //form info?
-            });
+            
+            funcObj = {
+                entireFunction: () => database.post('/newClientPost', {
+                    /*userID: userID, //uses demo data
+                    firstName: first_name,
+                    middleName: middle_name,
+                    lastName: last_name,
+                    preferredWayOfContact: preferred_way_of_contact*/
+                    userID: userID,
+                    firstName: firstName,
+                    middleName: middleName, //form info?
+                    lastName: lastName,
+                    preferredWayOfContact:contactSelected.join(", "), //form info?
+                }),
+                type: 'post'
+            };
+            await functionGetRetry(funcObj);
 
+            funcObj = {
+                entireFunction: () => database.post('/new_newClientPost', {
+                    /*userID: userID, //uses demo data
+                    approvalStatus: approval_status*/
+                    userID: userID,
+                    approvalStatus: 1 //not sure what 1 represents - Chris
+                }),
+                type: 'post'
+            };
             //post to NewClients
-            await database.post('/new_newClientPost', {
-                /*userID: userID, //uses demo data
-                approvalStatus: approval_status*/
-                userID: userID,
-                approvalStatus: 1 //not sure what 1 represents - Chris
-            });
+            await functionGetRetry(funcObj);
 
             //post to ServicesWanted
             const servicePromises = hairStyleSelected.map(async (service) => {
                 try {
-                    const serviceResponse = await database.post('/servicesWantedPost', {
-                        userID: userID,
-                        serviceName: service
-                    });
+                    let funcObj:funcObj = {
+                        entireFunction: () => database.post('/servicesWantedPost', {
+                            userID: userID,
+                            serviceName: service
+                        }),
+                        type: 'post'
+                    }
+                    const serviceResponse = await functionGetRetry(funcObj);
                 } catch (error) {
                     console.error('Error posting services wanted:', error.serviceResponse.data);
                 }
@@ -292,6 +335,13 @@ export default function SignUp({ navigation, route }) { // added route for page 
                             />
                             <TextInput
                                 style={styles.textField}
+                                value={middleName}
+                                onChangeText={newMiddleName}
+                                onTextInput={() => checkmiddleNameValid()}
+                                placeholder="Middle Name"
+                            />
+                            <TextInput
+                                style={styles.textField}
                                 value={lastName}
                                 onChangeText={newLastName}
                                 onTextInput={() => checklastNameValid()}
@@ -354,6 +404,29 @@ export default function SignUp({ navigation, route }) { // added route for page 
                             />
                         </View>
 
+                        <View style={styles.serviceContainer}>
+                            <MultipleSelectList
+                                setSelected={(val) => setSelectedCont(val)}
+                                data={contactPref}
+
+                                // styles
+                                boxStyles={styles.dropDown}
+                                inputStyles={{ color: 'white', fontWeight: 'bold', textAlign: 'center' }}
+                                labelStyles={{ color: 'white', fontWeight: 'bold', textAlign: 'center' }}
+                                dropdownStyles={{
+                                    backgroundColor: 'white',
+                                    width: '85%'
+                                }}
+                                badgeStyles={styles.badgeStyle}
+
+                                maxHeight={1500}
+                                save='value'
+                                search={false}
+                                label="Preferred Contact"
+                                placeholder="Preferred Contact"
+                                onSelect={() => contactSelection(selectedCont)}
+                            />
+                        </View>
                         <View style={styles.signUpContainer}>
                             <TouchableOpacity
                                 disabled={formComplete}

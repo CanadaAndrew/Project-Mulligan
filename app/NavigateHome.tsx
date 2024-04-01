@@ -29,7 +29,7 @@ export default function NavigateHome(){
             />
             <Button
                 title = "Home Screen page"
-                onPress={() => navigation.navigate("HomeScreen")}
+                onPress={() => navigation.navigate("HomeScreen", {userData})}
             />
             <Button
                 title = "Forgot Login page"

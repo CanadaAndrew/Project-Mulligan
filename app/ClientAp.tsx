@@ -8,18 +8,20 @@ import { SelectList } from 'react-native-dropdown-select-list';
 import MyCalendar from './MyCalendar';
 import axios from 'axios';  //Used to get data from the backend nodejs
 import { ScrollView } from 'react-native-gesture-handler';
+import Constants from 'expo-constants';
+import { UTCtoPST, UTCtoPSTString, functionGetRetry, funcObj } from './Enums/Enums';
 
 
 export default function ClientAp({ route }){ 
 
     const { userData } = route.params;
 
-    //Creates a gateway to the server, make sure to replace with local IP of the computer hosting the backend,
-    //in addition remember to turn on backend with node DatabaseConnection.tsx after going into the Database file section in a seperate terminal.
+    //server connection
     const database = axios.create({
-        //baseURL: 'http://10.0.0.192:3000', //Andrew pc local
-        baseURL: 'http://192.168.1.150:3000', //Chris pc local
-    })
+        baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
+        //baseURL: 'http://192.168.1.150:3000', //Chris pc local
+        //baseURL: 'http://10.0.0.192:3000'
+    });
 
     interface Appointment {
         name: string;
@@ -38,28 +40,28 @@ export default function ClientAp({ route }){
             service: "Mens Haircut",
             date: "10/27/23, Fri, 1:00pm",
             stylist: 'Melissa Wright',
-            realDate: new Date("2023-10-27")
+            realDate: UTCtoPST(new Date("2023-10-27"))
         },
         {
             name: "Bob Smith",
             service: "Mens Haircut",
             date: "11/27/23, Mon, 2:00pm",
             stylist: 'Melissa Wright',
-            realDate: (new Date("2023-11-27"))
+            realDate: UTCtoPST(new Date("2023-11-27"))
         },
         {
             name: "Jane Doe",
             service: "Womens Haircut",
             date: "11/18/23, Fri, 3:00pm",
             stylist: 'Melissa Wright',
-            realDate: new Date("2023-11-18")
+            realDate: UTCtoPST(new Date("2023-11-18"))
         },
         {
             name: "Melinda Jackson",
             service: "Hair Extensions",
             date: "11/15/23, Sat, 2:00pm",
             stylist: 'Melissa Wright',
-            realDate: new Date("2023-11-15")
+            realDate: UTCtoPST(new Date("2023-11-15"))
         }
     ]
 
@@ -103,21 +105,30 @@ export default function ClientAp({ route }){
         if(first === 0 ){
             setFirst(1);
             let date = new Date;
-            let dateString = date.toISOString(); //NOTE THAT THE DATE IS CURRENTLY OFF, NEED TO FIX IN ANOTHER SPRINT
+            let dateString = UTCtoPSTString(date); //NOTE THAT THE DATE IS CURRENTLY OFF, NEED TO FIX IN ANOTHER SPRINT
             updateAppointments(dateString.split("T")[0]);
         }
     }
     //Updates the upcoming appointments given a date.
-    function updateAppointments(date){
+    async function updateAppointments(date){
         let data;
-        database.get('/queryUpcomingAppointments', {
-            params: {
-                queryDate : date 
-            }
-        })
+        let FuncObj:funcObj ={
+            entireFunction: async () => await database.get('/queryUpcomingAppointments', {
+                params: {
+                    queryDate : date
+                }
+            }),
+            type: "get"
+        };
+        FuncObj.entireFunction()
         .then((ret) => data = ret.data)
         .then(() => {updateAppointmentsDisplay(data)})
-        .catch(() => {alert("error");});
+        .catch(() => {functionGetRetry(FuncObj)
+            .then((ret) => data = ret.data)
+            .then(() => {updateAppointmentsDisplay(data)})
+            .catch((error) => alert(error))}
+            )
+
     }
 
     async function updateAppointmentsDisplay(data){
@@ -140,7 +151,7 @@ export default function ClientAp({ route }){
                 service: appointment.TypeOfAppointment,
                 date: newDate + ", " + newTime,
                 stylist: 'Melissa Wright',
-                realDate: new Date(newDate)
+                realDate: newDate
             }
             appointmentList[i] = newAppointment;
             i++;
@@ -151,13 +162,26 @@ export default function ClientAp({ route }){
         handleSelection(selected, appointmentList);
     }
 
-    //Work on another sprint. Query for name instead of having userID as name.
     async function getName(userID){
-        let name = await database.get('/findCurrentClientFullNameByID', {
-            params: {
-                queryId : userID 
+        let funcObj:funcObj = {
+            entireFunction: () => database.get('/findCurrentClientFullNameByID', {
+                params: {
+                    queryId : userID
+                }
+            }),
+            type: 'get'
+        };
+        let name
+        try{
+            name = await funcObj.entireFunction()
+        }catch{
+            try{
+                name = await functionGetRetry(funcObj)
+            }catch(error){
+                alert(error)
+                return 'NA'
             }
-        })
+        }
         if(name.data[0].MiddleName == null){
             return name.data[0].FirstName + " " + name.data[0].LastName;
         }else{
@@ -183,7 +207,7 @@ export default function ClientAp({ route }){
             //this filters out the appointments that are not today
 
             //making a new date object with the systems current time
-            const curDay = new Date();
+            const curDay = UTCtoPST(new Date());
 
             //filters the appointments by adding the appointments that have the date in the date string, to the filteredAps array
             //with a temp array as a mediator because javascript is stupid and won't let me copy directly over between the two
@@ -197,9 +221,9 @@ export default function ClientAp({ route }){
         { 
             //kinda the same thing as filtering by today but a little more in depth getting todays date from the system and
             //calculating the first and last days of the week for comparison down below
-            const today = new Date();
-            const firstDayOfWeek = new Date(today);
-            const lastDayOfWeek = new Date(today);
+            const today = UTCtoPST(new Date());
+            const firstDayOfWeek = UTCtoPST(today);
+            const lastDayOfWeek = UTCtoPST(today);
             firstDayOfWeek.setDate(today.getDate() - today.getDay());
             lastDayOfWeek.setDate(today.getDate() + (6 - today.getDay()));
 
@@ -219,9 +243,9 @@ export default function ClientAp({ route }){
         else if(selected == "This Month")
         {
             //very similar to filter by week except you are getting the first and last day of the month instead of the week
-            const today = new Date();
-            const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-            const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            const today = UTCtoPST(new Date());
+            const firstDayOfMonth = UTCtoPST(new Date(today.getFullYear(), today.getMonth(), 1));
+            const lastDayOfMonth = UTCtoPST(new Date(today.getFullYear(), today.getMonth() + 1, 0));
 
 
             //filtering out appointments that aren't in this month
@@ -239,7 +263,7 @@ export default function ClientAp({ route }){
       <ScrollView>
         <LinearGradient
         locations = {[0.7, 1]}
-        colors = {['#EB73C9','white']}
+        colors = {['#DDA0DD','white']}
         style = {styles.container}>
             <View style = {styles.container}>
                 <View style = {styles.backButton}></View>

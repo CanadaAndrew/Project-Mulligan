@@ -2,8 +2,16 @@ import { StyleSheet, Text, View, ScrollView, FlatList, Dimensions, useWindowDime
 import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
 import axios from 'axios';
-
+import Constants from 'expo-constants';
+import { UTCtoPST, UTCtoPSTString, funcObj, functionGetRetry } from './Enums/Enums';
 export default function appointmentsClientView(){
+
+    //server connection
+    const database = axios.create({
+        baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
+        //baseURL: 'http://192.168.1.150:3000', //Chris pc local
+        //baseURL: 'http://10.0.0.192:3000'
+    });
 
     const windowDimensions = Dimensions.get('window')
     interface Appointment {
@@ -17,20 +25,15 @@ export default function appointmentsClientView(){
     let defaultAppointment : Appointment[] = [];
     const [upcomingClientAppointments, setUpcomingClientAppointments] = React.useState(defaultAppointment);
     const [pastClientAppointments, setPastClientAppointments] = React.useState(defaultAppointment);
-
-    const database = axios.create({
-        //baseURL: 'http://10.0.0.192:3000',
-        baseURL: 'http://192.168.1.150:3000', //Chris pc local
-    })
-
     const [first, setFirst] = React.useState(0);
     firstUpdate();
     async function firstUpdate(){
         if(first === 0 ){
             setFirst(1);
-            let date = new Date;
-            let dateString = date.toISOString(); //NOTE THAT THE DATE IS CURRENTLY OFF, NEED TO FIX IN ANOTHER SPRINT
-            let name = await getName(1);
+            let date = UTCtoPST(new Date);
+            let dateString = UTCtoPSTString(date); //NOTE THAT THE DATE IS CURRENTLY OFF, NEED TO FIX IN ANOTHER SPRINT //UTCtoPSTString should fix this -Tai
+            let name;
+            name = await getName(1);
             updateUpcomingAppointments(dateString.split("T")[0], 1, name); //Note that currently using ID 1 until the use of UserID transfer comes in
             updatePastAppointments(dateString.split("T")[0], 1, name);
         }
@@ -38,28 +41,44 @@ export default function appointmentsClientView(){
     //Updates the upcoming appointments given a date.
     function updateUpcomingAppointments(date, userID, name){
         let data;
-        database.get('/queryUpcomingAppointmentsByUserIDAndDate', {
-            params: {
-                date : date,
-                userID: userID //temp value, will be changed
-            }
-        })
+        let funcObj:funcObj ={
+            entireFunction: () => database.get('/queryUpcomingAppointmentsByUserIDAndDate', {
+                params: {
+                    date : date,
+                    userID: userID //temp value, will be changed
+                }
+            }),
+            type:'get'
+        };
+        funcObj.entireFunction()
         .then((ret) => data = ret.data)
         .then(() => {updateUpcomingAppointmentsDisplay(data, name)})
-        .catch(() => {alert("error");});
+        .catch(() => {functionGetRetry(funcObj)
+            .then((ret) => data = ret.data)
+            .then(() => {updateUpcomingAppointmentsDisplay(data, name)})
+            .catch((error) => alert(error))
+        });
     }
 
     function updatePastAppointments(date, userID, name){
         let data;
-        database.get('/queryPastAppointmentsByUserIDAndDate', {
-            params: {
-                date : date,
-                userID: userID //temp value, will be changed
-            }
-        })
+        let funcObj:funcObj = {
+            entireFunction: () => database.get('/queryPastAppointmentsByUserIDAndDate', {
+                params: {
+                    date : date,
+                    userID: userID //temp value, will be changed
+                }
+            }),
+            type:'get'
+        };
+        funcObj.entireFunction()
         .then((ret) => data = ret.data)
         .then(() => {updatePastAppointmentsDisplay(data, name)})
-        .catch(() => {alert("error");});
+        .catch(() => {functionGetRetry(funcObj)
+            .then((ret) => data = ret.data)
+            .then(() => {updatePastAppointmentsDisplay(data, name)})
+            .catch((error) => alert(error))
+        });
     }
 
     function updateUpcomingAppointmentsDisplay(data, name){
@@ -76,7 +95,7 @@ export default function appointmentsClientView(){
                 service: appointment.TypeOfAppointment,
                 date: newDate + ", " + newTime,
                 stylist: 'Melissa Wright',
-                realDate: new Date(newDate)
+                realDate: newDate
             }
             appointmentList[i] = newAppointment;
             i += 1;
@@ -98,7 +117,7 @@ export default function appointmentsClientView(){
                 service: appointment.TypeOfAppointment,
                 date: newDate + ", " + newTime,
                 stylist: 'Melissa Wright',
-                realDate: new Date(newDate)
+                realDate: newDate
             }
             appointmentList[i] = newAppointment;
             i += 1;
@@ -108,11 +127,25 @@ export default function appointmentsClientView(){
         //Test: alert("Past list: " + JSON.stringify(appointmentList));
     }
     async function getName(userID){
-        let name = await database.get('/findCurrentClientFullNameByID', {
-            params: {
-                queryId : userID 
+        let funcObj:funcObj = {
+            entireFunction: () => database.get('/findCurrentClientFullNameByID', {
+                params: {
+                    queryId : userID
+                }
+            }),
+            type: 'get'
+        };
+        let name
+        try{
+            name = await funcObj.entireFunction()
+        }catch{
+            try{
+                name = await functionGetRetry(funcObj)
+            }catch(error){
+                alert(error)
+                return 'NA'
             }
-        })
+        }
         if(name.data[0].MiddleName == null){
             return name.data[0].FirstName + " " + name.data[0].LastName;
         }else{
@@ -125,7 +158,7 @@ export default function appointmentsClientView(){
             <View style = {styles.container}>
                 <LinearGradient
                   locations = {[0.7, 1]}
-                  colors = {['#EB73C9', 'white']}
+                  colors = {['#DDA0DD', 'white']}
                   style = {{width: windowDimensions.width, height: windowDimensions.height - 85}}
                 >
                     <View style = {styles.background}>
@@ -193,7 +226,8 @@ export default function appointmentsClientView(){
 
 const styles = StyleSheet.create({
     container:{
-        borderRadius: 90
+        borderRadius: 90,
+        //color: '#DDA0DD'
     },
     // title styling 
     objectTitle: {
@@ -209,7 +243,8 @@ const styles = StyleSheet.create({
         //paddingTop: 20,
         //paddingBottom: 775,
         //alignItems: 'center',
-        borderRadius: 30
+        borderRadius: 30,
+        //color: '#DDA0DD'
     },
     // shadow for objects IOS
     boxShadowIOS: {
