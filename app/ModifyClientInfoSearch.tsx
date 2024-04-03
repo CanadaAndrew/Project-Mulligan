@@ -148,10 +148,11 @@ export default function ModifyClientInfoSearch({navigation, route}) {
      
     return (
         <SafeAreaView>
+            <ScrollView> 
             
             <LinearGradient
                 locations={[0.7, 1]}
-                colors={['#EB73C9', 'white']}
+                colors={['#DDA0DD', 'white']}
                 //style={{ width: windowDimensions.width, height: windowDimensions.height - 85 }}
                 style={{ width: useWindowDimensions().width, height: useWindowDimensions().height - 85 }}
             >
@@ -216,6 +217,7 @@ export default function ModifyClientInfoSearch({navigation, route}) {
                     </View>
                 </View>
             </LinearGradient>
+            </ScrollView>
             
         </SafeAreaView>
     );

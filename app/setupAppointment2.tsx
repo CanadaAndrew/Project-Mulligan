@@ -230,6 +230,7 @@ export default function SetupAppointment2({route}) { // added route for page nav
     return (
         <>
             <StatusBar backgroundColor={'black'} />
+            <ScrollView>
             <View style={styles.container}>
                 <View style={styles.header}>
                     <View style={styles.backButton}>
@@ -377,6 +378,7 @@ export default function SetupAppointment2({route}) { // added route for page nav
                     </View>
                 </LinearGradient>
             </View>
+            </ScrollView>
         </>
     );
 }
@@ -384,7 +386,8 @@ export default function SetupAppointment2({route}) { // added route for page nav
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'white'
+        backgroundColor: 'white',
+        paddingBottom: 400
     },
     body: {
     },

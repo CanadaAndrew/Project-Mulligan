@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, TextInput, ImageBackground, } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import React, { useState } from 'react';
 import axios from 'axios';
 import firebase from './Firebase';
@@ -82,6 +82,7 @@ export default function ForgotLogin({ navigation }) {
 
     return (
         <View style={styles.container}>
+            <ScrollView>
             {/*added logo image*/}
             <ImageBackground
                 style={styles.logo}
@@ -122,6 +123,7 @@ export default function ForgotLogin({ navigation }) {
 
 
             </LinearGradient>
+            </ScrollView>
         </View>
 
     );
@@ -129,7 +131,8 @@ export default function ForgotLogin({ navigation }) {
 
 const styles = StyleSheet.create({
     container: {
-        borderRadius: 90
+        borderRadius: 90,
+        paddingBottom: 0
     },
     // title styling 
     objectTitle: {
@@ -148,7 +151,7 @@ const styles = StyleSheet.create({
     },
     // background under logo image
     background: {
-        paddingBottom: 275,
+        paddingBottom: 400,
         alignItems: 'center',
     },
     // logo image

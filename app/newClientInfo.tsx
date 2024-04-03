@@ -170,8 +170,8 @@ export default function newClientInfo({route}) {
     return (
 
     <>
-    
-        <LinearGradient locations={[0.7, 1]} colors={['#DDA0DD', 'white']} style={styles.container}>  
+    <ScrollView>
+        <LinearGradient locations={[0.7, 1]} colors={['#DDA0DD', 'white']} style={styles.container2}> 
             <Text >{'\n'}</Text>
             <View style = {[styles.appointBox, styles.boxShadowIOS, styles.boxShadowAndroid]}>
                 <Text style={styles.appointText}>{welcomeMessage}</Text>
@@ -233,13 +233,19 @@ export default function newClientInfo({route}) {
             {/*StreetAddressValid && <Text > address valid is true</Text> /**/ }
             {/*ZipValid && <Text > zip valid is true</Text> /**/ }
             </View>
+            
         </LinearGradient>
+        </ScrollView>
     </>  
 )}
 
 const styles = StyleSheet.create({
     container: {
         flex: 1
+    },
+    container2: {
+        flex: 1,
+        paddingBottom: 400
     },
     // title of page
     headerTitle: {

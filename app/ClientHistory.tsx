@@ -5,7 +5,7 @@ import { Link } from 'expo-router';
 import { SelectList } from 'react-native-dropdown-select-list';
 import axios from 'axios'; //used to get data from the backend nodejs
 import moment from 'moment-timezone';
-import { TextInput } from 'react-native-gesture-handler';
+import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import { text } from 'express';
 import Constants from 'expo-constants';
 import { UTCtoPST, UTCtoPSTString, funcObj, functionGetRetry } from './Enums/Enums';
@@ -320,12 +320,13 @@ export default function ClientHistory() {
 
     return (
         <>
+        <ScrollView>
             <LinearGradient
                 locations={[0.7, 1]}
                 colors={['#DDA0DD', 'white']}
                 style={styles.container}>
                 <View style={styles.container}>
-                    <View style={styles.header}>
+                    {/*<View style={styles.header}>
                         <Text style={styles.headerTitle}>Client History</Text>
                     </View>
                     <View style={styles.backButton}>
@@ -469,12 +470,14 @@ export default function ClientHistory() {
                   
                 </View>
             </LinearGradient>
+            </ScrollView>
         </>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
+        paddingBottom: 300,
     },
     // title of page
     headerTitle: {

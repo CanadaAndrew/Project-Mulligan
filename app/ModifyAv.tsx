@@ -391,8 +391,10 @@ export default function ModifyAv({ route }) {
 
     return (
         <>
+        <ScrollView>
             <StatusBar backgroundColor={'black'} />
             <LinearGradient locations={[0.7, 1]} colors={['#DDA0DD', 'white']} style={styles.container}>
+            
                 <View style={styles.container}>
                     <View style={styles.backButton}></View>
                     <Calendar onDayPress={handleDayPress} />
@@ -512,7 +514,9 @@ export default function ModifyAv({ route }) {
                         </View>                                
                     </Modal>
                 </View>
+                
             </LinearGradient>
+            </ScrollView>
         </>
     );
 };
@@ -520,6 +524,7 @@ export default function ModifyAv({ route }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        paddingBottom: 75
         //backgroundColor: '#DDA0DD'
     },
     // header

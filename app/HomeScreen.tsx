@@ -204,6 +204,7 @@ function filterButtons(){
   }, [])
   return(
             <View style = {styles.container}>
+              <ScrollView>
             {/*added logo image*/}
              <ImageBackground
               style = {styles.logo}
@@ -240,7 +241,7 @@ function filterButtons(){
 
               </View>
              </LinearGradient>
-
+             </ScrollView>
             </View> 
     );
 }

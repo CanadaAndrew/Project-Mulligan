@@ -273,7 +273,7 @@ export default function newClientInfo_AdminView({ navigation }){
             
             <LinearGradient
               locations = {[0.7, 1]}
-              colors = {['#EB73C9', 'white']}
+              colors = {['#DDA0DD', 'white']}
               style = {styles.background}
              >
 
@@ -397,7 +397,7 @@ const styles = StyleSheet.create({
     },
     // background under logo image
     background: {
-        paddingBottom: 200,
+        paddingBottom: 250,
         alignItems: 'center',
     },
     // shadow for objects IOS

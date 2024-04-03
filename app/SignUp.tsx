@@ -456,11 +456,12 @@ export default function SignUp({ navigation, route }) { // added route for page 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'white'
+        backgroundColor: 'white' 
     },
     body: {
         justifyContent: 'center',
-        padding: 10
+        padding: 10,
+        paddingBottom: 300
     },
     linearGradientStyle: {
         borderTopLeftRadius: 50,

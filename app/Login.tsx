@@ -145,7 +145,9 @@ export default function Login({ route, navigation }) {
     }
 
     return (
+        <ScrollView>
         <View style={styles.container}>
+        
             {/*added logo image*/}
             <ImageBackground
                 style={styles.logo}
@@ -158,6 +160,7 @@ export default function Login({ route, navigation }) {
               colors = {['#DDA0DD', 'white']}
               style = {styles.background}
              >
+                
 
                 {/*Login error loginError in brackets*/}
                 <Text style={styles.errorTitle}>{loginError}</Text>
@@ -212,16 +215,19 @@ export default function Login({ route, navigation }) {
                     </TouchableOpacity>
                 </View>
 
-
+                
             </LinearGradient>
+            
         </View>
+        </ScrollView>
 
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        borderRadius: 90
+        borderRadius: 90,
+        paddingBottom: 0
     },
     // title styling 
     objectTitle: {
@@ -239,7 +245,7 @@ const styles = StyleSheet.create({
     },
     // background under logo image
     background: {
-        paddingBottom: 100,
+        paddingBottom: 300,
         alignItems: 'center',
     },
     // logo image
