@@ -15,6 +15,13 @@ declare global {
   
 export default function NewClientInfo_AdminView({ navigation }){
 
+    const database = axios.create({
+        //baseURL: 'http://10.0.0.192:3000', //Andrew pc local
+        baseURL: 'http://192.168.1.150:3000', //Chris pc local
+        //baseURL: 'http://10.0.0.133:3000',
+        //baseURL: 'http://10.0.0.14:3000', //Cameron pc local
+    })
+
     //Variables to set customer info
 
     //This userID is temporary right now as there is no feature to bring the userID over from the previous page yet.
@@ -39,13 +46,6 @@ export default function NewClientInfo_AdminView({ navigation }){
 
     const auth = getAuth(firebase);
     auth.languageCode = 'en';
-
-    const database = axios.create({
-        //baseURL: 'http://10.0.0.192:3000', //Andrew pc local
-        baseURL: 'http://192.168.1.150:3000', //Chris pc local
-        //baseURL: 'http://10.0.0.133:3000',
-        //baseURL: 'http://10.0.0.14:3000', //Cameron pc local
-    })
 
     //Toggles the edit permissions for the contact info box
     const toggleEditContactInfo = () => {

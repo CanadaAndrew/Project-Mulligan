@@ -5,21 +5,21 @@ import { Link } from 'expo-router';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import ClientAp from './ClientAp';
-import setUpAppoint1 from './SetUpAppoint1';
+import setUpAppoint1 from './setUpAppoint1';
 import ModifyAv from './ModifyAv';
-import SetupAppointment2 from './SetupAppointment2';
+import SetupAppointment2 from './setupAppointment2';
 import ServicesOffered from './ServicesOffered';
 import HomeScreen from './HomeScreen';
-import AppointmentsClientView from './AppointmentsClientView';
+import AppointmentsClientView from './appointmentsClientView';
 import ClientHistory from './ClientHistory';
 import AboutMe from './AboutMe';
-import newClientInfo from './NewClientInfo';
+import newClientInfo from './newClientInfo';
 import NewClientApproval from './NewClientApproval';
 import ModifyClientInfoSearch from './ModifyClientInfoSearch';
 import ForgotLogin from './ForgotLogin';
 import SignUp from './SignUp';
 import Login from './Login';
-import NewClientInfo_AdminView from './NewClientInfo_AdminView';
+import NewClientInfo_AdminView from './newClientInfo_AdminView';
 
 const Stack = createNativeStackNavigator()
 
