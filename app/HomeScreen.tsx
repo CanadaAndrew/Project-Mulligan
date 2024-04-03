@@ -71,7 +71,7 @@ function filterButtons(){
     //Takes you to the Set Up Appiontment Page
     var scheduleAppointmentButton = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("setUpAppoint1", {userData})}
+      onPress = {() => navigation.navigate("SetUpAppoint1", {userData})}
       >
       <Text style = {styles.homeButtonText}>Schedule Appointments</Text>
     </TouchableOpacity>
@@ -113,7 +113,7 @@ function filterButtons(){
     //Takes you to the Set Up Appointment Page !WIP! no functionality
     var scheduleAppointmentButton2 = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("setUpAppoint1", {userData})}
+      onPress = {() => navigation.navigate("SetUpAppoint1", {userData})}
       >
       <Text style = {styles.homeButtonText}>Schedule Appointments</Text>
     </TouchableOpacity>
@@ -147,7 +147,7 @@ function filterButtons(){
     </TouchableOpacity>
     var newClientInfo2 = <TouchableOpacity
       style = {styles.homeButton}
-      onPress={() => navigation.navigate('newClientInfo', {userData})}
+      onPress={() => navigation.navigate('NewClientInfo', {userData})}
       >
       <Text style = {styles.backButtonText}>New Client Info</Text>
       </TouchableOpacity>
@@ -186,9 +186,9 @@ function filterButtons(){
 
     var newClientInfoButton = <TouchableOpacity
     style = {styles.homeButton}
-    onPress = {() => navigation.navigate("newClientInfo", {userData})}
+    onPress = {() => navigation.navigate("NewClientInfo", {userData})}
     >
-    <Text style = {styles.homeButtonText}>newClientInfo</Text>
+    <Text style = {styles.homeButtonText}>NewClientInfo</Text>
     </TouchableOpacity>
 
     buttons.push(servicesOfferedButton3);

@@ -212,7 +212,7 @@ export default function ModifyClientInfoSearch({navigation, route}) {
                                     </View>
                                 </View>
                             )}
-                            style={styles.letterFlatListStyle}
+                                style={{height: useWindowDimensions().height*.78}}
                         />
                     </View>
                 </View>
@@ -290,9 +290,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingLeft: 5,
         paddingRight: 5,
-    },
-    letterFlatListStyle: {
-        height: useWindowDimensions().height*.78
     },
     dropdowncont: {
         padding: 16

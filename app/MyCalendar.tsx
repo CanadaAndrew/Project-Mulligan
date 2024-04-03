@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Calendar } from 'react-native-calendars';
-import { handleDatesSelected } from './calendarUtils';
+import { handleDatesSelected } from './CalendarUtils';
 
 interface MyCalendarProps {
   pageName: string;

@@ -37,7 +37,13 @@ export default function Login({ route, navigation }) {
         approved: true
     };
 
+    const onClickSignUp = () => {
+        navigation.navigate("SignUp", { userData });
+    }
 
+    const onClickForgotLogin = () => {
+        navigation.navigate("ForgotLogin", { userData });
+    }
 
     const onClickLogin = async () => {
 
@@ -187,7 +193,8 @@ export default function Login({ route, navigation }) {
                         value={password}
                         onChangeText={setPassword}
                     />
-
+                </View>
+                <View>
                     {/*button to show password is functional*/}
                     <TouchableOpacity
                         style={styles.showButton}
@@ -197,8 +204,10 @@ export default function Login({ route, navigation }) {
                     </TouchableOpacity>
 
                     {/*button for forgot password no functionality yet WIP*/}
-                    <TouchableOpacity>
-                        <Text style={styles.showButtonText}>forgot password?</Text>
+                    <TouchableOpacity
+                        onPress={onClickForgotLogin}
+                    >
+                        <Text style={styles.forgotPWButtonText}>Forgot Password?</Text>
                     </TouchableOpacity>
 
                 </View>
@@ -215,6 +224,14 @@ export default function Login({ route, navigation }) {
                     </TouchableOpacity>
                 </View>
 
+                <View style={styles.signUpContainer}>
+                    <Text style={styles.showButtonText}>Don't have an account?  </Text>
+                    <TouchableOpacity
+                        onPress={onClickSignUp}
+                    >
+                        <Text style={styles.signUpText}>Sign Up</Text>
+                    </TouchableOpacity>
+                </View>
                 
             </LinearGradient>
             
@@ -315,7 +332,7 @@ const styles = StyleSheet.create({
         height: 40,
         paddingTop: 12,
         marginLeft: 25,
-        marginBottom: 50,
+        marginBottom: 30,
         //margin: 25,
         shadowColor: 'black',
         shadowOffset: {
@@ -354,10 +371,21 @@ const styles = StyleSheet.create({
         borderRadius: 20,
     },
     // show button text style
-    fotgotPWButtonText: {
+    forgotPWButtonText: {
         color: 'white',
         fontWeight: 'bold',
         fontSize: 15,
         textAlign: 'center',
     },
+    // view for sign up
+    signUpContainer: {
+        flexDirection: 'row',
+        alignContent: 'center'
+    },
+    // sign up text
+    signUpText: {
+        color: '#BE42B2',
+        fontWeight: 'bold',
+        fontSize: 15,
+    }
 })

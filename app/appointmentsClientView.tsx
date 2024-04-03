@@ -4,7 +4,7 @@ import React from 'react';
 import axios from 'axios';
 import Constants from 'expo-constants';
 import { UTCtoPST, UTCtoPSTString, funcObj, functionGetRetry } from './Enums/Enums';
-export default function appointmentsClientView(){
+export default function AppointmentsClientView(){
 
     //server connection
     const database = axios.create({

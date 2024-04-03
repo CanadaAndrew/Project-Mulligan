@@ -24,7 +24,7 @@ const renderSelectedDates = () => {
     }
 }
 
-export default function setUpAppoint1({navigation, route}) { // add navigation to default function for data transfer between pages
+export default function SetUpAppoint1({navigation, route}) { // add navigation to default function for data transfer between pages
 
     const { userData } = route.params;
     //{ route }, { navigation }
@@ -120,7 +120,7 @@ export default function setUpAppoint1({navigation, route}) { // add navigation t
                 {/*Basic calendar implementation. Currently logs selected dates to the console and highlights them.*/
                 /*Setting disabled to true will disable the higlighting feature.*/}
                 <View style = {[styles.dummyCalendar, styles.boxShadowIOS, styles.boxShadowAndroid]}>
-                    <MyCalendar pageName='setUpAppoint1' onDatesSelected={handleDatesSelected} disabled={false} ref={calendarContainerRef}/>
+                    <MyCalendar pageName='SetUpAppoint1' onDatesSelected={handleDatesSelected} disabled={false} ref={calendarContainerRef}/>
                 </View>
 
                 {/*appointment button no functionality yet*/}
@@ -141,7 +141,7 @@ export default function setUpAppoint1({navigation, route}) { // add navigation t
                         style={styles.appointmentButton}
                         onPress={() => {
                             const selectedDates = calendarContainerRef.current?.markedDates;
-                            navigation.navigate('setupAppointment2', { 
+                            navigation.navigate('SetupAppointment2', { 
                             userData,
                             hairStyleData: hairStyleSelected.join(', '),
                             dateData: selectedDates.join(', '),

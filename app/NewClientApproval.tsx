@@ -141,7 +141,7 @@ export default function NewClientApproval() {
                             data={newClient}
                             horizontal={true}
                             renderItem={({ item }) => (
-                                <View style={[styles.clientBox, styles.boxShadowIOS, styles.boxShadowAndroid]}>
+                                <View style={[{width: useWindowDimensions().width, height: useWindowDimensions().height}, styles.boxShadowIOS, styles.boxShadowAndroid]}>
                                     <View style={styles.nameContainer}>
                                         <View style={styles.nameButton}>
                                             <Text style={styles.nameText}>{item.name}</Text>
@@ -204,16 +204,6 @@ const styles = StyleSheet.create({
     // shadow for objects Android
     boxShadowAndroid: {
         elevation: 10
-    },
-    // every box per client
-    clientBox: {
-        width: useWindowDimensions().width,
-        height: useWindowDimensions().height,
-        //margin: 20,
-        //borderRadius: 20,
-        //alignItems: 'center',
-        //paddingVertical: 15,
-        //paddingHorizontal: 3,
     },
     // white information block
     infoContainer: {

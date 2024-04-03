@@ -20,7 +20,7 @@ import axios from 'axios';
 import { listOfStates, funcObj, functionGetRetry } from './Enums/Enums';
 import Constants from 'expo-constants';
 
-export default function newClientInfo({route}) {
+export default function NewClientInfo({route}) {
 
     //server connection
     const database = axios.create({

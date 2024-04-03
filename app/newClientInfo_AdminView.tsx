@@ -13,7 +13,7 @@ declare global {
     }
   }
   
-export default function newClientInfo_AdminView({ navigation }){
+export default function NewClientInfo_AdminView({ navigation }){
 
     //Variables to set customer info
 
