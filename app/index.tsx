@@ -5,7 +5,7 @@ import { Link } from 'expo-router';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import ClientAp from './ClientAp';
-import setUpAppoint1 from './SetUpAppoint1';
+import SetUpAppoint1 from './SetUpAppoint1';
 import ModifyAv from './ModifyAv';
 import SetupAppointment2 from './SetupAppointment2';
 import ServicesOffered from './ServicesOffered';
@@ -13,7 +13,7 @@ import HomeScreen from './HomeScreen';
 import AppointmentsClientView from './AppointmentsClientView';
 import ClientHistory from './ClientHistory';
 import AboutMe from './AboutMe';
-import newClientInfo from './NewClientInfo';
+import NewClientInfo from './NewClientInfo';
 import NewClientApproval from './NewClientApproval';
 import ModifyClientInfoSearch from './ModifyClientInfoSearch';
 import ForgotLogin from './ForgotLogin';
@@ -38,7 +38,7 @@ export default function index() {
         }
         }}
      >
-         <Stack.Screen name = "setUpAppoint1" component={setUpAppoint1}
+         <Stack.Screen name = "SetUpAppoint1" component={SetUpAppoint1}
            options = {{
             title: "Set Appointment"
            }}
@@ -69,7 +69,7 @@ export default function index() {
             title: "Your Appointments"
            }}
          />
-         <Stack.Screen name = "NewClientInfo" component={newClientInfo}/>
+         <Stack.Screen name = "NewClientInfo" component={NewClientInfo}/>
         <Stack.Screen name="NewClientApproval" component={NewClientApproval}
             options={{
                 title: "Client Approval"
