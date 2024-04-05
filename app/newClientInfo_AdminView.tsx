@@ -35,8 +35,17 @@ export default function NewClientInfo_AdminView({ navigation }){
     const [newCustPhone, setNewCustPhone] = useState('');
     const [originalCustEmail, setOriginalCustEmail] = useState('');
     const [newCustEmail, setNewCustEmail] = useState('');
-    const [originalCustAddress, setOriginalCustAddress] = useState('');
-    const [newCustAddress, setNewCustAddress] = useState('');
+
+    //const [originalCustAddress, setOriginalCustAddress] = useState('');
+    //const [newCustAddress, setNewCustAddress] = useState('');
+    const [originalCustStreet, setOriginalCustStreet] = useState('');
+    const [newCustStreet, setNewCustStreet] = useState('');
+    const [originalCustCity, setOriginalCustCity] = useState('');
+    const [newCustCity, setNewCustCity] = useState('');
+    const [originalCustStateAbbrev, setOriginalCustStateAbbrev] = useState('');
+    const [newCustStateAbbrev, setNewCustStateAbbrev] = useState('');
+    const [originalCustZip, setOriginalCustZip] = useState('');
+    const [newCustZip, setNewCustZip] = useState('');
 
     const [editingPreferences, setEditingPreferences] = useState(false);
     const [originalCustServices, setOriginalCustServices] = useState('');
@@ -59,20 +68,21 @@ export default function NewClientInfo_AdminView({ navigation }){
     
     //updates database with contact info changes
     const saveContactInfoChanges = () => {
-        if (newCustAddress !== originalCustAddress) { //new address info entered
+        if (newCustStreet !== originalCustStreet || newCustCity != originalCustCity
+            || newCustStateAbbrev != originalCustStateAbbrev || newCustZip != originalCustZip) { //new address info entered
 
-            const addressTokens = newCustAddress.split(','); //tokenize address string
+            /*const addressTokens = newCustAddress.split(','); //tokenize address string
             if (addressTokens.length !== 4) { //address must have 4 parts
                 alert('Address must have four parts separated by commas: street, city, state abbreviation, and zip code');
                 return;
-            };
+            };*/
 
             //update client's address info in database
             try {
-                const custStreet = addressTokens[0].trim();
-                const custCity = addressTokens[1].trim();
-                const custStateAbbrev = addressTokens[2].trim();
-                const custZip = addressTokens[3].trim();
+                const custStreet = newCustStreet.trim();
+                const custCity = newCustCity.trim();
+                const custStateAbbrev = newCustStateAbbrev.trim();
+                const custZip = newCustZip.trim();
 
                 //database.patch('/updateCurrentClientViewContactInfo', {
                 database.patch('/updateCurrentClientsAddress', {
@@ -83,7 +93,11 @@ export default function NewClientInfo_AdminView({ navigation }){
                     zip: custZip
                 });
                 alert('Address updated successfully');
-                setOriginalCustAddress(newCustAddress); //update original address info with new address info
+                //setOriginalCustAddress(newCustAddress); //update original address info with new address info
+                setOriginalCustStreet(custStreet);
+                setOriginalCustCity(custCity);
+                setOriginalCustStateAbbrev(custStateAbbrev);
+                setOriginalCustZip(custZip);
             } catch (error) {
                 console.error('Problem updating address info', error);
             };
@@ -216,9 +230,17 @@ export default function NewClientInfo_AdminView({ navigation }){
         if(clientData2 != null)
         {
             //formatting the address of the client and setting it along with the clients notes
-            let clientAddress = clientData2[0].Street + ", " + clientData2[0].City + ", " + clientData2[0].StateAbbreviation + ", " + clientData2[0].Zip;
-            setOriginalCustAddress(clientAddress);
-            setNewCustAddress(clientAddress);
+            //let clientAddress = clientData2[0].Street + ", " + clientData2[0].City + ", " + clientData2[0].StateAbbreviation + ", " + clientData2[0].Zip;
+            //setOriginalCustAddress(clientAddress);
+            //setNewCustAddress(clientAddress);
+            setOriginalCustStreet(clientData2[0].Street);
+            setNewCustStreet(clientData2[0].Street);
+            setOriginalCustCity(clientData2[0].City);
+            setNewCustCity(clientData2[0].City);
+            setOriginalCustStateAbbrev(clientData2[0].StateAbbreviation);
+            setNewCustStateAbbrev(clientData2[0].StateAbbreviation);
+            setOriginalCustZip(clientData2[0].Zip);
+            setNewCustZip(clientData2[0].Zip);
             setOriginalCustNotes(clientData2[0].ClientNotes);
             setNewCustNotes(clientData2[0].ClientNotes);
             
@@ -253,8 +275,16 @@ export default function NewClientInfo_AdminView({ navigation }){
             //if the client being searched for is not a current client they will not have the necessary data to fill out the remaining
             //fields so this is the place holder text
             const newClientString = 'New Client, Space is Blank'
-            setOriginalCustAddress(newClientString);
-            setNewCustAddress(newClientString);
+            //setOriginalCustAddress(newClientString);
+            //setNewCustAddress(newClientString);
+            setOriginalCustStreet(newClientString);
+            setNewCustStreet(newClientString);
+            setOriginalCustCity(newClientString);
+            setNewCustCity(newClientString);
+            setOriginalCustStateAbbrev(newClientString);
+            setNewCustStateAbbrev(newClientString);
+            setOriginalCustZip(newClientString);
+            setNewCustZip(newClientString);
             setOriginalCustServices(newClientString);
             setNewCustServices(newClientString);
             setOriginalCustNotes(newClientString);
@@ -322,15 +352,48 @@ export default function NewClientInfo_AdminView({ navigation }){
                     <Text style={styles.clientText}>{originalCustPhone}</Text>
                     )}
                         <Text>{'\n'}</Text>
-                        <Text style={styles.clientTilteText}>Address (Commas between street, city, state abbreviation, zip code)</Text>
+                        <Text style={styles.clientTilteText}>Street</Text>
                     {editingContactInfo ? (
                         <TextInput
                             style={styles.clientTextInput}
-                            value={newCustAddress}
-                            onChangeText={setNewCustAddress}
+                            value={newCustStreet}
+                            onChangeText={setNewCustStreet}
                         />
                     ) : (
-                    <Text style={styles.clientText}>{originalCustAddress}</Text>
+                    <Text style={styles.clientText}>{originalCustStreet}</Text>
+                    )}
+                        <Text>{'\n'}</Text>
+                        <Text style={styles.clientTilteText}>City</Text>
+                    {editingContactInfo ? (
+                        <TextInput
+                            style={styles.clientTextInput}
+                            value={newCustCity}
+                            onChangeText={setNewCustCity}
+                        />
+                    ) : (
+                    <Text style={styles.clientText}>{originalCustCity}</Text>
+                    )}
+                        <Text>{'\n'}</Text>
+                        <Text style={styles.clientTilteText}>State Abbreviation</Text>
+                    {editingContactInfo ? (
+                        <TextInput
+                            style={styles.clientTextInput}
+                            value={newCustStateAbbrev}
+                            onChangeText={setNewCustStateAbbrev}
+                        />
+                    ) : (
+                    <Text style={styles.clientText}>{originalCustStateAbbrev}</Text>
+                    )}
+                        <Text>{'\n'}</Text>
+                        <Text style={styles.clientTilteText}>Zip Code</Text>
+                    {editingContactInfo ? (
+                        <TextInput
+                            style={styles.clientTextInput}
+                            value={newCustZip}
+                            onChangeText={setNewCustZip}
+                        />
+                    ) : (
+                    <Text style={styles.clientText}>{originalCustZip}</Text>
                     )}
                 </View>
                 <View>
