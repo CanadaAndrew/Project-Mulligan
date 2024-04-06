@@ -182,11 +182,7 @@ export default function ClientAp({ route }){
                 return 'NA'
             }
         }
-        if(name.data[0].MiddleName == null){
-            return name.data[0].FirstName + " " + name.data[0].LastName;
-        }else{
-            return name.data[0].FirstName + " " + name.data[0].MiddleName + " " + name.data[0].LastName
-        }
+        return name.data[0].FirstName + " " + name.data[0].LastName;
     }
     //handleSelection is called whenever a change is made in the drop down menu. It is passed the key value from the filter array above
     //it then decides which filtering option to use on the data based upon the key that it is passed in this function

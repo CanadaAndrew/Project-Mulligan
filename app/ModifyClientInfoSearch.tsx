@@ -26,7 +26,7 @@ export default function ModifyClientInfoSearch({navigation, route}) {
         //Loops and compares objects queried to find user id
         let i = 0;
         while (i < clientList.length) {
-            if (clientList[i].FirstName + ' ' + clientList[i].MiddleName + ' ' + clientList[i].LastName == item) {
+            if (clientList[i].FirstName + ' ' + clientList[i].LastName == item) {
                 id = clientList[i].UserID;
                 console.log(id); //Test to confirm correct ID
                 break;
@@ -87,7 +87,7 @@ export default function ModifyClientInfoSearch({navigation, route}) {
         let iterable;
         for(iterable in clientData)
         {
-            let name = clientData[iterable].FirstName + " " + clientData[iterable].MiddleName + " " + clientData[iterable].LastName;
+            let name = clientData[iterable].FirstName + " " + clientData[iterable].LastName;
             clientNames.push(name);
         }
 

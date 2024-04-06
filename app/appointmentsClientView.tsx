@@ -146,11 +146,7 @@ export default function AppointmentsClientView(){
                 return 'NA'
             }
         }
-        if(name.data[0].MiddleName == null){
-            return name.data[0].FirstName + " " + name.data[0].LastName;
-        }else{
-            return name.data[0].FirstName + " " + name.data[0].MiddleName + " " + name.data[0].LastName
-        }
+        return name.data[0].FirstName + " " + name.data[0].LastName;
     }
 
     return(
