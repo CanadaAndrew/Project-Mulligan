@@ -61,6 +61,13 @@ function filterButtons(){
       >  
       <Text style = {styles.homeButtonText}>Client History</Text>
     </TouchableOpacity>
+    var ModifyClientInfoSearch = <TouchableOpacity
+      style = {styles.homeButton}
+      onPress = {() => navigation.navigate("ModifyClientInfoSearch")}
+      >  
+      <Text style = {styles.homeButtonText}>Modify Client Search</Text>
+    </TouchableOpacity>
+
     //Takes you to the New Client Approval page !WIP! no functionality
     var newClientApprovalButton = <TouchableOpacity
       style = {styles.homeButton}
@@ -78,21 +85,21 @@ function filterButtons(){
     //takes you to the Services Offered Page
     var servicesOfferedButton = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("ServicesOffered", {userData})}
+      onPress = {() => navigation.navigate("ServicesOffered")}
       >
       <Text style = {styles.homeButtonText}>Services Offered</Text>
     </TouchableOpacity>
     //Takes you to the About Me Page
     var aboutMeButton = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("AboutMe", {userData})}
+      onPress = {() => navigation.navigate("AboutMe")}
       >
       <Text style = {styles.homeButtonText}>About Me</Text>
     </TouchableOpacity>
     //Takes you to the FAQ page !WIP! no functionality
     var FAQButton = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("FAQ", {userData})}
+      onPress = {() => navigation.navigate("FAQ")}
       >
       <Text style = {styles.homeButtonText}>FAQ</Text>
     </TouchableOpacity>
@@ -100,11 +107,12 @@ function filterButtons(){
     buttons.push(clientApButton);
     buttons.push(clientInfoButton);
     buttons.push(clientHistoryButton);
+    buttons.push(ModifyClientInfoSearch);
     buttons.push(newClientApprovalButton);
     buttons.push(scheduleAppointmentButton);
     buttons.push(servicesOfferedButton);
     buttons.push(aboutMeButton);
-    buttons.push(FAQButton);
+    //buttons.push(FAQButton);
     setButtonDisplay(buttons);
   }
   //This block constructs buttons that only old clients can see
@@ -127,21 +135,21 @@ function filterButtons(){
     //Takes you to the Services offered page
     var servicesOfferedButton2 = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("ServicesOffered", {userData})}
+      onPress = {() => navigation.navigate("ServicesOffered")}
       >
       <Text style = {styles.homeButtonText}>Services Offered</Text>
     </TouchableOpacity>
     //Takes you to the About Me page
     var aboutMeButton2 = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("AboutMe", {userData})}
+      onPress = {() => navigation.navigate("AboutMe")}
       >
       <Text style = {styles.homeButtonText}>About Me</Text>
     </TouchableOpacity>
     //takes you to the FAQ page !WIP! no functionality
     var FAQButton2 = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("FAQ", {userData})}
+      onPress = {() => navigation.navigate("FAQ")}
       >
       <Text style = {styles.homeButtonText}>FAQ</Text>
     </TouchableOpacity>
@@ -155,7 +163,7 @@ function filterButtons(){
     buttons.push(yourAppointmentsButton);
     buttons.push(servicesOfferedButton2);
     buttons.push(aboutMeButton2);
-    buttons.push(FAQButton2);
+    //buttons.push(FAQButton2);
     buttons.push(newClientInfo2);
     setButtonDisplay(buttons);
   }
@@ -165,21 +173,21 @@ function filterButtons(){
     //Takes you to the services offerd page
     var servicesOfferedButton3 = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("ServicesOffered", {userData})}
+      onPress = {() => navigation.navigate("ServicesOffered")}
       >
       <Text style = {styles.homeButtonText}>Services Offered</Text>
     </TouchableOpacity>
     //Takes you to the About Me page
     var aboutMeButton3 = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("AboutMe", {userData})}
+      onPress = {() => navigation.navigate("AboutMe")}
       >
       <Text style = {styles.homeButtonText}>About Me</Text>
     </TouchableOpacity>
     //Takes you to the FAQ page !WIP! no functionality
     var FAQButton3 = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("FAQ", {userData})}
+      onPress = {() => navigation.navigate("FAQ")}
       >
       <Text style = {styles.homeButtonText}>FAQ</Text>
     </TouchableOpacity>
@@ -193,7 +201,7 @@ function filterButtons(){
 
     buttons.push(servicesOfferedButton3);
     buttons.push(aboutMeButton3);
-    buttons.push(FAQButton3);
+    //buttons.push(FAQButton3);
     if(userData.approved == true)
       buttons.push(newClientInfoButton);
     setButtonDisplay(buttons);
