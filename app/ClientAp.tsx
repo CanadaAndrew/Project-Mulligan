@@ -18,8 +18,8 @@ export default function ClientAp({ route }){
 
     //server connection
     const database = axios.create({
-        baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
-        //baseURL: 'http://192.168.1.150:3000', //Chris pc local
+        //baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
+        baseURL: 'http://192.168.1.150:3000', //Chris pc local
         //baseURL: 'http://10.0.0.192:3000'
     });
 
@@ -182,11 +182,7 @@ export default function ClientAp({ route }){
                 return 'NA'
             }
         }
-        if(name.data[0].MiddleName == null){
-            return name.data[0].FirstName + " " + name.data[0].LastName;
-        }else{
-            return name.data[0].FirstName + " " + name.data[0].MiddleName + " " + name.data[0].LastName
-        }
+        return name.data[0].FirstName + " " + name.data[0].LastName;
     }
     //handleSelection is called whenever a change is made in the drop down menu. It is passed the key value from the filter array above
     //it then decides which filtering option to use on the data based upon the key that it is passed in this function

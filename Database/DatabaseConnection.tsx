@@ -77,8 +77,8 @@ async function connectAndQuery() {
         let i = 0;
         // ouput row contents from default record set
         resultSet.recordset.forEach(client => {
-            console.log("%s\t%s", client.PhoneNumberEmail, client.FirstName, client.MiddleName, client.LastName, client.PreferredWayOfContact);
-            ret[i] = client.PhoneNumberEmail + ' ' + client.FirstName + ' ' + client.MiddleName + ' ' + client.LastName + ' ' +client.PreferredWayOfContact +'\n' ;
+            console.log("%s\t%s", client.PhoneNumberEmail, client.FirstName, client.LastName, client.PreferredWayOfContact);
+            ret[i] = client.PhoneNumberEmail + ' ' + client.FirstName + ' ' + client.LastName + ' ' +client.PreferredWayOfContact +'\n' ;
             console.log(ret[i]);
             i += 1;
         });
@@ -1280,7 +1280,7 @@ app.get('/findCurrentClientByID', (req, res) =>{
 
 app.get('/findCurrentClientFullNameByID', (req, res) =>{
     const queryId = req.query.queryId;
-    const query = "SELECT FirstName, MiddleName, LastName FROM CurrentClientView WHERE UserID = " + queryId + ";";
+    const query = "SELECT FirstName, LastName FROM CurrentClientView WHERE UserID = " + queryId + ";";
     console.log(query);
     customQuery(query)
     .then((ret) => res.send(ret))
