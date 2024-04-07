@@ -24,9 +24,9 @@ export default function Login({ route, navigation }) {
     const database = axios.create({
         //baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
         //baseURL: 'http://10.0.0.192:3000'
-        baseURL: 'http://192.168.1.150:3000', //Chris pc local
+        //baseURL: 'http://192.168.1.150:3000', //Chris pc local
         //baseURL: 'http://10.0.0.133:3000',
-        //baseURL: 'http://10.0.0.112:3000',
+        baseURL: 'http://10.0.0.112:3000',
     });
 
 
@@ -100,11 +100,75 @@ export default function Login({ route, navigation }) {
         setEmail(formatPhoNum);
     }
 
-    async function checkEmailExists(email) {
+    // async function checkEmailExists(email) {
 
+    //     try {
+    //         const funcObj: funcObj = {
+    //             entireFunction: () => database.get('/queryCurrentUserFromEmail', {
+    //                 params: {
+    //                     email: email
+    //                 }
+    //             }),
+    //             type: 'get'
+    //         };
+    //         const response = await functionGetRetry(funcObj);
+    //         //userData.userID = response.data.UserID;
+    //         //setUser(response.data);
+    //         console.log('Look here dumbass');
+    //         console.log('This is a current User');
+    //         console.log('response', response.data); // For debugging
+    //         userData.userID = response.data[0].UserID;
+    //         //console.log('Index 3', response.data[3].AdminPriv);
+    //         if (response.data[0].AdminPriv == 1) {
+    //             userData.adminPriv = false;
+    //         } else {
+    //             userData.adminPriv = true;
+    //         }
+    //         userData.newClient = false;
+
+    //     } catch (error) {
+    //         //console.error('Error finding User from email: ', error);
+    //         userData.adminPriv = false;
+    //         userData.newClient = true;
+    //         //console.log(userData);
+    //         try {
+    //             const funcObj: funcObj = {
+    //                 entireFunction: () => database.get('/queryNewUserFromEmail', {
+    //                     params: {
+    //                         email: email
+    //                     }
+    //                 }),
+    //                 type: 'get'
+    //             };
+    //             const response = await functionGetRetry(funcObj);
+    //             alert(JSON.stringify(response.data[0]));
+    //             userData.userID = response.data[0].UserID;
+    //             if (response.data[0].ApprovalStatus == 1) {
+    //                 userData.approved = false;
+    //             } else {
+    //                 userData.approved = true;
+    //             }
+    //         } catch (error) {
+    //             console.log(error);
+    //         }
+
+    //     }
+
+    // }
+
+    async function checkEmailExists(email) {
+        console.log('Test email: ' ,email);
+         await queryFromUsers(email);
+
+    }
+
+    // Queries from the Users table based on email and returns an array with an object that contains the row with that email
+    async function queryFromUsers(email) {
         try {
+
             const funcObj: funcObj = {
-                entireFunction: () => database.get('/queryCurrentUserFromEmail', {
+
+                entireFunction: () => database.get('/queryUsersFromEmail', {
                     params: {
                         email: email
                     }
@@ -112,39 +176,54 @@ export default function Login({ route, navigation }) {
                 type: 'get'
             };
             const response = await functionGetRetry(funcObj);
-            //userData.userID = response.data.UserID;
-            //setUser(response.data);
-            console.log('Look here dumbass');
-            console.log('response', response.data); // For debugging
             userData.userID = response.data[0].UserID;
-            userData.adminPriv = false;
-            userData.newClient = false;
+            
+            if (response.data[0].AdminPriv == 1) {
+                userData.adminPriv = false;
+                await queryFromNewClients(email);
+            } else {
+                userData.adminPriv = true;
+                userData.newClient = false;
+            }
 
         } catch (error) {
-            //console.error('Error finding User from email: ', error);
+            //console.log(error);
+            // Somehow you have a firebase account but are not in the database
+            // Treat as a new user
             userData.adminPriv = false;
+            userData.approved = false;
             userData.newClient = true;
-            //console.log(userData);
-            try {
-                const funcObj: funcObj = {
-                    entireFunction: () => database.get('/queryNewUserFromEmail', {
-                        params: {
-                            email: email
-                        }
-                    }),
-                    type: 'get'
-                };
-                const response = await functionGetRetry(funcObj);
-                alert(JSON.stringify(response.data[0]));
-                userData.userID = response.data[0].UserID;
-                if (response.data[0].ApprovalStatus == 1) {
-                    userData.approved = false;
-                } else {
-                    userData.approved = true;
-                }
-            } catch (error) {
-                console.log(error);
+            userData.userID = 'guest';
+        }
+    }
+
+    async function queryFromNewClients(email) {
+        
+        try {
+
+            const funcObj: funcObj = {
+
+                entireFunction: () => database.get('/queryNewUserFromEmail', {
+                    params: {
+                        email: email
+                    }
+                }),
+                type: 'get'
+            };
+            const response = await functionGetRetry(funcObj);
+            
+            if (response.data[0].ApprovalStatus == 1) {
+                userData.approved = false;
+            } else {
+                userData.approved = true;
             }
+
+            userData.newClient = true;
+
+        } catch (error) {
+
+            userData.approved = true;
+            userData.newClient = false;
 
         }
 
