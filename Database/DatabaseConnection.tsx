@@ -78,8 +78,8 @@ async function connectAndQuery() {
         let i = 0;
         // ouput row contents from default record set
         resultSet.recordset.forEach(client => {
-            console.log("%s\t%s", client.PhoneNumberEmail, client.FirstName, client.MiddleName, client.LastName, client.PreferredWayOfContact);
-            ret[i] = client.PhoneNumberEmail + ' ' + client.FirstName + ' ' + client.MiddleName + ' ' + client.LastName + ' ' +client.PreferredWayOfContact +'\n' ;
+            console.log("%s\t%s", client.PhoneNumberEmail, client.FirstName, client.LastName, client.PreferredWayOfContact);
+            ret[i] = client.PhoneNumberEmail + ' ' + client.FirstName + ' ' + client.LastName + ' ' +client.PreferredWayOfContact +'\n' ;
             console.log(ret[i]);
             i += 1;
         });
@@ -357,12 +357,12 @@ async function newUserPost(email, phoneNumber, adminPriv) {
 }
 
 //adds client to database
-async function newClientPost(userID, firstName, middleName, lastName, preferredWayOfContact) {
+async function newClientPost(userID, firstName, lastName, preferredWayOfContact) {
     try {
         const poolConnection = await connect();
         const query = 
-            `INSERT INTO Clients (UserID, FirstName, MiddleName, LastName, PreferredWayOfContact)
-            VALUES (${userID}, '${firstName}', '${middleName}', '${lastName}', '${preferredWayOfContact}');`;
+            `INSERT INTO Clients (UserID, FirstName, LastName, PreferredWayOfContact)
+            VALUES (${userID}, '${firstName}', '${lastName}', '${preferredWayOfContact}');`;
             console.log(query);
         await poolConnection.request().query(query);
         poolConnection.close();
@@ -1003,16 +1003,15 @@ app.post('/newUserPost', async (req, res) => {
 
 app.post('/newClientPost', async (req, res) => {
     try {
-        const { userID, firstName, middleName, lastName, preferredWayOfContact } = req.body;
+        const { userID, firstName, lastName, preferredWayOfContact } = req.body;
         console.log(userID)
         console.log(firstName)
-        console.log(middleName)
         console.log(lastName)
         console.log(preferredWayOfContact)
-        if (!userID || !firstName || !middleName || !lastName || !preferredWayOfContact) {
-            throw new Error('Invalid request body. Missing "userID", "firstName", "middleName", "lastName", or "preferredWayOfContact".');
+        if (!userID || !firstName || !lastName || !preferredWayOfContact) {
+            throw new Error('Invalid request body. Missing "userID", "firstName", "lastName", or "preferredWayOfContact".');
         }
-        await newClientPost(userID, firstName, middleName, lastName, preferredWayOfContact);
+        await newClientPost(userID, firstName, lastName, preferredWayOfContact);
         res.status(201).send('Client created successfully');
     } catch (error) {
         console.error(error);
@@ -1207,7 +1206,7 @@ app.get('/findCurrentClientByID', (req, res) =>{
 
 app.get('/findCurrentClientFullNameByID', (req, res) =>{
     const queryId = req.query.queryId;
-    const query = "SELECT FirstName, MiddleName, LastName FROM CurrentClientView WHERE UserID = " + queryId + ";";
+    const query = "SELECT FirstName, LastName FROM CurrentClientView WHERE UserID = " + queryId + ";";
     console.log(query);
     customQuery(query)
     .then((ret) => res.send(ret))

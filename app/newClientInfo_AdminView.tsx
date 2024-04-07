@@ -287,6 +287,27 @@ export default function NewClientInfo_AdminView({ navigation }){
 
     }
 
+    const formattingPhoneNumber = (input) => {
+        if (/^\d*$/.test(input)){
+            if (input.length <=10){
+                return input.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+            }
+        } else {
+            return input
+        }
+    }
+    const setPhoneNumFormat = (input) => {
+        if( input.length <= 14){
+            if( /^\d*$/.test(input)){
+                const formatPhoNum = formattingPhoneNumber(input);
+                setNewCustPhone(formatPhoNum);
+            }else{
+                const newPhone = input.replace(/\D/g, ''); 
+                setNewCustPhone(newPhone);
+            }
+        }
+    }
+
     useEffect(() => {
         getClientInfo();
     }, [])
@@ -340,7 +361,7 @@ export default function NewClientInfo_AdminView({ navigation }){
                         <TextInput
                             style={styles.clientTextInput}
                             value={newCustPhone}
-                            onChangeText={setNewCustPhone}
+                            onChangeText={setPhoneNumFormat}
                         />
                     ) : (
                     <Text style={styles.clientText}>{originalCustPhone}</Text>

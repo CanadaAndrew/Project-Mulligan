@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 import firebase from './Firebase.js'  // import firebase
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import axios from 'axios';
-import {funcObj, functionGetRetry} from './Enums/Enums'
+import { funcObj, functionGetRetry } from './Enums/Enums'
 export default function Login({ route, navigation }) {
 
     //test@fakemail.com
@@ -29,7 +29,7 @@ export default function Login({ route, navigation }) {
         //baseURL: 'http://10.0.0.112:3000',
     });
 
-   
+
     const userData = {
         userID: undefined, // You can omit this line, it will default to undefined
         adminPriv: undefined, // You can omit this line, it will default to undefined
@@ -64,14 +64,14 @@ export default function Login({ route, navigation }) {
         //Since the previously declared user only exists in the scope of its function,
         //redeclare the variable and set the auth to the current user
         const user = auth.currentUser;
-            if (user !== null) {
-                console.log(email);
-                await checkEmailExists(email);
-                console.log('Right Before Navigation');
-                navigation.navigate("HomeScreen", {userData});
-            } else {
-                //Once branches are merged change this to route to the signup page
-            }
+        if (user !== null) {
+            console.log(email);
+            await checkEmailExists(email);
+            console.log('Right Before Navigation');
+            navigation.navigate("HomeScreen", { userData });
+        } else {
+            //Once branches are merged change this to route to the signup page
+        }
     }
 
     // to show and hide password
@@ -90,21 +90,21 @@ export default function Login({ route, navigation }) {
             if (input.length <= 10) {
                 return input.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
             }
-        }else{
+        } else {
             return input
         }
         //return input.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
     }
-    const setPhoneNumFormat = (input) => { 
-        const formatPhoNum = formattingPhoneNumber(input); 
+    const setPhoneNumFormat = (input) => {
+        const formatPhoNum = formattingPhoneNumber(input);
         setEmail(formatPhoNum);
     }
 
     async function checkEmailExists(email) {
 
         try {
-            const funcObj:funcObj = {
-                entireFunction: () => database.get('/queryCurrentUserFromEmail',{
+            const funcObj: funcObj = {
+                entireFunction: () => database.get('/queryCurrentUserFromEmail', {
                     params: {
                         email: email
                     }
@@ -126,8 +126,8 @@ export default function Login({ route, navigation }) {
             userData.newClient = true;
             //console.log(userData);
             try {
-                const funcObj:funcObj = {
-                    entireFunction: () => database.get('/queryNewUserFromEmail',{
+                const funcObj: funcObj = {
+                    entireFunction: () => database.get('/queryNewUserFromEmail', {
                         params: {
                             email: email
                         }
@@ -137,9 +137,9 @@ export default function Login({ route, navigation }) {
                 const response = await functionGetRetry(funcObj);
                 alert(JSON.stringify(response.data[0]));
                 userData.userID = response.data[0].UserID;
-                if(response.data[0].ApprovalStatus == 1){
+                if (response.data[0].ApprovalStatus == 1) {
                     userData.approved = false;
-                }else{
+                } else {
                     userData.approved = true;
                 }
             } catch (error) {
@@ -152,90 +152,90 @@ export default function Login({ route, navigation }) {
 
     return (
         <ScrollView>
-        <View style={styles.container}>
-        
-            {/*added logo image*/}
-            <ImageBackground
-                style={styles.logo}
-                source={require('./images/Hair_Done_Wright_LOGO.png')}
-            >
-            </ImageBackground>
+            <View style={styles.container}>
 
-            <LinearGradient
-              locations = {[0.7, 1]}
-              colors = {['#DDA0DD', 'white']}
-              style = {styles.background}
-             >
-                
+                {/*added logo image*/}
+                <ImageBackground
+                    style={styles.logo}
+                    source={require('./images/Hair_Done_Wright_LOGO.png')}
+                >
+                </ImageBackground>
 
-                {/*Login error loginError in brackets*/}
-                <Text style={styles.errorTitle}>{loginError}</Text>
-                <Text style={styles.objectTitle}>Login</Text>
+                <LinearGradient
+                    locations={[0.7, 1]}
+                    colors={['#DDA0DD', 'white']}
+                    style={styles.background}
+                >
 
-                {/*user input for email or phone# partly functional //setEmail*/}
-                <TextInput 
-                  placeholder = ' Email or Phone ' 
-                  placeholderTextColor = {'gray'} 
-                  keyboardType = 'default'
-                  style = {styles.inputBox}
-                  value = {email}
-                  onChangeText = {setPhoneNumFormat}
-                />
 
-                <View>
-                    {/*user input for password partly functional*/}
+                    {/*Login error loginError in brackets*/}
+                    <Text style={styles.errorTitle}>{loginError}</Text>
+                    <Text style={styles.objectTitle}>Login</Text>
+
+                    {/*user input for email or phone# partly functional //setEmail*/}
                     <TextInput
-                        placeholder=' Password '
+                        placeholder=' Email or Phone '
                         placeholderTextColor={'gray'}
                         keyboardType='default'
-                        secureTextEntry={showPassword}
                         style={styles.inputBox}
-                        value={password}
-                        onChangeText={setPassword}
+                        value={email}
+                        onChangeText={setPhoneNumFormat}
                     />
-                </View>
-                <View>
-                    {/*button to show password is functional*/}
-                    <TouchableOpacity
-                        style={styles.showButton}
-                        onPress={onClickPW}
-                    >
-                        <Text style={styles.showButtonText}>{buttonClick}</Text>
-                    </TouchableOpacity>
 
-                    {/*button for forgot password no functionality yet WIP*/}
-                    <TouchableOpacity
-                        onPress={onClickForgotLogin}
-                    >
-                        <Text style={styles.forgotPWButtonText}>Forgot Password?</Text>
-                    </TouchableOpacity>
+                    <View>
+                        {/*user input for password partly functional*/}
+                        <TextInput
+                            placeholder=' Password '
+                            placeholderTextColor={'gray'}
+                            keyboardType='default'
+                            secureTextEntry={showPassword}
+                            style={styles.inputBox}
+                            value={password}
+                            onChangeText={setPassword}
+                        />
+                    </View>
+                    <View>
+                        {/*button to show password is functional*/}
+                        <TouchableOpacity
+                            style={styles.showButton}
+                            onPress={onClickPW}
+                        >
+                            <Text style={styles.showButtonText}>{buttonClick}</Text>
+                        </TouchableOpacity>
 
-                </View>
+                        {/*button for forgot password no functionality yet WIP*/}
+                        <TouchableOpacity
+                            onPress={onClickForgotLogin}
+                        >
+                            <Text style={styles.forgotPWButtonText}>Forgot Password?</Text>
+                        </TouchableOpacity>
+
+                    </View>
 
 
-                {/*button to login limited functionality
+                    {/*button to login limited functionality
                    Note from dru: to succesfully login, login button must be pressed twice. Not sure why*/}
-                <View>
-                    <TouchableOpacity
-                        style={styles.loginButton}
-                        onPress={onClickLogin}
-                    >
-                        <Text style={styles.loginButtonText}>Login</Text>
-                    </TouchableOpacity>
-                </View>
+                    <View>
+                        <TouchableOpacity
+                            style={styles.loginButton}
+                            onPress={onClickLogin}
+                        >
+                            <Text style={styles.loginButtonText}>Login</Text>
+                        </TouchableOpacity>
+                    </View>
 
-                <View style={styles.signUpContainer}>
-                    <Text style={styles.showButtonText}>Don't have an account?  </Text>
-                    <TouchableOpacity
-                        onPress={onClickSignUp}
-                    >
-                        <Text style={styles.signUpText}>Sign Up</Text>
-                    </TouchableOpacity>
-                </View>
-                
-            </LinearGradient>
-            
-        </View>
+                    <View style={styles.signUpContainer}>
+                        <Text style={styles.showButtonText}>Don't have an account?  </Text>
+                        <TouchableOpacity
+                            onPress={onClickSignUp}
+                        >
+                            <Text style={styles.signUpText}>Sign Up</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                </LinearGradient>
+
+            </View>
         </ScrollView>
 
     );

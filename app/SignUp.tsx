@@ -72,7 +72,6 @@ export default function SignUp({ navigation, route }) { // added route for page 
 
     // for text input fields
     const [firstName, newFirstName] = React.useState('');
-    const [middleName, newMiddleName] = React.useState('');
     const [lastName, newLastName] = React.useState('');
     const [email, newEmail] = React.useState('');
     const [phoneNumber, newPhoneNumber] = React.useState('');
@@ -84,7 +83,6 @@ export default function SignUp({ navigation, route }) { // added route for page 
 
     
     const [firstNameValid, setfirstNameValid] =  React.useState(false);
-    const [middleNameValid, setmiddleNameValid] =  React.useState(false);
     const [lastNameValid, setlastNameValid] =  React.useState(false);
     const [emailValid, setemailValid] =  React.useState(false);
     const [phoneNumberValid, setphoneNumberValid] =  React.useState(false);
@@ -92,7 +90,7 @@ export default function SignUp({ navigation, route }) { // added route for page 
     const [confirmPasswordValid, setconfirmPasswordValid] =  React.useState(false);
 
     //is everything filled out? if so, unlock the sign up button
-    const formComplete =  !(firstNameValid && middleNameValid && lastNameValid && emailValid && phoneNumberValid && passwordValid && confirmPasswordValid && selected.length != 0 && selectedCont.length != 0); 
+    const formComplete =  !(firstNameValid && lastNameValid && emailValid && phoneNumberValid && passwordValid && confirmPasswordValid && selected.length != 0 && selectedCont.length != 0); 
 
     /*useEffect(() => { //for testing purposes -> prints to console whenever lists are updated
         console.log('firstNameValid', firstNameValid); //for testing purposes
@@ -108,11 +106,6 @@ export default function SignUp({ navigation, route }) { // added route for page 
     //TODO: determine each requirement for each field 
     function checkfirstNameValid() {
         setfirstNameValid(firstName.length > 0 ? true : false);
-    }
-
-    function checkmiddleNameValid()
-    {
-        setmiddleNameValid(middleName.length>0 ? true : false);
     }
 
     function checklastNameValid()
@@ -211,7 +204,6 @@ export default function SignUp({ navigation, route }) { // added route for page 
                     preferredWayOfContact: preferred_way_of_contact*/
                     userID: userID,
                     firstName: firstName,
-                    middleName: middleName, //form info?
                     lastName: lastName,
                     preferredWayOfContact:contactSelected.join(", "), //form info?
                 }),
@@ -332,13 +324,6 @@ export default function SignUp({ navigation, route }) { // added route for page 
                                 onChangeText={newFirstName}
                                 onTextInput={() => checkfirstNameValid()}
                                 placeholder="First Name"
-                            />
-                            <TextInput
-                                style={styles.textField}
-                                value={middleName}
-                                onChangeText={newMiddleName}
-                                onTextInput={() => checkmiddleNameValid()}
-                                placeholder="Middle Name"
                             />
                             <TextInput
                                 style={styles.textField}
