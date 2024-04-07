@@ -15,9 +15,9 @@ export default function ModifyClientInfoSearch({navigation, route}) {
     const database = axios.create({
         //baseURL: 'http://10.0.0.119:3000',  // Wilson local
         //baseURL: 'http://10.0.0.192:3000',
-        baseURL: 'http://192.168.1.150:3000', //Chris pc local
+        //baseURL: 'http://192.168.1.150:3000', //Chris pc local
         //baseURL: 'http://10.0.0.14:3000', //Cameron Local
-        //baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
+        baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
     })
 
     const handleNamePress = async (item) => {
@@ -26,7 +26,7 @@ export default function ModifyClientInfoSearch({navigation, route}) {
         //Loops and compares objects queried to find user id
         let i = 0;
         while (i < clientList.length) {
-            if (clientList[i].FirstName + ' ' + clientList[i].LastName == item) {
+            if (clientList[i].FirstName + ' ' + clientList[i].MiddleName + ' ' + clientList[i].LastName == item) {
                 id = clientList[i].UserID;
                 console.log(id); //Test to confirm correct ID
                 break;
@@ -87,7 +87,7 @@ export default function ModifyClientInfoSearch({navigation, route}) {
         let iterable;
         for(iterable in clientData)
         {
-            let name = clientData[iterable].FirstName + " " + clientData[iterable].LastName;
+            let name = clientData[iterable].FirstName + " " + clientData[iterable].MiddleName + " " + clientData[iterable].LastName;
             clientNames.push(name);
         }
 

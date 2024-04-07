@@ -8,8 +8,8 @@ export default function AppointmentsClientView(){
 
     //server connection
     const database = axios.create({
-        //baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
-        baseURL: 'http://192.168.1.150:3000', //Chris pc local
+        baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
+        //baseURL: 'http://192.168.1.150:3000', //Chris pc local
         //baseURL: 'http://10.0.0.192:3000'
     });
 
@@ -146,7 +146,11 @@ export default function AppointmentsClientView(){
                 return 'NA'
             }
         }
-        return name.data[0].FirstName + " " + name.data[0].LastName;
+        if(name.data[0].MiddleName == null){
+            return name.data[0].FirstName + " " + name.data[0].LastName;
+        }else{
+            return name.data[0].FirstName + " " + name.data[0].MiddleName + " " + name.data[0].LastName
+        }
     }
 
     return(

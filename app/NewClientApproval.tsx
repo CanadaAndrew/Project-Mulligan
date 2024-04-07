@@ -11,8 +11,8 @@ export default function NewClientApproval() {
 
     //server connection
     const database = axios.create({
-        //baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
-        baseURL: 'http://192.168.1.150:3000', //Chris pc local
+        baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
+        //baseURL: 'http://192.168.1.150:3000', //Chris pc local
         //baseURL: 'http://10.0.0.192:3000'
         //baseURL: 'http://10.0.0.112:3000',
     });
@@ -65,7 +65,7 @@ export default function NewClientApproval() {
         let funcObj:funcObj = {
             entireFunction: () => database.get('/customQuery', {
                 params: {
-                    query: 'SELECT ServicesWanted.ServiceName, NewClientView.FirstName, NewClientView.LastName, NewClientView.Email, NewClientView.PhoneNumber, NewClientView.ApprovalStatus, NewClientView.UserID FROM ServicesWanted INNER JOIN NewClientView ON ServicesWanted.UserID = NewClientView.UserID WHERE ApprovalStatus = 1;'
+                    query: 'SELECT ServicesWanted.ServiceName, NewClientView.FirstName, NewClientView.MiddleName, NewClientView.LastName, NewClientView.Email, NewClientView.PhoneNumber, NewClientView.ApprovalStatus, NewClientView.UserID FROM ServicesWanted INNER JOIN NewClientView ON ServicesWanted.UserID = NewClientView.UserID WHERE ApprovalStatus = 1;'
                 }
             }),
             type: 'get'
@@ -82,7 +82,7 @@ export default function NewClientApproval() {
         let i = 0;
         data.forEach((client) => {
             let newClient: Client = {
-                name: getFullName(client.FirstName, client.LastName),
+                name: getFullName(client.FirstName, client.MiddleName, client.LastName),
                 email: client.Email,
                 phoneNumber: client.PhoneNumber,
                 service: client.ServiceName,
@@ -95,9 +95,13 @@ export default function NewClientApproval() {
         //alert("Upcoming List: " + JSON.stringify(appointmentList));
     }
 
-    function getFullName(firstName, lastName) {
+    function getFullName(firstName, middleName, lastName) {
         //alert("The name is: " + JSON.stringify(name.data[0].FirstName));
-        return firstName + " " + lastName
+        if (middleName == null) {
+            return firstName + " " + lastName
+        } else {
+            return firstName + " " + middleName + " " + lastName
+        }
     }
 
     //result when admin declines a new client

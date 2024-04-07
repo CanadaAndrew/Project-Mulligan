@@ -21,8 +21,8 @@ export default function ModifyAv({ route }) {
 
     //server connection
     const database = axios.create({
-        //baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
-        baseURL: 'http://192.168.1.150:3000', //Chris pc local
+        baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
+        //baseURL: 'http://192.168.1.150:3000', //Chris pc local
     });
 
 
