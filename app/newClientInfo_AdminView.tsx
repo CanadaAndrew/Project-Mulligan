@@ -26,7 +26,7 @@ export default function NewClientInfo_AdminView({ navigation }){
 
     //This userID is temporary right now as there is no feature to bring the userID over from the previous page yet.
     //Need this to be changed later!!!!*************
-    let userID = 3; //for testing purposes
+    let userID = 2; //for testing purposes
     //const userID = 6; //for testing purposes
 
     const [editingContactInfo, setEditingContactInfo] = useState(false);
@@ -84,7 +84,6 @@ export default function NewClientInfo_AdminView({ navigation }){
                 const custStateAbbrev = newCustStateAbbrev.trim();
                 const custZip = newCustZip.trim();
 
-                //database.patch('/updateCurrentClientViewContactInfo', {
                 database.patch('/updateCurrentClientsAddress', {
                     userID: userID,
                     street: custStreet,
@@ -230,9 +229,6 @@ export default function NewClientInfo_AdminView({ navigation }){
         if(clientData2 != null)
         {
             //formatting the address of the client and setting it along with the clients notes
-            //let clientAddress = clientData2[0].Street + ", " + clientData2[0].City + ", " + clientData2[0].StateAbbreviation + ", " + clientData2[0].Zip;
-            //setOriginalCustAddress(clientAddress);
-            //setNewCustAddress(clientAddress);
             setOriginalCustStreet(clientData2[0].Street);
             setNewCustStreet(clientData2[0].Street);
             setOriginalCustCity(clientData2[0].City);
@@ -275,8 +271,6 @@ export default function NewClientInfo_AdminView({ navigation }){
             //if the client being searched for is not a current client they will not have the necessary data to fill out the remaining
             //fields so this is the place holder text
             const newClientString = 'New Client, Space is Blank'
-            //setOriginalCustAddress(newClientString);
-            //setNewCustAddress(newClientString);
             setOriginalCustStreet(newClientString);
             setNewCustStreet(newClientString);
             setOriginalCustCity(newClientString);
