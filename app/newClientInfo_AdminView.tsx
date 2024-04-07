@@ -23,13 +23,13 @@ export default function NewClientInfo_AdminView({ navigation, route}){
         baseURL: 'http://10.0.0.112:3000',
     })
 
-    const { userData } = route.params;
+    const { id } = route.params;
 
     //Variables to set customer info
 
     //This userID is temporary right now as there is no feature to bring the userID over from the previous page yet.
     //Need this to be changed later!!!!*************
-    let userID = userData.userID; //for testing purposes
+    let userID = id; //for testing purposes
     //const userID = 6; //for testing purposes
 
     const [editingContactInfo, setEditingContactInfo] = useState(false);

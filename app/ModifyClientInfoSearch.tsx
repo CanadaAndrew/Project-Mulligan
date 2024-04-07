@@ -37,7 +37,7 @@ export default function ModifyClientInfoSearch({navigation, route}) {
 
        try {
             //Navigate to the next page, passing client id as a parameter. Right now set to navigate to home
-            navigation.navigate("NaviagateHome", { id });
+            navigation.navigate("NewClientInfo_AdminView", { id });
         } catch (error) {
             console.error('Error fetching client information:', error);
         }
