@@ -438,7 +438,21 @@ async function addAvailability(addDateTimeString, vacancyStatus) {
 }
 
 //add client to CurrentClients
-async function currentClientPost(userID, street, city, state, zip) {
+async function currentClientPost(userID, street, addressLine2, city, state, zip) {
+    try {
+        const poolConnection = await connect();
+        const query = `INSERT INTO CurrentClients (UserID, Street, AddressLine2, City, StateAbbreviation, Zip)
+            VALUES (${userID}, '${street}', '${addressLine2}', '${city}', '${state}', '${zip}');`;
+        await poolConnection.request().query(query);
+        poolConnection.close();
+    } catch (err) {
+        console.error(err.message);
+        throw err; // rethrow error so it can be caught in calling code
+    }
+};
+
+//add client to CurrentClients with no addressLine2
+async function currentClientPostNo2(userID, street, city, state, zip) {
     try {
         const poolConnection = await connect();
         const query = `INSERT INTO CurrentClients (UserID, Street, City, StateAbbreviation, Zip)
@@ -449,7 +463,7 @@ async function currentClientPost(userID, street, city, state, zip) {
         console.error(err.message);
         throw err; // rethrow error so it can be caught in calling code
     }
-}
+};
 
 //remove availability time slot
 async function removeAvailability(removeDateTimeString){
@@ -1049,6 +1063,35 @@ app.post('/servicesWantedPost', async (req, res) => {
 
 app.post('/currentClientPost', async (req, res) => {
     try {
+        const { userID, street, addressLine2, city, state, zip } = req.body;
+        if (!userID) {
+            throw new Error('Invalid request body. Missing "userID"');
+        }
+        if (!street) {
+            throw new Error('Invalid request body. Missing "street"');
+        }
+        if (!addressLine2) {
+            throw new Error('Invalid request body. Missing "addressLine2"');
+        }
+        if (!city) {
+            throw new Error('Invalid request body. Missing "city"');
+        }
+        if (!state) {
+            throw new Error('Invalid request body. Missing "state"');
+        }
+        if (!zip) {
+            throw new Error('Invalid request body. Missing "zip"');
+        }
+        await currentClientPost(userID, street, addressLine2, city, state, zip);
+        res.status(204).send(); // 204 means success with no content
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+app.post('/currentClientPostNo2', async (req, res) => {
+    try {
         const { userID, street, city, state, zip } = req.body;
         if (!userID) {
             throw new Error('Invalid request body. Missing "userID"');
@@ -1065,7 +1108,7 @@ app.post('/currentClientPost', async (req, res) => {
         if (!zip) {
             throw new Error('Invalid request body. Missing "zip"');
         }
-        await currentClientPost(userID, street, city, state, zip);
+        await currentClientPostNo2(userID, street, city, state, zip);
         res.status(204).send(); // 204 means success with no content
     } catch (error) {
         console.error(error);
