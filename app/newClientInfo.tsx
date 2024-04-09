@@ -87,7 +87,7 @@ export default function NewClientInfo({route}) {
     const handleCurrentClientPost = async () => {
         try {
             let funcObj:funcObj;
-            if (Address2 !== null && Address2.trim().length > 0) {
+            if (Address2 !== null && Address2.trim().length > 0) { //if Address2 is not empty
                 funcObj = {
                     entireFunction: () => database.post('/currentClientPost', { //userID, street, addressLine2, city, state, zip
                         userID: user_ID, //for demo -> need to replace with actual imported userID -> can use UserID 9-22 for testing but must increment after each use

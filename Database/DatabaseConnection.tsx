@@ -267,11 +267,11 @@ async function updateAppointment(date, time, userID, type){
 }
 
 //updates CurrentClients table with street, city, state, and zip
-async function currentClientsAddressUpdate(userID, street, city, stateAbbreviation, zip) {
+async function currentClientsAddressUpdate(userID, street, addressLine2, city, stateAbbreviation, zip) {
     try {
         const poolConnection = await connect();
         const query = `UPDATE CurrentClients
-            SET Street = '${street}', City = '${city}', StateAbbreviation = '${stateAbbreviation}', Zip = '${zip}'
+            SET Street = '${street}', AddressLine2 = '${addressLine2}', City = '${city}', StateAbbreviation = '${stateAbbreviation}', Zip = '${zip}'
             WHERE UserID = ${userID};`;
         await poolConnection.request().query(query);
         poolConnection.close();
@@ -927,11 +927,11 @@ app.post('/addAvailability', async (req, res) => {
 //app.patch('/updateCurrentClientViewContactInfo', async (req, res) => {
 app.patch('/updateCurrentClientsAddress', async (req, res) => {
     try {
-        const { userID, street, city, stateAbbreviation, zip } = req.body;
+        const { userID, street, addressLine2, city, stateAbbreviation, zip } = req.body;
         if (!userID) {
             throw new Error('Invalid request body. Missing "userID"');
         }
-        await currentClientsAddressUpdate(userID, street, city, stateAbbreviation, zip);
+        await currentClientsAddressUpdate(userID, street, addressLine2, city, stateAbbreviation, zip);
         res.status(204).send(); // 204 means success with no content
     } catch (error) {
         console.error(error);
