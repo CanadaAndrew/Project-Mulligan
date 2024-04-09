@@ -25,6 +25,8 @@ export default function NewClientInfo_AdminView({ navigation, route}){
 
     const { id } = route.params;
 
+    console.log(id);
+
     //Variables to set customer info
 
     //This userID is temporary right now as there is no feature to bring the userID over from the previous page yet.
