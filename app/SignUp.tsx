@@ -32,7 +32,7 @@ export default function SignUp({ navigation, route }) { // added route for page 
         //baseURL: 'http://10.0.0.192:3000'
         //baseURL: 'http://10.0.0.199:3000',
         //baseURL: 'http://10.0.0.14:3000', // Cameron's IP address for testing
-        baseURL: 'http://192.168.1.150:3000', //Chris pc local
+        //baseURL: 'http://192.168.1.150:3000', //Chris pc local
         //baseURL: 'http://10.0.0.112:3000',
     })
 
@@ -138,22 +138,24 @@ export default function SignUp({ navigation, route }) { // added route for page 
     }
 
     //options for drop down menu
+    //changed the key values to be the format of what is going to be going in the database
     const hairOptions = [
-        { key: ' Mens Haircut', value: ' Mens Haircut' },
-        { key: ' Women\'s Haircut', value: ' Women\'s Haircut' },
-        { key: ' Kids Haircut', value: ' Kids Haircut' },
-        { key: ' Partial Highlight', value: ' Partial Highlight' },
-        { key: ' Full Highlight', value: ' Full Highlight' },
-        { key: ' Root Touch Up', value: ' Root Touch Up' },
-        { key: ' Full Color', value: ' Full Color' },
-        { key: ' Extension Consultation', value: ' Extension Consultation' },
-        { key: ' Extension Installation', value: ' Extension Installation' },
-        { key: ' Extension Move-Up', value: ' Extension Move-Up' },
-        { key: ' Make-Up', value: ' Make-Up' },
-        { key: ' Special Occasion Hairstyle', value: ' Special Occasion Hairstyle' },
-        { key: ' Perm', value: ' Perm' },
-        { key: ' Deep Conditioning Treatment', value: ' Deep Conditioning Treatment' },
-        { key: ' Blow Dry and Style', value: 'Blow Dry and Style' }
+        {key: 'MENS_HAIRCUT', value: 'Mens Haircut'},
+        {key: 'WOMANS_HAIRCUT', value: 'Womens Haircut'},
+        {key: 'KIDS_HAIRCUT', value: 'Kids Haircut'},
+        {key: 'PARTIAL_HIGHLIGHT', value: 'Partial Highlight'},
+        {key: 'FULL_HIGHLIGHT', value: 'Full Highlight'},
+        {key: 'ROOT_TOUCH_UP', value: 'Root Touch Up'},
+        {key: 'FULL_COLOR', value: 'Full Color'},
+        {key: 'EXTENSION_CONSULTATION', value: 'Extension Consultation'},
+        {key: 'EXTENSION_INSTALLATION', value: 'Extension Installation'},
+        {key: 'EXTENSION_MOVE_UP', value: 'Extension Move-Up'},
+        {key: 'MAKEUP', value: 'Make-Up'},
+        {key: 'SPECIAL_OCCASION_HAIRSTYLE', value: 'Special Occasion Hairstyle'},
+        {key: 'PERM', value: 'Perm'},
+        {key: 'DEEP_CONDITIONING_TREATMENT', value: 'Deep Conditioning Treatment'},
+        {key: 'BLOW_DRY_AND_STYLE', value: 'Blow Dry and Style'},
+        {key: 'WAXING', value: 'Waxing'}
     ];
 
     const contactPref = [
@@ -222,9 +224,19 @@ export default function SignUp({ navigation, route }) { // added route for page 
             };
             //post to NewClients
             await functionGetRetry(funcObj);
+            
+            //this changes the format of the hairstyle selected array and puts the new values in their own array 
+            //The new dbFormattedServices is the array that the function below will be pulling from so that way the DB
+            //will have the newly formatted services ("Mens Haircut" => "MENS_HAIRCUT" in the db)
+            let dbFormattedServices: string[] = [];
+            hairStyleSelected.forEach(service => {
+                let tempserv = hairOptions.find(key => key.value === service);
+                dbFormattedServices.push(tempserv.key);
+            });
 
             //post to ServicesWanted
-            const servicePromises = hairStyleSelected.map(async (service) => {
+            //changed hairStyleSelected to the dbFormattedServices array instead
+            const servicePromises = dbFormattedServices.map(async (service) => {
                 try {
                     let funcObj:funcObj = {
                         entireFunction: () => database.post('/servicesWantedPost', {
@@ -380,7 +392,7 @@ export default function SignUp({ navigation, route }) { // added route for page 
                                 }}
                                 badgeStyles={styles.badgeStyle}
 
-                                maxHeight={1500}
+                                maxHeight={500}
                                 save='value'
                                 search={false}
                                 label="Preferred Services"
