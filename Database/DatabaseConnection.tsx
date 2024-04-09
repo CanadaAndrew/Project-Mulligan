@@ -854,7 +854,7 @@ async function queryCurrentUserFromEmail(email) {
 
     try {
         const poolConnection = await connect();
-        const query = `SELECT UserID FROM CurrentClientView WHERE Email = '${email}';`;
+        const query = `SELECT * FROM CurrentClientView WHERE Email = '${email}';`;
         const resultSet = await poolConnection
             .request()
             .query(query);
@@ -866,6 +866,35 @@ async function queryCurrentUserFromEmail(email) {
     }
 
 }
+
+async function queryUsersFromEmail(email) {
+    try {
+        const poolConnection = await connect();
+        const query = `SELECT * FROM Users WHERE Email = '${email}';`;
+        const resultSet = await poolConnection
+            .request()
+            .query(query);
+        poolConnection.close();
+        return sortingResults(resultSet);
+    } catch (err) {
+        console.error(err.message);
+        throw err;
+    }
+}
+
+app.get('/queryUsersFromEmail', async (req, res) => {
+    try {
+        const email = req.query.email;
+        if (!email) {
+            throw new Error('Invalid request. Missing "email"');
+        }
+    const result = await queryUsersFromEmail(email);
+    res.send(result);
+    } catch {
+        res.status(400).send('Bad Request');
+    }
+});
+
 
 app.get('/queryNewUserFromEmail', async (req, res) => {
     try {

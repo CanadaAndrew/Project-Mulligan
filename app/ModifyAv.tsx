@@ -15,10 +15,10 @@ import { UTCtoPST, UTCtoPSTString, funcObj, functionGetRetry, notify} from './En
 import { RootSiblingParent } from 'react-native-root-siblings'
 //add route as a param to the function of every page that requires data from the const established in HomeScreen
 //You can also make another const here and transfer data as well here up to you
-export default function ModifyAv({ route }) {
+export default function ModifyAv() {
 
     //make a local const this way using route.params
-    const { userData } = route.params;
+    //const { userData } = route.params;
 
     //server connection
     const database = axios.create({
