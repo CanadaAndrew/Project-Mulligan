@@ -5,6 +5,8 @@ import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import firebase from './Firebase';
 import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
+import { notify } from './Enums/Enums';
+import { RootSiblingParent } from 'react-native-root-siblings'
 
 //Declaring Window as a global variable to be accessed
 declare global {
@@ -45,6 +47,8 @@ export default function NewClientInfo_AdminView({ navigation, route}){
     //const [newCustAddress, setNewCustAddress] = useState('');
     const [originalCustStreet, setOriginalCustStreet] = useState('');
     const [newCustStreet, setNewCustStreet] = useState('');
+    const [originalCustAddress2, setOriginalCustAddress2] = useState('');
+    const [newCustAddress2, setNewCustAddress2] = useState('');
     const [originalCustCity, setOriginalCustCity] = useState('');
     const [newCustCity, setNewCustCity] = useState('');
     const [originalCustStateAbbrev, setOriginalCustStateAbbrev] = useState('');
@@ -73,7 +77,7 @@ export default function NewClientInfo_AdminView({ navigation, route}){
     
     //updates database with contact info changes
     const saveContactInfoChanges = () => {
-        if (newCustStreet !== originalCustStreet || newCustCity != originalCustCity
+        if (newCustStreet !== originalCustStreet || newCustAddress2 !== originalCustAddress2 || newCustCity != originalCustCity
             || newCustStateAbbrev != originalCustStateAbbrev || newCustZip != originalCustZip) { //new address info entered
 
             /*const addressTokens = newCustAddress.split(','); //tokenize address string
@@ -85,6 +89,7 @@ export default function NewClientInfo_AdminView({ navigation, route}){
             //update client's address info in database
             try {
                 const custStreet = newCustStreet.trim();
+                const custAddress2 = newCustAddress2.trim();
                 const custCity = newCustCity.trim();
                 const custStateAbbrev = newCustStateAbbrev.trim();
                 const custZip = newCustZip.trim();
@@ -92,18 +97,21 @@ export default function NewClientInfo_AdminView({ navigation, route}){
                 database.patch('/updateCurrentClientsAddress', {
                     userID: userID,
                     street: custStreet,
+                    addressLine2: custAddress2,
                     city: custCity,
                     stateAbbreviation: custStateAbbrev,
                     zip: custZip
                 });
-                alert('Address updated successfully');
+                notify('Address updated successfully!');
                 //setOriginalCustAddress(newCustAddress); //update original address info with new address info
                 setOriginalCustStreet(custStreet);
+                setOriginalCustAddress2(custAddress2);
                 setOriginalCustCity(custCity);
                 setOriginalCustStateAbbrev(custStateAbbrev);
                 setOriginalCustZip(custZip);
             } catch (error) {
                 console.error('Problem updating address info', error);
+                notify('Problem updating address info: ' + error)
             };
         };
 
@@ -114,10 +122,11 @@ export default function NewClientInfo_AdminView({ navigation, route}){
                     userID: userID,
                     email: newCustEmail,
                 });
-                alert('Email updated successfully');
+                notify('Email updated successfully!');
                 setOriginalCustEmail(newCustEmail); //update original email info with new email info
             } catch (error) {
                 console.error('Problem updating email', error);
+                notify('Problem updating email: ' + error)
             };
         };
 
@@ -128,10 +137,11 @@ export default function NewClientInfo_AdminView({ navigation, route}){
                     userID: userID,
                     phoneNumber: newCustPhone
                 });
-                alert('Phone number updated successfully');
+                notify('Phone number updated successfully!');
                 setOriginalCustPhone(newCustPhone); //update original phone number info with new phone number info
             } catch (error) {
                 console.error('Problem updating phone number', error);
+                notify('Problem updating phone number: ' + error);
             };
         }
         setEditingContactInfo(false); //after saving, switch back to view mode
@@ -146,10 +156,11 @@ export default function NewClientInfo_AdminView({ navigation, route}){
                     userID: userID,
                     clientNotes: newCustNotes
                 });
-                alert('Notes updated successfully');
+                notify('Notes updated successfully!');
                 setOriginalCustNotes(newCustNotes); //update original notes info with new notes info
             } catch (error) {
                 console.error("Problem updating client's notes", error);
+                notify("Problem updating client's notes: " + error);
             };
         };
         
@@ -172,9 +183,10 @@ export default function NewClientInfo_AdminView({ navigation, route}){
                             serviceName: service
                         });
                     });
-                alert('Services added successfully');
+                notify('Services added successfully!');
                 } catch (error) {
                     console.error('Problem updating services wanted', error);
+                    notify('Problem updating services wanted' + error);
                 };
             };
             
@@ -188,9 +200,10 @@ export default function NewClientInfo_AdminView({ navigation, route}){
                             }
                         });
                     });
-                alert('Services removed successfully');
+                notify('Services removed successfully!');
                 } catch (error) {
                     console.error('Problem updating services wanted', error);
+                    notify('Problem updating services wanted' + error)
                 };
             };
             setOriginalCustServices(newCustServices); //update original services wanted info with new services wanted info
@@ -236,6 +249,8 @@ export default function NewClientInfo_AdminView({ navigation, route}){
             //formatting the address of the client and setting it along with the clients notes
             setOriginalCustStreet(clientData2[0].Street);
             setNewCustStreet(clientData2[0].Street);
+            setOriginalCustAddress2(clientData2[0].AddressLine2);
+            setNewCustAddress2(clientData2[0].AddressLine2);
             setOriginalCustCity(clientData2[0].City);
             setNewCustCity(clientData2[0].City);
             setOriginalCustStateAbbrev(clientData2[0].StateAbbreviation);
@@ -278,6 +293,8 @@ export default function NewClientInfo_AdminView({ navigation, route}){
             const newClientString = 'New Client, Space is Blank'
             setOriginalCustStreet(newClientString);
             setNewCustStreet(newClientString);
+            setOriginalCustAddress2(newClientString);
+            setNewCustAddress2(newClientString);
             setOriginalCustCity(newClientString);
             setNewCustCity(newClientString);
             setOriginalCustStateAbbrev(newClientString);
@@ -318,6 +335,7 @@ export default function NewClientInfo_AdminView({ navigation, route}){
     }, [])
 
     return (
+        <RootSiblingParent>
         <View >
           <ScrollView>
             
@@ -381,6 +399,17 @@ export default function NewClientInfo_AdminView({ navigation, route}){
                         />
                     ) : (
                     <Text style={styles.clientText}>{originalCustStreet}</Text>
+                    )}
+                        <Text>{'\n'}</Text>
+                        <Text style={styles.clientTilteText}>Apt/Suite #</Text>
+                    {editingContactInfo ? (
+                        <TextInput
+                            style={styles.clientTextInput}
+                            value={newCustAddress2}
+                            onChangeText={setNewCustAddress2}
+                        />
+                    ) : (
+                    <Text style={styles.clientText}>{originalCustAddress2}</Text>
                     )}
                         <Text>{'\n'}</Text>
                         <Text style={styles.clientTilteText}>City</Text>
@@ -462,6 +491,7 @@ export default function NewClientInfo_AdminView({ navigation, route}){
              
             </ScrollView>
         </View>
+        </RootSiblingParent>
     );
 }
 

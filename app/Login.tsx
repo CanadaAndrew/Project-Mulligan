@@ -7,6 +7,7 @@ import firebase from './Firebase.js'  // import firebase
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import axios from 'axios';
 import { funcObj, functionGetRetry } from './Enums/Enums'
+import {RootSiblingParent} from "react-native-root-siblings"
 export default function Login({ route, navigation }) {
 
     //test@fakemail.com
@@ -230,6 +231,7 @@ export default function Login({ route, navigation }) {
     }
 
     return (
+      <RootSiblingParent>
         <ScrollView>
             <View style={styles.container}>
 
@@ -316,7 +318,7 @@ export default function Login({ route, navigation }) {
 
             </View>
         </ScrollView>
-
+        <RootSiblingParent>
     );
 }
 

@@ -4,6 +4,8 @@ import React, { useEffect } from 'react';
 import axios from 'axios';
 import { SearchBar } from 'react-native-screens';
 import { SelectList } from 'react-native-dropdown-select-list';
+import { notify } from './Enums/Enums'
+import { RootSiblingParent } from 'react-native-root-siblings'
 
 const windowDimensions = Dimensions.get('window')
 
@@ -29,7 +31,7 @@ export default function ModifyClientInfoSearch({navigation, route}) {
         while (i < clientList.length) {
             if (clientList[i].FirstName + ' ' + clientList[i].LastName == item) {
                 id = clientList[i].UserID;
-                console.log(id); //Test to confirm correct ID
+                //console.log(id); //Test to confirm correct ID
                 break;
             }
             i++;
@@ -40,6 +42,7 @@ export default function ModifyClientInfoSearch({navigation, route}) {
             navigation.navigate("NewClientInfo_AdminView", { id });
         } catch (error) {
             console.error('Error fetching client information:', error);
+            notify('Error fetching client information: ' + error);
         }
     };
 
@@ -148,6 +151,7 @@ export default function ModifyClientInfoSearch({navigation, route}) {
 
      
     return (
+        <RootSiblingParent>
         <SafeAreaView>
             <ScrollView> 
             
@@ -221,6 +225,7 @@ export default function ModifyClientInfoSearch({navigation, route}) {
             </ScrollView>
             
         </SafeAreaView>
+        </RootSiblingParent>
     );
 }
 

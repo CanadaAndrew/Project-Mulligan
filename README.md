@@ -54,7 +54,7 @@ You can install the project to run locally by installing a few different depende
 git clone https://github.com/CanadaAndrew/Project-Mullet
 ```
 
-In addition to the listed dependies below you will need npm and to create a expo app to run the app in.
+In addition to the listed dependencies below you will need npm and to create a expo app to run the app in.
 
 ```bash
 npx expo install expo-linear-gradient
@@ -72,6 +72,7 @@ npm install @expo/vector-icons
 npm i react-native-vector-icons
 npm install firebase
 npm install @react-native-async-storage/async-storage
+npm install react-native-root-toast
 ```
     
 ### Running the Program

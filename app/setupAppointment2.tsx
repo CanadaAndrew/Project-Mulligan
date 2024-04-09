@@ -13,16 +13,18 @@ import {
 } from 'react-native';
 import { Link } from 'expo-router';
 import axios from 'axios';
-import { SERVICES, militaryHours, displayHours, funcObj, functionGetRetry} from './Enums/Enums';
+import { SERVICES, militaryHours, displayHours, funcObj, functionGetRetry, notify} from './Enums/Enums';
 import Constants from 'expo-constants';
 import { UTCtoPST } from './Enums/Enums';
+import { RootSiblingParent } from 'react-native-root-siblings'
 
 export default function SetupAppointment2({route}) { // added route for page navigation
     
     //server connection
     const database = axios.create({
         //baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
-        baseURL: 'http://192.168.1.150:3000', //Chris pc local
+        //baseURL: 'http://192.168.1.150:3000', //Chris pc local
+        baseURL: 'http://10.0.0.192:3000'
     });
 
     const [selectedDate, setSelectedDate] = useState(null);
@@ -205,29 +207,32 @@ export default function SetupAppointment2({route}) { // added route for page nav
                             newTime = '0' + newTime;
                         }
                         if(!alteredListOfTimes[index].includes(displayHours[newTime + ":00:00"]) || parseInt(startingTimeNum) + i > 23 ){
-                            alert("Error, not enough available time");
-                            return [];
+                            notify("Error, not enough available time");
+                            currentTime = [];
+                            return currentTime;
                         }else{
                             currentTime[i] = displayHours[newTime +":00:00"];
                         }
                     }
-                    alert(JSON.stringify(currentTime));
+                    //notify(JSON.stringify(currentTime));
                     return currentTime;
                 }
         }
         );
+        let newDate;
         setSelectedDate((prevDate) => {
-            const newDate = currentTime === null ? null : date;
-            alert('selected date: ' + newDate); //for testing purposes
-            return UTCtoPST(newDate);
+            newDate = currentTime === null ? null : date;
+            //alert('selected date: ' + newDate); //for testing purposes
+            return newDate;
         });
 
         setSelectedIndex(index)
-        alert('index: '+selectedIndex)
+        //notify("Current Times: " + JSON.stringify(currentTime) + "CurrentDate: " + selectedDate + "Index: " + index);
     };
 
 
     return (
+        <RootSiblingParent>
         <>
             <StatusBar backgroundColor={'black'} />
             <ScrollView>
@@ -333,7 +338,7 @@ export default function SetupAppointment2({route}) { // added route for page nav
                                     try{
                                         startingTimeNum = militaryHours[selectedTime[0]].split(':')[0];
                                     }catch(e){
-                                        alert("Error: Invalid time/Date");
+                                        notify("Error: Invalid time/Date");
                                         return;
                                     }
                                     for(let i = 1; i < hours; i++){
@@ -343,8 +348,8 @@ export default function SetupAppointment2({route}) { // added route for page nav
                                             newTime = '0' + newTime;
                                         }
                                         if(!alteredListOfTimes[selectedIndex].includes(displayHours[newTime + ":00:00"]) || parseInt(startingTimeNum) + i > 23 ){
-                                            alert(newTime);
-                                            alert("Error, not enough available time");
+                                            //alert(newTime);
+                                            notify("Error, not enough available time");
                                             return;
                                         }
                                     }
@@ -365,7 +370,7 @@ export default function SetupAppointment2({route}) { // added route for page nav
                                             }),
                                             type: 'put'
                                         };
-                                        functionGetRetry(funcObj).then(()=>{alert('success')}).catch(() => alert('error'));
+                                        functionGetRetry(funcObj).then(()=>{notify('Your appointment has been booked!')}).catch(() => notify('Error booking an appointment.'));
                                     }
                                     }
                                 }
@@ -380,6 +385,7 @@ export default function SetupAppointment2({route}) { // added route for page nav
             </View>
             </ScrollView>
         </>
+        </RootSiblingParent>
     );
 }
 

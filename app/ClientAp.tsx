@@ -9,7 +9,8 @@ import MyCalendar from './MyCalendar';
 import axios from 'axios';  //Used to get data from the backend nodejs
 import { ScrollView } from 'react-native-gesture-handler';
 import Constants from 'expo-constants';
-import { UTCtoPST, UTCtoPSTString, functionGetRetry, funcObj } from './Enums/Enums';
+import { UTCtoPST, UTCtoPSTString, functionGetRetry, funcObj, notify} from './Enums/Enums';
+import { RootSiblingParent } from 'react-native-root-siblings'
 
 
 export default function ClientAp({ route }){ 
@@ -120,15 +121,10 @@ export default function ClientAp({ route }){
             }),
             type: "get"
         };
-        FuncObj.entireFunction()
+        functionGetRetry(FuncObj)
         .then((ret) => data = ret.data)
         .then(() => {updateAppointmentsDisplay(data)})
-        .catch(() => {functionGetRetry(FuncObj)
-            .then((ret) => data = ret.data)
-            .then(() => {updateAppointmentsDisplay(data)})
-            .catch((error) => alert(error))}
-            )
-
+        .catch((error) => notify(error));
     }
 
     async function updateAppointmentsDisplay(data){
@@ -173,14 +169,10 @@ export default function ClientAp({ route }){
         };
         let name
         try{
-            name = await funcObj.entireFunction()
-        }catch{
-            try{
-                name = await functionGetRetry(funcObj)
-            }catch(error){
-                alert(error)
-                return 'NA'
-            }
+            name = await functionGetRetry(funcObj)
+        }catch(error){
+            notify(error)
+            return 'NA'
         }
         return name.data[0].FirstName + " " + name.data[0].LastName;
     }
@@ -256,6 +248,9 @@ export default function ClientAp({ route }){
     }
 
     return(
+        <RootSiblingParent>
+
+        
       <ScrollView>
         <LinearGradient
         locations = {[0.7, 1]}
@@ -326,6 +321,7 @@ export default function ClientAp({ route }){
             </View>
         </LinearGradient>
       </ScrollView> 
+      </RootSiblingParent>
     );
 }
 

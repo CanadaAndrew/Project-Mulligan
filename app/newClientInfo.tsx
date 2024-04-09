@@ -17,8 +17,10 @@ import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-lis
 import { Link } from 'expo-router';
 import axios from 'axios';
 //import {initializeApp} from 'firebase/app';
-import { listOfStates, funcObj, functionGetRetry } from './Enums/Enums';
+import { listOfStates, funcObj, functionGetRetry, notify } from './Enums/Enums';
 import Constants from 'expo-constants';
+import { RootSiblingParent } from 'react-native-root-siblings'
+import { response } from 'express';
 
 export default function NewClientInfo({route}) {
 
@@ -33,7 +35,7 @@ export default function NewClientInfo({route}) {
 
    const { userData } = route.params;
 
-   console.log(userData);
+   //console.log(userData); //for testing purposes
 
     async function getName(userID){
         let funcObj:funcObj = {
@@ -48,7 +50,7 @@ export default function NewClientInfo({route}) {
         try{
             name = await functionGetRetry(funcObj)
         }catch(error){
-                alert(error)
+                notify(error)
                 return 'NA'
             }
             return name.data[0].FirstName;
@@ -60,7 +62,8 @@ export default function NewClientInfo({route}) {
     const [firstName, newFirstName] = useState(''); 
     const welcomeMessage = 'Congratulations ' + firstName + '! You\'ve been approved as a new client. Fill in some additional info to complete your sign up process.';
 
-    const [StreetAddress, newStreetAddress] = useState(''); 
+    const [StreetAddress, newStreetAddress] = useState('');
+    const [Address2, newAddress2] = useState('');
     const [City, newCity] = useState('');
     const [State, newState] = useState(''); 
     const [ZipCode, newZipCode] = useState(''); 
@@ -80,30 +83,51 @@ export default function NewClientInfo({route}) {
     // const zp = "12345";
 
     const user_ID = userData.userID;
+    //const user_ID = 4; //for testing purposes
 
     //adds current client to database
     const handleCurrentClientPost = async () => {
         try {
-            let funcObj:funcObj = {
-                entireFunction: () => database.post('/currentClientPost', { //userID, street, city, state, zip
-                    userID: user_ID, //for demo -> need to replace with actual imported userID -> can use UserID 9-22 for testing but must increment after each use
-                    //street: strt,
-                    //city: cty,
-                    //state: stat,
-                    //zip: zp
-                    street: StreetAddress,
-                    city: City,
-                    state: State,
-                    zip: ZipCode
-                }),
-                type: 'post'
-            };
+            let funcObj:funcObj;
+            if (Address2 !== null && Address2.trim().length > 0) { //if Address2 is not empty
+                funcObj = {
+                    entireFunction: () => database.post('/currentClientPost', { //userID, street, addressLine2, city, state, zip
+                        userID: user_ID, //for demo -> need to replace with actual imported userID -> can use UserID 9-22 for testing but must increment after each use
+                        //street: strt,
+                        //city: cty,
+                        //state: stat,
+                        //zip: zp
+                        street: StreetAddress,
+                        addressLine2: Address2,
+                        city: City,
+                        state: State,
+                        zip: ZipCode
+                    }),
+                    type: 'post'
+                };
+            } else {
+                funcObj = {
+                    entireFunction: () => database.post('/currentClientPostNo2', { //userID, street, city, state, zip
+                        userID: user_ID, //for demo -> need to replace with actual imported userID -> can use UserID 9-22 for testing but must increment after each use
+                        //street: strt,
+                        //city: cty,
+                        //state: stat,
+                        //zip: zp
+                        street: StreetAddress,
+                        city: City,
+                        state: State,
+                        zip: ZipCode
+                    }),
+                    type: 'post'
+                };
+            }
             const response = await functionGetRetry(funcObj);
             //console.log(response); //for testing purposes
-            alert('Your information has been updated!');
+            notify('Your information has been updated!');
             //should navigate to home page after successful submission -> need to implement
         } catch (error) {
             console.error('Error adding current client:', error.response.data);
+            notify('Error adding current client: ' + error.response.data)
         }
     }
 
@@ -120,7 +144,7 @@ export default function NewClientInfo({route}) {
             functionGetRetry(funcObj)
             .then((ret) => data = ret.data)
             .then(() => { isApproved(data) })
-            .catch(() => { alert("error"); });
+            .catch(() => { notify("error"); });
     }
 
 
@@ -135,12 +159,16 @@ export default function NewClientInfo({route}) {
         //Street addresses have lots of variences that regex doesn't cover, so using a address verifier would be preferable.
         //but for now we're checking if length > 5
         setStreetAddressValid(StreetAddress.length > 5 ? true : false);
+        //console.log('StreetAddressValid', StreetAddressValid); //for testing purposes
+        //console.log('formComplete', formComplete); //for testing purposes
     }
 
     function checkCityValid()
     {
         //checks for regular characters only and that city length isn't 0
         setCityValid(/^[a-zA-Z ]*$/.test(City) && City.length > 0 ? true : false);
+        //console.log('CityValid', CityValid); //for testing purposes
+        //console.log('formComplete', formComplete); //for testing purposes
     }
 
     function checkStateValid()
@@ -148,16 +176,21 @@ export default function NewClientInfo({route}) {
         //Checks with a list of states in enum.tsx, if State matches with anything on the list, then it's a valid state.
         //Also accepts state abbreviations like CA and NV.
         setStateValid(Object.values(listOfStates).includes(State) || listOfStates[State.toUpperCase()] ? true : false);
+        //console.log('StateValid', StateValid); //for testing purposes
+        //console.log('formComplete', formComplete); //for testing purposes
     }
 
     function checkZipValid()
     {
         //zip codes are 5 digits
         setZipValid(ZipCode.length == 5 ? true : false);
+        //console.log('ZipValid', ZipValid); //for testing purposes
+        //console.log('formComplete', formComplete); //for testing purposes
     }
     async function setFirstName()
     {
         const updateName =  await getName(userData.userID);
+        //const updateName =  await getName(user_ID);  //for testing purposes
         // if(firstName == '')
         // newFirstName(updateName);
         if ( typeof updateName === 'string' && firstName === '') {
@@ -169,7 +202,7 @@ export default function NewClientInfo({route}) {
         setFirstName()
     }, [])
     return (
-
+    <RootSiblingParent>
     <>
     <ScrollView>
         <LinearGradient locations={[0.7, 1]} colors={['#DDA0DD', 'white']} style={styles.container2}> 
@@ -185,6 +218,13 @@ export default function NewClientInfo({route}) {
                         onChangeText={newStreetAddress}
                         onTextInput={() => checkStreetAddressValid()}
                         placeholder="Street Address"
+                />
+                <Text style= {styles.textFieldHeader} >Apt/Suite # (optional)</Text>
+                    <TextInput
+                        style={styles.textField}
+                        value={Address2}
+                        onChangeText={newAddress2}
+                        placeholder="Apt/Suite #"
                 />
                 <Text style= {styles.textFieldHeader} >City</Text>
                     <TextInput
@@ -238,6 +278,7 @@ export default function NewClientInfo({route}) {
         </LinearGradient>
         </ScrollView>
     </>  
+    </RootSiblingParent>
 )}
 
 const styles = StyleSheet.create({

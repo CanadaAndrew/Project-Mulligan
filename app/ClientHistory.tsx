@@ -8,7 +8,8 @@ import moment from 'moment-timezone';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import { text } from 'express';
 import Constants from 'expo-constants';
-import { UTCtoPST, UTCtoPSTString, funcObj, functionGetRetry } from './Enums/Enums';
+import { UTCtoPST, UTCtoPSTString, funcObj, functionGetRetry, notify} from './Enums/Enums';
+import { RootSiblingParent } from 'react-native-root-siblings'
 
 export default function ClientHistory() {
 
@@ -113,6 +114,7 @@ export default function ClientHistory() {
                     setPastClientAppointments(response.data)
                 }catch(err){
                     console.error('Error getting all past appointments: ', err);
+                    notify('Error getting all past appointments: ' + err);
                 }
             }
 
@@ -319,6 +321,7 @@ export default function ClientHistory() {
     }, [pastClientAppointments, upcomingClientAppointments]);
 
     return (
+        <RootSiblingParent>
         <>
         <ScrollView>
             <LinearGradient
@@ -472,6 +475,7 @@ export default function ClientHistory() {
             </LinearGradient>
             </ScrollView>
         </>
+        </RootSiblingParent>
     );
 }
 
