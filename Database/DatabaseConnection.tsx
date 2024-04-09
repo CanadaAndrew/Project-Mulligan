@@ -314,20 +314,19 @@ async function updateAppointment(date, time, userID, type){
     
 }
 
-//app.patch('/updateCurrentClientViewContactInfo', async (req, res) => {
-    app.patch('/updateCurrentClientsAddress', async (req, res) => {
-        try {
-            const { userID, street, city, stateAbbreviation, zip } = req.body;
-            if (!userID) {
-                throw new Error('Invalid request body. Missing "userID"');
-            }
-            await currentClientsAddressUpdate(userID, street, city, stateAbbreviation, zip);
-            res.status(204).send(); // 204 means success with no content
-        } catch (error) {
-            console.error(error);
-            res.status(500).send('Internal Server Error');
+app.patch('/updateCurrentClientsAddress', async (req, res) => {
+    try {
+        const { userID, street, addressLine2, city, stateAbbreviation, zip } = req.body;
+        if (!userID) {
+            throw new Error('Invalid request body. Missing "userID"');
         }
-    });
+        await currentClientsAddressUpdate(userID, street, addressLine2, city, stateAbbreviation, zip);
+        res.status(204).send(); // 204 means success with no content
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
 
 //updates CurrentClients table with street, city, state, and zip
 async function currentClientsAddressUpdate(userID, street, addressLine2, city, stateAbbreviation, zip) {
@@ -660,12 +659,15 @@ async function addAvailability(addDateTimeString, vacancyStatus) {
 
 app.post('/currentClientPost', async (req, res) => {
     try {
-        const { userID, street, city, state, zip } = req.body;
+        const { userID, street, addressLine2, city, state, zip } = req.body;
         if (!userID) {
             throw new Error('Invalid request body. Missing "userID"');
         }
         if (!street) {
             throw new Error('Invalid request body. Missing "street"');
+        }
+        if (!addressLine2) {
+            throw new Error('Invalid request body. Missing "addressLine2"');
         }
         if (!city) {
             throw new Error('Invalid request body. Missing "city"');
@@ -676,7 +678,7 @@ app.post('/currentClientPost', async (req, res) => {
         if (!zip) {
             throw new Error('Invalid request body. Missing "zip"');
         }
-        await currentClientPost(userID, street, city, state, zip);
+        await currentClientPost(userID, street, addressLine2, city, state, zip);
         res.status(204).send(); // 204 means success with no content
     } catch (error) {
         console.error(error);
@@ -697,6 +699,32 @@ async function currentClientPost(userID, street, addressLine2, city, state, zip)
         throw err; // rethrow error so it can be caught in calling code
     }
 };
+
+app.post('/currentClientPostNo2', async (req, res) => {
+    try {
+        const { userID, street, city, state, zip } = req.body;
+        if (!userID) {
+            throw new Error('Invalid request body. Missing "userID"');
+        }
+        if (!street) {
+            throw new Error('Invalid request body. Missing "street"');
+        }
+        if (!city) {
+            throw new Error('Invalid request body. Missing "city"');
+        }
+        if (!state) {
+            throw new Error('Invalid request body. Missing "state"');
+        }
+        if (!zip) {
+            throw new Error('Invalid request body. Missing "zip"');
+        }
+        await currentClientPostNo2(userID, street, city, state, zip);
+        res.status(204).send(); // 204 means success with no content
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
 
 //add client to CurrentClients with no addressLine2
 async function currentClientPostNo2(userID, street, city, state, zip) {
@@ -1210,406 +1238,6 @@ app.get('/queryUpcomingAppointments', (req, res) => {
     .then((ret) => res.send(ret))
     .catch(() => res.status(500).json({ error: 'Internal server error' }));
 })
-
-app.get('/clientHistoryAppointmentsQuery', async (req, res) => {
-    try {
-        const startDate = req.query.startDate;
-        const endDate = req.query.endDate;
-        if (!startDate) {
-            throw new Error('Invalid request. Missing "startDate"');
-        }
-        if (!endDate) {
-            throw new Error('Invalid request. Missing "endDate"');
-        }
-    //const result = await someAppointmentsQuery(startDate, endDate)
-    const result = await clientHistoryAppointmentsQuery(startDate, endDate);
-    res.send(result);   
-    } catch {
-        res.status(400).send('Bad Request');
-    }
-});
-
-app.get('/queryCurrentUserFromEmail', async (req, res) => {
-    try {
-        const email = req.query.email;
-        if (!email) {
-            throw new Error('Invalid request. Missing "email"');
-        }
-    const result = await queryCurrentUserFromEmail(email);
-    res.send(result);
-    } catch {
-        res.status(400).send('Bad Request');
-    }
-});
-
-app.get('/queryNewUserFromEmail', async (req, res) => {
-    try {
-        const email = req.query.email;
-        if (!email) {
-            throw new Error('Invalid request. Missing "email"');
-        }
-    const result = await queryNewUserFromEmail(email);
-    res.send(result);
-    } catch {
-        res.status(400).send('Bad Request');
-    }
-});
-
-app.get('/allPastAppointmentsQuery', async (req, res) => {
-    try {
-        const todaysDate = req.query.todaysDate;
-        if (!todaysDate) {
-            throw new Error('Invalid request. Missing "todaysDate"');
-        }
-        const result = await allPastAppointmentsQuery(todaysDate);
-        res.send(result);
-    } catch {
-        res.status(400).send('Bad Request');
-    }
-});
-
-app.get('/allUpcomingAppointmentsQuery', async (req, res) => {
-    try {
-        const todaysDate = req.query.todaysDate;
-        if (!todaysDate) {
-            throw new Error('Invalid request. Missing "todaysDate"');
-        }
-        const result = await allUpcomingAppointmentsQuery(todaysDate);
-        res.send(result);
-    } catch {
-        res.status(400).send('Bad Request');
-    }
-});
-
-app.post('/appointmentPost', async (req, res) => {
-    console.log('received request body: ');
-    try {
-        const { queryString, values } = req.body;
-        if (!queryString || !values) {
-            throw new Error('Invalid request body. Missing "queryString" or "values".');
-        }
-        const result = await appointmentPost(queryString, values);
-        res.send(result);
-    } catch (error) {
-        console.error(error.response.data);
-        res.status(400).send('Bad Request');
-    }
-});
-
-app.get('/appointmentQuery', async (req, res) => {
-    try {
-        const { startDate, endDate, vacancyStatus } = req.query;
-        if (!startDate) {
-            throw new Error('Invalid request. Missing "startTime"');
-        }
-        if (!endDate) {
-            throw new Error('Invalid request. Missing "endTime"');
-        }
-        if (!vacancyStatus) {
-            throw new Error('Invalid request. Missing "vacancyStatus"');
-        }
-        const result = await appointmentQuery(startDate, endDate, vacancyStatus);
-        res.send(result);
-    } catch {
-        res.status(400).send('Bad Request');
-    }
-});
-
-app.post('/addAvailability', async (req, res) => {
-    try {
-        const { addDateTimeString, vacancyStatus } = req.body;
-        if (!addDateTimeString) {
-            throw new Error('Invalid request body. Missing "addDateTimeString".');
-        }
-        if (vacancyStatus === undefined || vacancyStatus === null) {
-            throw new Error('Invalid request body. Missing "vacancyStatus".');
-        }
-        await addAvailability(addDateTimeString, vacancyStatus);
-        res.status(204).send(); // 204 means success with no content
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
-//app.patch('/updateCurrentClientViewContactInfo', async (req, res) => {
-app.patch('/updateCurrentClientsAddress', async (req, res) => {
-    try {
-        const { userID, street, addressLine2, city, stateAbbreviation, zip } = req.body;
-        if (!userID) {
-            throw new Error('Invalid request body. Missing "userID"');
-        }
-        await currentClientsAddressUpdate(userID, street, addressLine2, city, stateAbbreviation, zip);
-        res.status(204).send(); // 204 means success with no content
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
-app.patch('/updateUsersEmail', async (req, res) => {
-    try {
-        const { userID, email } = req.body;
-        if (!userID) {
-            throw new Error('Invalid request body. Missing "userID"');
-        }
-        await usersEmailUpdate(userID, email);
-        res.status(204).send(); // 204 means success with no content
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-    };
-});
-
-app.patch('/updateUsersPhone', async (req, res) => {
-    try {
-        const { userID, phoneNumber } = req.body;
-        if (!userID) {
-            throw new Error('Invalid request body. Missing "userID"');
-        }
-        await usersPhoneUpdate(userID, phoneNumber);
-        res.status(204).send(); // 204 means success with no content
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-    };
-})
-
-;
-
-app.patch('/updateCurrentClientsNotes', async (req, res) => {
-    try {
-        const { userID, clientNotes } = req.body;
-        if (!userID) {
-            throw new Error('Invalid request body. Missing "userID"');
-        }
-        await currentClientsNotesUpdate(userID, clientNotes);
-        res.status(204).send(); // 204 means success with no content
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
-app.delete('/deleteServicesWanted', async (req, res) => {
-    try {
-        const { userID, serviceName } = req.body;
-        console.log('userID: ' + userID + ', serviceName: ' + serviceName);
-        if (!userID) {
-            throw new Error('Invalid request body. Missing "userID"');
-        }
-        await servicesWantedDelete(userID, serviceName);
-        res.status(204).send(); // 204 means success with no content
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
-app.post('/newUserPost', async (req, res) => {
-    try {
-        const { email, phoneNumber, adminPriv } = req.body;
-        if (!email || !phoneNumber || adminPriv === undefined || adminPriv === null) {
-            throw new Error('Invalid request body. Missing "email", "phoneNumber", or "adminPriv".');
-        }
-
-        //create new user
-        const newUser = await newUserPost(email, phoneNumber, adminPriv);
-        //send userID in response
-        res.status(201).json({ userID: newUser.userID, message: 'User created successfully' });
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
-app.post('/newClientPost', async (req, res) => {
-    try {
-        const { userID, firstName, lastName, preferredWayOfContact } = req.body;
-        console.log(userID)
-        console.log(firstName)
-        console.log(lastName)
-        console.log(preferredWayOfContact)
-        if (!userID || !firstName || !lastName || !preferredWayOfContact) {
-            throw new Error('Invalid request body. Missing "userID", "firstName", "lastName", or "preferredWayOfContact".');
-        }
-        await newClientPost(userID, firstName, lastName, preferredWayOfContact);
-        res.status(201).send('Client created successfully');
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
-app.post('/new_newClientPost', async (req, res) => {
-    try {
-        const { userID, approvalStatus } = req.body;
-        if (!userID || approvalStatus === undefined || approvalStatus === null) {
-            throw new Error('Invalid request body. Missing "userID" or "approvalStatus".');
-        }
-        await new_newClientPost(userID, approvalStatus);
-        res.status(201).send('New client created successfully');
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
-app.post('/servicesWantedPost', async (req, res) => {
-    try {
-        const { userID, serviceName } = req.body;
-        if (!userID || !serviceName) {
-            throw new Error('Invalid request body. Missing "userID" or "serviceName".');
-        }
-        await servicesWantedPost(userID, serviceName);
-        res.status(201).send('Service wanted created successfully');
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
-app.post('/currentClientPost', async (req, res) => {
-    try {
-        const { userID, street, addressLine2, city, state, zip } = req.body;
-        if (!userID) {
-            throw new Error('Invalid request body. Missing "userID"');
-        }
-        if (!street) {
-            throw new Error('Invalid request body. Missing "street"');
-        }
-        if (!addressLine2) {
-            throw new Error('Invalid request body. Missing "addressLine2"');
-        }
-        if (!city) {
-            throw new Error('Invalid request body. Missing "city"');
-        }
-        if (!state) {
-            throw new Error('Invalid request body. Missing "state"');
-        }
-        if (!zip) {
-            throw new Error('Invalid request body. Missing "zip"');
-        }
-        await currentClientPost(userID, street, addressLine2, city, state, zip);
-        res.status(204).send(); // 204 means success with no content
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
-app.post('/currentClientPostNo2', async (req, res) => {
-    try {
-        const { userID, street, city, state, zip } = req.body;
-        if (!userID) {
-            throw new Error('Invalid request body. Missing "userID"');
-        }
-        if (!street) {
-            throw new Error('Invalid request body. Missing "street"');
-        }
-        if (!city) {
-            throw new Error('Invalid request body. Missing "city"');
-        }
-        if (!state) {
-            throw new Error('Invalid request body. Missing "state"');
-        }
-        if (!zip) {
-            throw new Error('Invalid request body. Missing "zip"');
-        }
-        await currentClientPostNo2(userID, street, city, state, zip);
-        res.status(204).send(); // 204 means success with no content
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
-app.delete('/removeAvailability', async (req, res) => {
-    try {
-        const { removeDateTimeString } = req.body;
-        if (!removeDateTimeString) {
-            throw new Error('Invalid request body. Missing "removeDateTimeString".');
-        }
-        await removeAvailability(removeDateTimeString);
-        res.status(204).send(); // 204 means success with no content
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-    }
-})
-
-app.delete('/customDelete', async (req, res) => { // Provide explicit types for the 'req' and 'res' parameters
-    try {
-        const { queryString } = req.body;
-        if (!queryString) {
-            throw new Error('Invalid request body. Missing "queryString".');
-        }
-        await customDelete(queryString);
-        res.status(204).send(); // 204 means success with no content
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-    }
-});
-//Formats the date and time before sending it to the method to update the appointments.
-//In the future might just format this in the front end and then send it over, might be a lot easier.
-app.put('/confirmAppointment', (req, res) => {
-    //Gets the date, time, and userID through parameters.
-    let date = req.query.date;
-    let time = req.query.time;
-    let userID = req.query.userID;
-    let type = req.query.type
-    /*
-    if(date && time){
-        //Deals with am/pm, turning it into military time. Want to do this with Enums if can get export working.
-        if(time.includes('pm')){
-            time = time.split('pm');
-            time = time[0].split(':');
-            if(parseInt(time[0]) === 12){
-                time = time[0]+':'+time[1]+':00';
-            }else{
-                time = (parseInt(time[0])+12)+':'+time[1]+':00';
-            }
-        }else{
-            time = time.split('am');
-            if(parseInt(time[0]) === 12){
-                time = '00:'+time[0]+':00';
-            }else{
-                time = time[0]+':00';
-            }
-        }
-        //Detects month and get's the number form, currently enums are copy/pasted in, want to switch to import if it can work.
-        let month;
-        for(month in monthsWritten){
-            if(date.includes(month)){
-                break;
-            }
-        }
-        month = monthsNum[month];
-        //Uses RE pattern matching, would rather do enums if it works, temporary solution.
-        let day = date.match(/[0-9][0-9]th|[0-9]?[0-9]st|[0-9]?[0-9]nd|[0-9]?[0-9]rd/)
-        day = parseInt(day);
-        if(day.length < 2){
-            day = '0'+day;
-        }
-        let year = date.match(/[0-9][0-9][0-9][0-9]/);
-
-        //Formats date and sends it to the backend function.
-        date = year+'-'+month+'-'+day;
-        console.log(date);
-        updateAppointment(date, time, userID).catch((err) => console.log(err));
-    }else{
-        console.log('date:' + date);
-        console.log('time:' + time);
-    }
-    */
-    updateAppointment(date, time, userID, type)
-    .then(res.send("ok"))
-    .catch(err => {
-        console.error('Error updating appointments:', err.message);
-        res.status(500).send('Internal Server Error');
-    });
-});
 
 app.get('/findEmailByPhoneNumber', (req, res) =>{
     const queryPhoneNumber = req.query.PhoneNumber;
