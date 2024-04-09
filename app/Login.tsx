@@ -318,7 +318,7 @@ export default function Login({ route, navigation }) {
 
             </View>
         </ScrollView>
-        <RootSiblingParent>
+        </RootSiblingParent>
     );
 }
 
