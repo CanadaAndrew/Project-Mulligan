@@ -291,7 +291,7 @@ app.put('/confirmAppointment', (req, res) => {
     let type = req.query.type
 
     updateAppointment(date, time, userID, type)
-    .then(res.send("ok"))
+    .then(res.send("Booked."))
     .catch(err => {
         console.error('Error updating appointments:', err.message);
         res.status(500).send('Internal Server Error');
@@ -303,8 +303,8 @@ async function updateAppointment(date, time, userID, type){
     try {
         var poolConnection = await connect();//
         let query = 'UPDATE Appointments SET VacancyStatus = 1, UserID = \''+ userID + '\', TypeOfAppointment = \''+ type + '\' WHERE AppointmentDate = '+'\''+date+' '+time+'\'';
-        await poolConnection.request().query(query);
         console.log(query);
+        await poolConnection.request().query(query);
         //await poolConnection.request().query('SELECT * FROM Appointments');
         poolConnection.close();
     } catch (err) {
@@ -1206,7 +1206,6 @@ app.get('/queryUpcomingAppointments', (req, res) => {
     const date = req.query.queryDate;
     console.log(date);
     let queryString = "SELECT * FROM Appointments WHERE AppointmentDate >= '" + date + "' AND VacancyStatus = 1";
-    console.log(queryString);
     customQuery(queryString)
     .then((ret) => res.send(ret))
     .catch(() => res.status(500).json({ error: 'Internal server error' }));

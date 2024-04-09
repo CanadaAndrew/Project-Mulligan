@@ -1,5 +1,6 @@
 import moment from 'moment-timezone';
 import axios, { AxiosResponse } from 'axios';
+import Toast from 'react-native-root-toast'
 
 const database = axios.create({
     baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
@@ -203,10 +204,19 @@ async function functionGetRetry(jsonObj:funcObj){
         }catch(error){
             currentAttempts += 1;
             recentError = error;
-            await wait(Math.pow(2, currentAttempts))
+            if(currentAttempts == maxAttempts){
+                await wait(Math.pow(2, currentAttempts))
+                notify('There is a problem connecting to the server. Retrying in: ' + Math.pow(2, currentAttempts) + ' seconds')
+            }
         }
     }
     throw new Error(recentError);
 }
 
-export{monthsNum, monthsWritten, militaryHours, displayHours, UTCtoPST, UTCtoPSTString, listOfStates, SERVICES, functionGetRetry, funcObj};
+function notify(message){
+    Toast.show(message, {
+        duration: Toast.durations.SHORT,
+      });
+}
+
+export{monthsNum, monthsWritten, militaryHours, displayHours, UTCtoPST, UTCtoPSTString, listOfStates, SERVICES, functionGetRetry, funcObj, notify};

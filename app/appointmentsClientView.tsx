@@ -3,7 +3,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
 import axios from 'axios';
 import Constants from 'expo-constants';
-import { UTCtoPST, UTCtoPSTString, funcObj, functionGetRetry } from './Enums/Enums';
+import { UTCtoPST, UTCtoPSTString, funcObj, functionGetRetry, notify} from './Enums/Enums';
+import {RootSiblingParent} from 'react-native-root-siblings'
 export default function AppointmentsClientView(){
 
     //server connection
@@ -45,19 +46,15 @@ export default function AppointmentsClientView(){
             entireFunction: () => database.get('/queryUpcomingAppointmentsByUserIDAndDate', {
                 params: {
                     date : date,
-                    userID: userID //temp value, will be changed
+                    userID: userID 
                 }
             }),
             type:'get'
         };
-        funcObj.entireFunction()
-        .then((ret) => data = ret.data)
-        .then(() => {updateUpcomingAppointmentsDisplay(data, name)})
-        .catch(() => {functionGetRetry(funcObj)
+        functionGetRetry(funcObj)
             .then((ret) => data = ret.data)
             .then(() => {updateUpcomingAppointmentsDisplay(data, name)})
-            .catch((error) => alert(error))
-        });
+            .catch((error) => notify(error))
     }
 
     function updatePastAppointments(date, userID, name){
@@ -66,19 +63,15 @@ export default function AppointmentsClientView(){
             entireFunction: () => database.get('/queryPastAppointmentsByUserIDAndDate', {
                 params: {
                     date : date,
-                    userID: userID //temp value, will be changed
+                    userID: userID 
                 }
             }),
             type:'get'
         };
-        funcObj.entireFunction()
-        .then((ret) => data = ret.data)
-        .then(() => {updatePastAppointmentsDisplay(data, name)})
-        .catch(() => {functionGetRetry(funcObj)
+            functionGetRetry(funcObj)
             .then((ret) => data = ret.data)
             .then(() => {updatePastAppointmentsDisplay(data, name)})
-            .catch((error) => alert(error))
-        });
+            .catch((error) => notify(error));
     }
 
     function updateUpcomingAppointmentsDisplay(data, name){
@@ -137,19 +130,18 @@ export default function AppointmentsClientView(){
         };
         let name
         try{
-            name = await funcObj.entireFunction()
-        }catch{
-            try{
-                name = await functionGetRetry(funcObj)
-            }catch(error){
-                alert(error)
-                return 'NA'
-            }
+            name = await functionGetRetry(funcObj)
+        }catch(error){
+            notify(error)
+            return 'NA'
         }
         return name.data[0].FirstName + " " + name.data[0].LastName;
     }
 
     return(
+        <RootSiblingParent>
+
+        
         <ScrollView>
             <View style = {styles.container}>
                 <LinearGradient
@@ -216,6 +208,7 @@ export default function AppointmentsClientView(){
 
             </View>
         </ScrollView>
+        </RootSiblingParent>
 
     );
 }

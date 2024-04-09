@@ -30,7 +30,7 @@ export default function HomeScreen({route, navigation}){
 
 //This block constructs buttons that the Admin can see
 function filterButtons(){
-  if(userData.adminPriv == true)
+    if(userData.adminPriv == true)
   {
     //Modifies Calendar Availability
     var modifyAvButton = <TouchableOpacity
@@ -242,7 +242,7 @@ function filterButtons(){
               </View>
              </LinearGradient>
              </ScrollView>
-            </View> 
+            </View>
     );
 }
 

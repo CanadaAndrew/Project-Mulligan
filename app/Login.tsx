@@ -6,7 +6,8 @@ import React, { useState } from 'react';
 import firebase from './Firebase.js'  // import firebase
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import axios from 'axios';
-import { funcObj, functionGetRetry } from './Enums/Enums'
+import { funcObj, functionGetRetry, notify} from './Enums/Enums'
+import {RootSiblingParent} from "react-native-root-siblings"
 export default function Login({ route, navigation }) {
 
     //test@fakemail.com
@@ -23,8 +24,8 @@ export default function Login({ route, navigation }) {
 
     const database = axios.create({
         //baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
-        //baseURL: 'http://10.0.0.192:3000'
-        baseURL: 'http://192.168.1.150:3000', //Chris pc local
+        baseURL: 'http://10.0.0.192:3000'
+        //baseURL: 'http://192.168.1.150:3000', //Chris pc local
         //baseURL: 'http://10.0.0.133:3000',
         //baseURL: 'http://10.0.0.112:3000',
     });
@@ -46,7 +47,6 @@ export default function Login({ route, navigation }) {
     }
 
     const onClickLogin = async () => {
-
         //console.log(email);
 
         signInWithEmailAndPassword(auth, email, password)
@@ -135,7 +135,6 @@ export default function Login({ route, navigation }) {
                     type: 'get'
                 };
                 const response = await functionGetRetry(funcObj);
-                alert(JSON.stringify(response.data[0]));
                 userData.userID = response.data[0].UserID;
                 if (response.data[0].ApprovalStatus == 1) {
                     userData.approved = false;
@@ -144,6 +143,7 @@ export default function Login({ route, navigation }) {
                 }
             } catch (error) {
                 console.log(error);
+                //notify(error)
             }
 
         }
@@ -151,6 +151,7 @@ export default function Login({ route, navigation }) {
     }
 
     return (
+        <RootSiblingParent>
         <ScrollView>
             <View style={styles.container}>
 
@@ -232,11 +233,10 @@ export default function Login({ route, navigation }) {
                             <Text style={styles.signUpText}>Sign Up</Text>
                         </TouchableOpacity>
                     </View>
-
                 </LinearGradient>
-
             </View>
         </ScrollView>
+        </RootSiblingParent>
 
     );
 }

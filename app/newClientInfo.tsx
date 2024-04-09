@@ -17,8 +17,9 @@ import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-lis
 import { Link } from 'expo-router';
 import axios from 'axios';
 //import {initializeApp} from 'firebase/app';
-import { listOfStates, funcObj, functionGetRetry } from './Enums/Enums';
+import { listOfStates, funcObj, functionGetRetry, notify } from './Enums/Enums';
 import Constants from 'expo-constants';
+import { RootSiblingParent } from 'react-native-root-siblings'
 import { response } from 'express';
 
 export default function NewClientInfo({route}) {
@@ -48,7 +49,7 @@ export default function NewClientInfo({route}) {
         try{
             name = await functionGetRetry(funcObj)
         }catch(error){
-                alert(error)
+                notify(error)
                 return 'NA'
             }
             return name.data[0].FirstName;
@@ -121,10 +122,11 @@ export default function NewClientInfo({route}) {
             }
             const response = await functionGetRetry(funcObj);
             //console.log(response); //for testing purposes
-            alert('Your information has been updated!');
+            notify('Your information has been updated!');
             //should navigate to home page after successful submission -> need to implement
         } catch (error) {
             console.error('Error adding current client:', error.response.data);
+            notify('Error adding current client: ' + error.response.data)
         }
     }
 
@@ -141,7 +143,7 @@ export default function NewClientInfo({route}) {
             functionGetRetry(funcObj)
             .then((ret) => data = ret.data)
             .then(() => { isApproved(data) })
-            .catch(() => { alert("error"); });
+            .catch(() => { notify("error"); });
     }
 
 
@@ -199,7 +201,7 @@ export default function NewClientInfo({route}) {
         setFirstName()
     }, [])
     return (
-
+    <RootSiblingParent>
     <>
     <ScrollView>
         <LinearGradient locations={[0.7, 1]} colors={['#DDA0DD', 'white']} style={styles.container2}> 
@@ -275,6 +277,7 @@ export default function NewClientInfo({route}) {
         </LinearGradient>
         </ScrollView>
     </>  
+    </RootSiblingParent>
 )}
 
 const styles = StyleSheet.create({

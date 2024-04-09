@@ -5,6 +5,8 @@ import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import firebase from './Firebase';
 import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
+import { notify } from './Enums/Enums';
+import { RootSiblingParent } from 'react-native-root-siblings'
 
 //Declaring Window as a global variable to be accessed
 declare global {
@@ -95,7 +97,7 @@ export default function NewClientInfo_AdminView({ navigation }){
                     stateAbbreviation: custStateAbbrev,
                     zip: custZip
                 });
-                alert('Address updated successfully');
+                notify('Address updated successfully!');
                 //setOriginalCustAddress(newCustAddress); //update original address info with new address info
                 setOriginalCustStreet(custStreet);
                 setOriginalCustAddress2(custAddress2);
@@ -104,6 +106,7 @@ export default function NewClientInfo_AdminView({ navigation }){
                 setOriginalCustZip(custZip);
             } catch (error) {
                 console.error('Problem updating address info', error);
+                notify('Problem updating address info: ' + error)
             };
         };
 
@@ -114,10 +117,11 @@ export default function NewClientInfo_AdminView({ navigation }){
                     userID: userID,
                     email: newCustEmail,
                 });
-                alert('Email updated successfully');
+                notify('Email updated successfully!');
                 setOriginalCustEmail(newCustEmail); //update original email info with new email info
             } catch (error) {
                 console.error('Problem updating email', error);
+                notify('Problem updating email: ' + error)
             };
         };
 
@@ -128,10 +132,11 @@ export default function NewClientInfo_AdminView({ navigation }){
                     userID: userID,
                     phoneNumber: newCustPhone
                 });
-                alert('Phone number updated successfully');
+                notify('Phone number updated successfully!');
                 setOriginalCustPhone(newCustPhone); //update original phone number info with new phone number info
             } catch (error) {
                 console.error('Problem updating phone number', error);
+                notify('Problem updating phone number: ' + error);
             };
         }
         setEditingContactInfo(false); //after saving, switch back to view mode
@@ -146,10 +151,11 @@ export default function NewClientInfo_AdminView({ navigation }){
                     userID: userID,
                     clientNotes: newCustNotes
                 });
-                alert('Notes updated successfully');
+                notify('Notes updated successfully!');
                 setOriginalCustNotes(newCustNotes); //update original notes info with new notes info
             } catch (error) {
                 console.error("Problem updating client's notes", error);
+                notify("Problem updating client's notes: " + error);
             };
         };
         
@@ -172,9 +178,10 @@ export default function NewClientInfo_AdminView({ navigation }){
                             serviceName: service
                         });
                     });
-                alert('Services added successfully');
+                notify('Services added successfully!');
                 } catch (error) {
                     console.error('Problem updating services wanted', error);
+                    notify('Problem updating services wanted' + error);
                 };
             };
             
@@ -188,9 +195,10 @@ export default function NewClientInfo_AdminView({ navigation }){
                             }
                         });
                     });
-                alert('Services removed successfully');
+                notify('Services removed successfully!');
                 } catch (error) {
                     console.error('Problem updating services wanted', error);
+                    notify('Problem updating services wanted' + error)
                 };
             };
             setOriginalCustServices(newCustServices); //update original services wanted info with new services wanted info
@@ -322,6 +330,7 @@ export default function NewClientInfo_AdminView({ navigation }){
     }, [])
 
     return (
+        <RootSiblingParent>
         <View >
           <ScrollView>
             
@@ -477,6 +486,7 @@ export default function NewClientInfo_AdminView({ navigation }){
              
             </ScrollView>
         </View>
+        </RootSiblingParent>
     );
 }
 

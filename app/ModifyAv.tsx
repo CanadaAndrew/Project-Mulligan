@@ -11,7 +11,8 @@ import axios from 'axios';  //Used to get data from the backend nodejs
 import { displayHours } from './Enums/Enums';
 import { validateLocaleAndSetLanguage } from 'typescript';
 import Constants from 'expo-constants';
-import { UTCtoPST, UTCtoPSTString, funcObj, functionGetRetry} from './Enums/Enums';
+import { UTCtoPST, UTCtoPSTString, funcObj, functionGetRetry, notify} from './Enums/Enums';
+import { RootSiblingParent } from 'react-native-root-siblings'
 //add route as a param to the function of every page that requires data from the const established in HomeScreen
 //You can also make another const here and transfer data as well here up to you
 export default function ModifyAv({ route }) {
@@ -22,7 +23,8 @@ export default function ModifyAv({ route }) {
     //server connection
     const database = axios.create({
         //baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
-        baseURL: 'http://192.168.1.150:3000', //Chris pc local
+        //baseURL: 'http://192.168.1.150:3000', //Chris pc local
+        baseURL: 'http://10.0.0.192:3000'
     });
 
 
@@ -122,6 +124,7 @@ export default function ModifyAv({ route }) {
             //console.log('bookedAppointmentTimes', bookedAppointmentTimes); //for testing purposes
         } catch(error) {
             console.error(error);
+            notify(error)
         }
         return null;
     };
@@ -140,7 +143,7 @@ export default function ModifyAv({ route }) {
             const deleteIndex = deletedTimes.indexOf(time);    
             const bookedIndex = bookedAppointmentTimes.indexOf(time);
             if (bookedIndex !== -1) { //time chosen was in bookedAppointmentTimes
-                alert('Cannot update booked appointment times');
+                notify('Cannot update booked appointment times');
                 return updatedAppointments;
             } else if (addIndex !== -1) { //time chosen was in appointmentTimes
                 updatedAppointments.splice(addIndex, 1); //remove time from appointmentTimes
@@ -290,7 +293,7 @@ export default function ModifyAv({ route }) {
 
         //check if there are times to delete that are booked
         if (deletions.filter(time => bookedAppointmentTimes.includes(time)).length > 0) { //might not need
-            alert('Cannot delete booked appointment times');
+            notify('Cannot delete booked appointment times');
         } else {
             try {
                 //check if there are times to insert
@@ -314,6 +317,7 @@ export default function ModifyAv({ route }) {
                             //console.log(response); //for testing purposes
                         } catch (error) {
                             console.error('Error adding appointment time slot:', error.response.data);
+                            notify('Error adding appointment time slot:' + error.response.data);
                         }
                     });  
 
@@ -348,6 +352,7 @@ export default function ModifyAv({ route }) {
                             //console.log(response); //for testing purposes
                         } catch (error) {
                             console.error('Error deleting appointment time slot:', error);
+                            notify('Error deleting appointment time slot: ' + error);
                         }
                     });
     
@@ -358,10 +363,11 @@ export default function ModifyAv({ route }) {
     
                 //log success or handle it as needed
                 console.log('Schedule updated successfully');
-                alert('Schedule updated successfully');
+                notify('Schedule updated successfully!');
                 setDatabaseTimes(appointmentTimes); //update database times
             } catch (error) {
                 console.error('Error updating schedule:', error);
+                notify('Error updating schedule: ' + error);
             }
         }
     };
@@ -390,6 +396,7 @@ export default function ModifyAv({ route }) {
     }, [databaseTimes, appointmentTimes, listOfTimes, bookedAppointmentTimes, deletedTimes, filteredTimes]);*/
 
     return (
+        <RootSiblingParent>
         <>
         <ScrollView>
             <StatusBar backgroundColor={'black'} />
@@ -518,6 +525,7 @@ export default function ModifyAv({ route }) {
             </LinearGradient>
             </ScrollView>
         </>
+        </RootSiblingParent>
     );
 };
 

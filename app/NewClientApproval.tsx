@@ -3,7 +3,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React, {useEffect} from 'react';
 import axios from 'axios';
 import Constants from 'expo-constants';
-import {funcObj, functionGetRetry} from './Enums/Enums'
+import {funcObj, functionGetRetry, notify} from './Enums/Enums'
+import { RootSiblingParent } from 'react-native-root-siblings'
 
 export default function NewClientApproval() {
 
@@ -73,11 +74,10 @@ export default function NewClientApproval() {
         functionGetRetry(funcObj)
         .then((ret) => data = ret.data)
         .then(() => { updateClientDisplay(data) })
-        .catch(() => { alert("error"); });
+        .catch((error) => { notify(error); });
     }
 
     function updateClientDisplay(data) {
-        alert("Here is the data: " + JSON.stringify(data));
         let clientList: Client[] = [];
         let i = 0;
         data.forEach((client) => {
@@ -103,7 +103,7 @@ export default function NewClientApproval() {
     //result when admin declines a new client
     const handleDeclineClient = async (client) => {
         console.log(client.name + " Declined"); //for testing purposes
-        alert(`${client.name} is Declined`);
+        notify(`${client.name} is Declined`);
         const updatedClients = newClient.filter((person) => person.name !== client.name);  //remove declined client from list
         setNewClient(updatedClients);
     }
@@ -118,12 +118,13 @@ export default function NewClientApproval() {
             type: 'put'
         };
         functionGetRetry(funcObj)
-        alert(`${client.name} has been accepted`);
+        notify(`${client.name} has been accepted`);
         const updatedClients = newClient.filter((person) => person.name !== client.name);
         setNewClient(updatedClients);
     }
 
     return (
+        <RootSiblingParent>
         <SafeAreaView>
             <ScrollView>
                 <LinearGradient
@@ -178,6 +179,7 @@ export default function NewClientApproval() {
                 </LinearGradient>
             </ScrollView>
         </SafeAreaView>
+        </RootSiblingParent>
     );
 }
 

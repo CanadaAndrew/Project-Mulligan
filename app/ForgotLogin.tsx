@@ -5,7 +5,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import firebase from './Firebase';
 import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
-import {funcObj, functionGetRetry} from './Enums/Enums'
+import {funcObj, functionGetRetry, notify} from './Enums/Enums';
+import { RootSiblingParent } from 'react-native-root-siblings';
 
 //Declaring Window as a global variable to be accessed
 declare global {
@@ -48,7 +49,7 @@ export default function ForgotLogin({ navigation }) {
                 }
                 loginErrorMsg('Password reset email send if phone number was valid. Please check your inbox.');
             })
-            .catch((err) => alert(err));
+            .catch((err) => notify(err));
         }
         else if (rawNum.includes("@")) {
             email = rawNum;
@@ -81,6 +82,7 @@ export default function ForgotLogin({ navigation }) {
     }
 
     return (
+        <RootSiblingParent>
         <View style={styles.container}>
             <ScrollView>
             {/*added logo image*/}
@@ -125,7 +127,7 @@ export default function ForgotLogin({ navigation }) {
             </LinearGradient>
             </ScrollView>
         </View>
-
+        </RootSiblingParent>
     );
 }
 
