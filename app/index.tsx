@@ -69,7 +69,11 @@ export default function index() {
             title: "Your Appointments"
            }}
          />
-         <Stack.Screen name = "NewClientInfo" component={NewClientInfo}/>
+         <Stack.Screen name = "NewClientInfo" component={NewClientInfo}
+            options={{
+             title: "New Client Info"
+           }}
+         />
         <Stack.Screen name="NewClientApproval" component={NewClientApproval}
             options={{
                 title: "Client Approval"
