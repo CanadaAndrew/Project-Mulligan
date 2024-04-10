@@ -7,7 +7,7 @@ import { Link } from 'expo-router';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment'; //used to format dates and times
 import MyCalendar from './MyCalendar';
-import axios from 'axios';  //Used to get data from the backend nodejs
+import database from './axiosConfig'; // Import axios from the axiosConfig.js file
 import { displayHours } from './Enums/Enums';
 import { validateLocaleAndSetLanguage } from 'typescript';
 import Constants from 'expo-constants';
@@ -19,14 +19,6 @@ export default function ModifyAv() {
 
     //make a local const this way using route.params
     //const { userData } = route.params;
-
-    //server connection
-    const database = axios.create({
-        //baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
-        //baseURL: 'http://192.168.1.150:3000', //Chris pc local
-        baseURL: 'http://10.0.0.192:3000'
-    });
-
 
     //Tester lines for console
     // console.log("Test");

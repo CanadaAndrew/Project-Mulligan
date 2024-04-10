@@ -12,20 +12,13 @@ import {
     ScrollView
 } from 'react-native';
 import { Link } from 'expo-router';
-import axios from 'axios';
+import database from './axiosConfig'; // Import axios from the axiosConfig.js file
 import { SERVICES, militaryHours, displayHours, funcObj, functionGetRetry, notify} from './Enums/Enums';
 import Constants from 'expo-constants';
 import { UTCtoPST } from './Enums/Enums';
 import { RootSiblingParent } from 'react-native-root-siblings'
 
 export default function SetupAppointment2({route}) { // added route for page navigation
-    
-    //server connection
-    const database = axios.create({
-        //baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
-        //baseURL: 'http://192.168.1.150:3000', //Chris pc local
-        baseURL: 'http://10.0.0.192:3000'
-    });
 
     const [selectedDate, setSelectedDate] = useState(null);
     const [appointmentTimes, setAppointmentTimes] = useState([[]]); //list of selected times to push to db upon confirmation

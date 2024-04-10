@@ -6,7 +6,7 @@ import { Calendar } from 'react-native-calendars';
 import { Link } from 'expo-router';
 import { SelectList } from 'react-native-dropdown-select-list';
 import MyCalendar from './MyCalendar';
-import axios from 'axios';  //Used to get data from the backend nodejs
+import database from './axiosConfig'; // Import axios from the axiosConfig.js file
 import { ScrollView } from 'react-native-gesture-handler';
 import Constants from 'expo-constants';
 import { UTCtoPST, UTCtoPSTString, functionGetRetry, funcObj, notify} from './Enums/Enums';
@@ -16,13 +16,6 @@ import { RootSiblingParent } from 'react-native-root-siblings'
 export default function ClientAp({ route }){ 
 
     const { userData } = route.params;
-
-    //server connection
-    const database = axios.create({
-        //baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
-        baseURL: 'http://192.168.1.150:3000', //Chris pc local
-        //baseURL: 'http://10.0.0.192:3000'
-    });
 
     interface Appointment {
         name: string;

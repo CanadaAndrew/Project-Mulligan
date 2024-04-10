@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, ScrollView, FlatList, TouchableOpacity, Dimensions, SafeAreaView, useWindowDimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, {useEffect} from 'react';
-import axios from 'axios';
+import database from './axiosConfig'; // Import axios from the axiosConfig.js file
 import Constants from 'expo-constants';
 import {funcObj, functionGetRetry, notify} from './Enums/Enums'
 import { RootSiblingParent } from 'react-native-root-siblings'
@@ -9,15 +9,6 @@ import { RootSiblingParent } from 'react-native-root-siblings'
 export default function NewClientApproval() {
 
     const windowDimensions = Dimensions.get('window')
-
-    //server connection
-    const database = axios.create({
-        //baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
-        baseURL: 'http://192.168.1.150:3000', //Chris pc local
-        //baseURL: 'http://10.0.0.192:3000'
-        //baseURL: 'http://10.0.0.112:3000',
-    });
-
 
     const [first, setFirst] = React.useState(0);
 

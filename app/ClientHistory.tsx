@@ -3,7 +3,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState, } from 'react';
 import { Link } from 'expo-router';
 import { SelectList } from 'react-native-dropdown-select-list';
-import axios from 'axios'; //used to get data from the backend nodejs
+import database from './axiosConfig'; // Import axios from the axiosConfig.js file
 import moment from 'moment-timezone';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import { text } from 'express';
@@ -12,15 +12,6 @@ import { UTCtoPST, UTCtoPSTString, funcObj, functionGetRetry, notify} from './En
 import { RootSiblingParent } from 'react-native-root-siblings'
 
 export default function ClientHistory() {
-
-    //server connection
-    const database = axios.create({
-        //baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
-        baseURL: 'http://192.168.1.150:3000', //Chris pc local
-        //baseURL: 'http://10.0.0.192:3000'
-        //baseURL: 'http://10.0.0.112:3000',
-    });
-
 
     interface Appointment {
         name: string;

@@ -5,7 +5,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import React, { useState } from 'react';
 import firebase from './Firebase.js'  // import firebase
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import axios from 'axios';
+import database from './axiosConfig'; // Import axios from the axiosConfig.js file
 import { funcObj, functionGetRetry } from './Enums/Enums'
 import {RootSiblingParent} from "react-native-root-siblings"
 export default function Login({ route, navigation }) {
@@ -21,15 +21,6 @@ export default function Login({ route, navigation }) {
 
     // error msg if wrong login info is put in
     const [loginError, loginErrorMsg] = useState('');
-
-    const database = axios.create({
-        //baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
-        //baseURL: 'http://10.0.0.192:3000'
-        //baseURL: 'http://192.168.1.150:3000', //Chris pc local
-        //baseURL: 'http://10.0.0.133:3000',
-        baseURL: 'http://10.0.0.112:3000',
-    });
-
 
     const userData = {
         userID: undefined, // You can omit this line, it will default to undefined

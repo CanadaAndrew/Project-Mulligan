@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, ScrollView, TextInput, ImageBackground,} from '
 import { LinearGradient } from 'expo-linear-gradient';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import React, {useState, useEffect} from 'react';
-import axios from 'axios';
+import database from './axiosConfig'; // Import axios from the axiosConfig.js file
 import firebase from './Firebase';
 import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import { notify } from './Enums/Enums';
@@ -16,14 +16,6 @@ declare global {
   }
   
 export default function NewClientInfo_AdminView({ navigation, route}){
-
-    const database = axios.create({
-        //baseURL: 'http://10.0.0.192:3000', //Andrew pc local
-        //baseURL: 'http://192.168.1.150:3000', //Chris pc local
-        //baseURL: 'http://10.0.0.133:3000',
-        //baseURL: 'http://10.0.0.14:3000', //Cameron pc local
-        baseURL: 'http://10.0.0.112:3000',
-    })
 
     const { id } = route.params;
 

@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-list';
 import { Link } from 'expo-router';
-import axios from 'axios';
+import database from './axiosConfig'; // Import axios from the axiosConfig.js file
 //firebase imports VVV
 import firebase from './Firebase.js'
 import { getAuth, createUserWithEmailAndPassword  } from "firebase/auth";
@@ -26,15 +26,6 @@ export let contactSelected: string[] = [];
 
 
 export default function SignUp({ navigation, route }) { // added route for page navigation
-
-    const database = axios.create({
-        //baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
-        //baseURL: 'http://10.0.0.192:3000'
-        //baseURL: 'http://10.0.0.199:3000',
-        //baseURL: 'http://10.0.0.14:3000', // Cameron's IP address for testing
-        //baseURL: 'http://192.168.1.150:3000', //Chris pc local
-        //baseURL: 'http://10.0.0.112:3000',
-    })
 
     //initializes the Authentication and gets a reference to the service
     const auth = getAuth(firebase);

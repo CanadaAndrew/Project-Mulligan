@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-list';
 import { Link } from 'expo-router';
-import axios from 'axios';
+import database from './axiosConfig'; // Import axios from the axiosConfig.js file
 //import {initializeApp} from 'firebase/app';
 import { listOfStates, funcObj, functionGetRetry, notify } from './Enums/Enums';
 import Constants from 'expo-constants';
@@ -23,15 +23,6 @@ import { RootSiblingParent } from 'react-native-root-siblings'
 import { response } from 'express';
 
 export default function NewClientInfo({route}) {
-
-    //server connection
-    const database = axios.create({
-        //baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
-        //baseURL: 'http://10.0.0.192:3000'
-        //baseURL: 'http://192.168.1.150:3000', //Chris pc local
-        //baseURL: 'http://10.0.0.112:3000',
-        baseURL: 'http://10.0.0.112:3000',
-    });
 
    const { userData } = route.params;
 

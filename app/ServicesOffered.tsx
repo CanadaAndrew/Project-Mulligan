@@ -10,18 +10,12 @@ import {
     FlatList,
 } from 'react-native';
 import { Link } from 'expo-router';
-import axios from 'axios';  //Used to get data from the backend nodejs
+import database from './axiosConfig'; // Import axios from the axiosConfig.js file
 import Constants from 'expo-constants';
 
 
 export default function ServicesOffered() {
 
-    //server connection                                 //***do we need a connection to the server here?***
-    const database = axios.create({
-        //baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
-        baseURL: 'http://192.168.1.150:3000', //Chris pc local
-    });
-    
     // placeholder for service names and prices
     const services = [['Kid\'s Haircut'],['Men\'s Haircut'], ['Women\'s Haircut'], ['Partial Highlight']
                     ,['Full Highlight'], ['Root Touch-Up'], ['Full Color'], ['Extension Consultation']
