@@ -39,7 +39,6 @@ function filterButtons(){
       >  
       <Text style = {styles.homeButtonText}>Modify Calendar</Text>
     </TouchableOpacity>
-        
     //Views Existing Client Appointments
     var clientApButton = <TouchableOpacity
       style = {styles.homeButton}
@@ -47,31 +46,31 @@ function filterButtons(){
       >  
       <Text style = {styles.homeButtonText}>Existing Appointments</Text>
     </TouchableOpacity>
-    //Views Client Info !WIP! no functionality
+    //Views Client Info and Edit
     var clientInfoButton = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("Client info", {userData})}
+      onPress = {() => navigation.navigate("NewClientInfo_AdminView", {userData})}
       >  
       <Text style = {styles.homeButtonText}>modify Client Info</Text>
     </TouchableOpacity>
-    //Views Client History !WIP! no functionality
+    //Views Client History 
     var clientHistoryButton = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("Client history", {userData})}
+      onPress = {() => navigation.navigate("ClientHistory", {userData})}
       >  
       <Text style = {styles.homeButtonText}>Client History</Text>
     </TouchableOpacity>
+    //Views Client Search screen
     var ModifyClientInfoSearch = <TouchableOpacity
       style = {styles.homeButton}
       onPress = {() => navigation.navigate("ModifyClientInfoSearch")}
       >  
       <Text style = {styles.homeButtonText}>Modify Client Search</Text>
     </TouchableOpacity>
-
-    //Takes you to the New Client Approval page !WIP! no functionality
+    //Takes you to the New Client Approval page 
     var newClientApprovalButton = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("New Client approval", {userData})}
+      onPress = {() => navigation.navigate("NewClientApproval", {userData})}
       >  
       <Text style = {styles.homeButtonText}>New Client approval</Text>
     </TouchableOpacity>
@@ -97,12 +96,12 @@ function filterButtons(){
       <Text style = {styles.homeButtonText}>About Me</Text>
     </TouchableOpacity>
     //Takes you to the FAQ page !WIP! no functionality
-    var FAQButton = <TouchableOpacity
-      style = {styles.homeButton}
-      onPress = {() => navigation.navigate("FAQ")}
-      >
-      <Text style = {styles.homeButtonText}>FAQ</Text>
-    </TouchableOpacity>
+    //var FAQButton = <TouchableOpacity
+    //  style = {styles.homeButton}
+    //  onPress = {() => navigation.navigate("FAQ")}
+    //  >
+    //  <Text style = {styles.homeButtonText}>FAQ</Text>
+    //</TouchableOpacity>
     buttons.push(modifyAvButton);
     buttons.push(clientApButton);
     buttons.push(clientInfoButton);
@@ -118,7 +117,7 @@ function filterButtons(){
   //This block constructs buttons that only old clients can see
   else if(userData.newClient == false)
   {
-    //Takes you to the Set Up Appointment Page !WIP! no functionality
+    //Takes you to the Set Up Appointment Page
     var scheduleAppointmentButton2 = <TouchableOpacity
       style = {styles.homeButton}
       onPress = {() => navigation.navigate("SetUpAppoint1", {userData})}
@@ -128,7 +127,7 @@ function filterButtons(){
     //Takes you to the Your Appointments page
     var yourAppointmentsButton = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("Your Appointments", {userData})}
+      onPress = {() => navigation.navigate("AppointmentsClientView", {userData})}
       >
       <Text style = {styles.homeButtonText}>Your Appointments</Text>
     </TouchableOpacity>
@@ -147,12 +146,12 @@ function filterButtons(){
       <Text style = {styles.homeButtonText}>About Me</Text>
     </TouchableOpacity>
     //takes you to the FAQ page !WIP! no functionality
-    var FAQButton2 = <TouchableOpacity
-      style = {styles.homeButton}
-      onPress = {() => navigation.navigate("FAQ")}
-      >
-      <Text style = {styles.homeButtonText}>FAQ</Text>
-    </TouchableOpacity>
+    //var FAQButton2 = <TouchableOpacity
+    //  style = {styles.homeButton}
+    //  onPress = {() => navigation.navigate("FAQ")}
+    //  >
+    //  <Text style = {styles.homeButtonText}>FAQ</Text>
+    //</TouchableOpacity>
     var newClientInfo2 = <TouchableOpacity
       style = {styles.homeButton}
       onPress={() => navigation.navigate('NewClientInfo', {userData})}
@@ -185,12 +184,12 @@ function filterButtons(){
       <Text style = {styles.homeButtonText}>About Me</Text>
     </TouchableOpacity>
     //Takes you to the FAQ page !WIP! no functionality
-    var FAQButton3 = <TouchableOpacity
-      style = {styles.homeButton}
-      onPress = {() => navigation.navigate("FAQ")}
-      >
-      <Text style = {styles.homeButtonText}>FAQ</Text>
-    </TouchableOpacity>
+    //var FAQButton3 = <TouchableOpacity
+    //  style = {styles.homeButton}
+    //  onPress = {() => navigation.navigate("FAQ")}
+    //  >
+    //  <Text style = {styles.homeButtonText}>FAQ</Text>
+    //</TouchableOpacity>
 
     var newClientInfoButton = <TouchableOpacity
     style = {styles.homeButton}
