@@ -106,8 +106,8 @@ function filterButtons(){
     buttons.push(clientApButton);
     buttons.push(clientInfoButton);
     buttons.push(clientHistoryButton);
-    buttons.push(ModifyClientInfoSearch);
     buttons.push(newClientApprovalButton);
+    buttons.push(ModifyClientInfoSearch);
     buttons.push(scheduleAppointmentButton);
     buttons.push(servicesOfferedButton);
     buttons.push(aboutMeButton);

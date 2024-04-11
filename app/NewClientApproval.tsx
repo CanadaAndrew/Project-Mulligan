@@ -52,20 +52,38 @@ export default function NewClientApproval() {
         }
     }*/
 
-    function updateClient() {
-        let data;
-        let funcObj:funcObj = {
-            entireFunction: () => database.get('/customQuery', {
-                params: {
-                    query: 'SELECT ServicesWanted.ServiceName, NewClientView.FirstName, NewClientView.LastName, NewClientView.Email, NewClientView.PhoneNumber, NewClientView.ApprovalStatus, NewClientView.UserID FROM ServicesWanted INNER JOIN NewClientView ON ServicesWanted.UserID = NewClientView.UserID WHERE ApprovalStatus = 1;'
-                }
-            }),
-            type: 'get'
-        };
-        functionGetRetry(funcObj)
-        .then((ret) => data = ret.data)
-        .then(() => { updateClientDisplay(data) })
-        .catch((error) => { notify(error); });
+    // function updateClient() {
+    //     let data;
+    //     let funcObj:funcObj = {
+    //         entireFunction: () => database.get('/customQuery', {
+    //             params: {
+    //                 query: 'SELECT ServicesWanted.ServiceName, NewClientView.FirstName, NewClientView.LastName, NewClientView.Email, NewClientView.PhoneNumber, NewClientView.ApprovalStatus, NewClientView.UserID FROM ServicesWanted INNER JOIN NewClientView ON ServicesWanted.UserID = NewClientView.UserID WHERE ApprovalStatus = 1;'
+    //             }
+    //         }),
+    //         type: 'get'
+    //     };
+    //     functionGetRetry(funcObj)
+    //     .then((ret) => data = ret.data)
+    //     .then(() => { updateClientDisplay(data) })
+    //     .catch((error) => { notify(error); });
+    // }
+
+    async function updateClient() {
+        try {
+            const funcObj: funcObj = {
+                entireFunction: () => database.get('/getNewClientInfo', {
+                    params: {
+
+                    }
+                }),
+                type: 'get'
+            };
+            const data = await functionGetRetry(funcObj);
+            console.log(data);
+            updateClientDisplay(data);
+        } catch (error) {
+
+        }
     }
 
     function updateClientDisplay(data) {
