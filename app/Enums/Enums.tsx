@@ -1,11 +1,8 @@
 import moment from 'moment-timezone';
+//import database from './axiosConfig'; // Import axios from the axiosConfig.js file. Isn't used in this file
 import axios, { AxiosResponse } from 'axios';
 import Toast from 'react-native-root-toast'
 
-const database = axios.create({
-    baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
-    //baseURL: 'http://192.168.1.150:3000', //Chris pc local
-});
 
 const monthsNum = {
     January: '01',

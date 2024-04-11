@@ -164,8 +164,6 @@ export default function NewClientInfo_AdminView({ navigation, route}){
             const oldServices = originalCustServices.split(',').map(service => service.trim()).filter(Boolean); 
             const addedServices = newServices.filter(service => !oldServices.includes(service)); //remove old services from new services to get added services
             const removedServices = oldServices.filter(service => !newServices.includes(service)); //remove new services from old services to get removed services
-            //console.log('addedServices:', addedServices); //for testing purposes
-            //console.log('removedServices:', removedServices); //for testing purposes
 
             if (addedServices.length > 0) { //there are services to be added
                 try {

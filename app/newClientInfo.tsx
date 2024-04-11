@@ -26,8 +26,6 @@ export default function NewClientInfo({route}) {
 
    const { userData } = route.params;
 
-   //console.log(userData); //for testing purposes
-
     async function getName(userID){
         let funcObj:funcObj = {
             entireFunction: () => database.get('/findNewClientViewByID', {
@@ -66,13 +64,6 @@ export default function NewClientInfo({route}) {
 
     const formComplete = StreetAddressValid && CityValid && StateValid && ZipValid;
 
-    //dummy data for testing purposes
-    //const user_ID = 10; //will need to be replaced with actual userID once ok'd from admin (ApprovalStatus in NewClients) -> do we need to check approval status?
-    // const strt = "1234 Main St";
-    // const cty = "Anytown";
-    // const stat = "TX";
-    // const zp = "12345";
-
     const user_ID = userData.userID;
     //const user_ID = 4; //for testing purposes
 
@@ -84,10 +75,6 @@ export default function NewClientInfo({route}) {
                 funcObj = {
                     entireFunction: () => database.post('/currentClientPost', { //userID, street, addressLine2, city, state, zip
                         userID: user_ID, //for demo -> need to replace with actual imported userID -> can use UserID 9-22 for testing but must increment after each use
-                        //street: strt,
-                        //city: cty,
-                        //state: stat,
-                        //zip: zp
                         street: StreetAddress,
                         addressLine2: Address2,
                         city: City,
@@ -100,10 +87,6 @@ export default function NewClientInfo({route}) {
                 funcObj = {
                     entireFunction: () => database.post('/currentClientPostNo2', { //userID, street, city, state, zip
                         userID: user_ID, //for demo -> need to replace with actual imported userID -> can use UserID 9-22 for testing but must increment after each use
-                        //street: strt,
-                        //city: cty,
-                        //state: stat,
-                        //zip: zp
                         street: StreetAddress,
                         city: City,
                         state: State,
@@ -113,7 +96,6 @@ export default function NewClientInfo({route}) {
                 };
             }
             const response = await functionGetRetry(funcObj);
-            //console.log(response); //for testing purposes
             notify('Your information has been updated!');
             //should navigate to home page after successful submission -> need to implement
         } catch (error) {

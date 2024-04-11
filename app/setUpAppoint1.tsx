@@ -54,11 +54,6 @@ export default function SetUpAppoint1({navigation, route}) { // add navigation t
     /*I have genuinely no idea why this function is needed*/
     const handleDatesSelected = (selectedDates: string[]) => {};
 
-    
-
-    //the hairStyleSelected string array that is able to be given to different pages
-    //let hairStyleSelected: string[] = [];
-
     //function that handles the selection of the drop down menu
     //converts selected items to a string so it is 100% a string, splits selected based on "," and stores
     //them in the global hairStyleSelected array
@@ -122,20 +117,6 @@ export default function SetUpAppoint1({navigation, route}) { // add navigation t
                 <View style = {[styles.dummyCalendar, styles.boxShadowIOS, styles.boxShadowAndroid]}>
                     <MyCalendar pageName='SetUpAppoint1' onDatesSelected={handleDatesSelected} disabled={false} ref={calendarContainerRef}/>
                 </View>
-
-                {/*appointment button no functionality yet*/}
-                {/*<View style = {styles.appointmentButton}>
-                  <Pressable
-                    style = {({ pressed }) => [{ backgroundColor: pressed ? '#C154C1' : '#BE42B2'}, styles.appointButtonText ]}>
-                        {({ pressed }) => (
-                        <Link href = "/ClientAp">
-                            <Text style = {styles.appointButtonText}>Schedule Appointment</Text>  
-                        </Link>)}
-                  </Pressable>
-                        </View> */}
-
-                {/*appointment button can send data over to setupAppointemnt2 currently
-                only sending data for hairstyles, data for dates is placeholder data for now*/}
                 <View>
                     <TouchableOpacity
                         style={styles.appointmentButton}

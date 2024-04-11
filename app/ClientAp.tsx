@@ -25,6 +25,7 @@ export default function ClientAp({ route }){
         realDate: Date;
     }
     /*I have genuinely no idea why this function is needed*/
+    //Still unsure
     const handleDatesSelected = (selectedDates: string[]) => {};
 
     //new list that makes it work better with filtering and acts more like actual data from the database

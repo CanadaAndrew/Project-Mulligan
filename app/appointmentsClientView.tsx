@@ -110,7 +110,6 @@ export default function AppointmentsClientView(){
         }
         )
         setPastClientAppointments(appointmentList);
-        //Test: alert("Past list: " + JSON.stringify(appointmentList));
     }
     async function getName(userID){
         let funcObj:funcObj = {

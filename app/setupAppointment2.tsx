@@ -31,57 +31,6 @@ export default function SetupAppointment2({route}) { // added route for page nav
     const {dateData} = route.params;
     const { userData } = route.params;
 
-    //Doesn't work anymore, this is getting replaced by the function directly below this one.
-    /*function updateTimeList(appointmentData){
-        //creates a new date object based on the dateChosen variable. getter/setter isn't working properly for it yet so it is still
-        //using dummy data
-        var appointmentDateChosen = new Date(dateChosen).toISOString().slice(0, 10);
-
-        let appointment;
-        let Times = [];
-        
-        for loop that searches the appointments in the database. If it matches the appointments that are of the same date chosen
-        and the vacancy status is 0 meaning that there is no appointment scheduled for that time slot then it formats the time from
-        the database and puts it into the Times array
-        
-        for(appointment in appointmentData)
-        {
-            let databaseDate = appointmentData[appointment].AppointmentDate.slice(0, 10);
-
-            if(databaseDate == appointmentDateChosen && appointmentData[appointment].VacancyStatus == 0)
-            {
-                //lots of formatting to be done
-                let aptdate = new Date(appointmentData[appointment].AppointmentDate);
-                const hours = aptdate.getUTCHours().toString().padStart(2, '0');
-                const minutes = aptdate.getUTCMinutes().toString().padStart(2, '0');
-                const seconds = aptdate.getUTCSeconds().toString().padStart(2, '0');
-                const formattedTime = `${hours}:${minutes}:${seconds}`;
-
-                const[hours1, minutes1] = formattedTime.split(':');
-                let period = 'am';
-                let hours12 = parseInt(hours, 10);
-                if(hours12 >= 12)
-                {
-                    period = 'pm';
-                    if(hours12 > 12)
-                    {
-                        hours12 -= 12;
-                    }
-                }
-
-                const formatted12HourTime = `${hours12.toString()}:${minutes}${period}`;
-                //at the end it pushes the formatted time to the Times array
-                Times.push(formatted12HourTime);
-
-
-            }
-        }
-        //useState that keeps track of the alteredListOfTimes array. Setting the alteredListOfTimes array to the correctly
-        //formatted and ordered Times array so it can be used outside of this function.
-        setAlteredTimes(Times);
-    }*/
-
-
     const displayDateTimes = async() =>
     {
         //the temporary array of arrays that holds the time strings for each date
