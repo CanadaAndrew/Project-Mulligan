@@ -71,49 +71,53 @@ export default function ModifyAv() {
             //console.log('endDay: ', endDay); //for debugging
 
             //Queries the database with the beginning and end of the day selected 
-            let funcObj:funcObj = {
-                entireFunction: () => database.get('/customQuery', {
-                    params: {
-                        query: `SELECT * FROM Appointments WHERE AppointmentDate >= '${beginDay}' AND AppointmentDate <= '${endDay}' AND VacancyStatus = 0;`
-                    },
-                }),
-                type: 'get'
-            };
-            const responseToQ = await functionGetRetry(funcObj);
+            try {
 
-            //appointmentData then gets the data from the responding query
-            let appointmentData = responseToQ.data;
-            //console.log('response', responseToQ.data); //for testing purposes
 
-            //For each that loops through the appointmentData dates and slices it up to get just the time slot
-            //converts time using the Enums and pushes it to the Times array
-            for(iterable in appointmentData) {
-                let apptTime = appointmentData[iterable].AppointmentDate.slice(11,19)
-                let formattedTime = displayHours[apptTime];
-                Times.push(formattedTime)
-            }
+                const funcObj: funcObj = {
+                    entireFunction: () => database.get('/selectAppointmentsByTime', {
+                        params: {
+                            beginDay: beginDay,
+                            endDay: endDay
+                        }
+                    }),
+                    type: 'get'
+                };
+                const responseToQ = await functionGetRetry(funcObj);
+                            //appointmentData then gets the data from the responding query
+                let appointmentData = responseToQ.data;
+                //console.log('response', responseToQ.data); //for testing purposes
 
-            //get booked times from database
-            funcObj = {
-                entireFunction: () => database.get('/appointmentQuery', {
+                //For each that loops through the appointmentData dates and slices it up to get just the time slot
+                //converts time using the Enums and pushes it to the Times array
+                for(iterable in appointmentData) {
+                    let apptTime = appointmentData[iterable].AppointmentDate.slice(11,19)
+                    let formattedTime = displayHours[apptTime];
+                    Times.push(formattedTime)
+                }
+
+                //get booked times from database
+                funcObj.entireFunction = () => database.get('/appointmentQuery', {
                     params: {
                         startDate: beginDay,
                         endDate: endDay,
                         vacancyStatus: 1
                     },
-                }),
-                type: 'get'
-            }
-            const bookedResponse = await funcObj.entireFunction();
+                });
+                const bookedResponse = await funcObj.entireFunction();
 
-            //sets the AppointmentTimes to the times array so it is updated to reflect that in the app.
-            setAppointmentTimes(Times);
-            setDatabaseTimes(Times); //initial times pulled from database
-            const booked = bookedResponse.data.map(innerArray => innerArray.AppointmentDate.slice(11, 19));
-            const booked12 = booked.map(time => convertTo12Hour(time));
-            //console.log('booked12', booked12); //for testing purposes
-            setBookedAppointmentTimes(booked12); //initial booked times pulled from database
-            //console.log('bookedAppointmentTimes', bookedAppointmentTimes); //for testing purposes
+                //sets the AppointmentTimes to the times array so it is updated to reflect that in the app.
+                setAppointmentTimes(Times);
+                setDatabaseTimes(Times); //initial times pulled from database
+                const booked = bookedResponse.data.map(innerArray => innerArray.AppointmentDate.slice(11, 19));
+                const booked12 = booked.map(time => convertTo12Hour(time));
+                //console.log('booked12', booked12); //for testing purposes
+                setBookedAppointmentTimes(booked12); //initial booked times pulled from database
+                //console.log('bookedAppointmentTimes', bookedAppointmentTimes); //for testing purposes
+
+            } catch {
+
+            }
         } catch(error) {
             console.error(error);
             notify(error)
