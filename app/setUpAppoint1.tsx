@@ -7,6 +7,8 @@ import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-lis
 import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useRef } from 'react';
+import { notify } from './Enums/Enums';
+import { RootSiblingParent } from 'react-native-root-siblings'
 
 //made this available for all pages in the app
 export let hairStyleSelected: string[] = [];
@@ -29,7 +31,7 @@ export default function SetUpAppoint1({navigation, route}) { // add navigation t
     const { userData } = route.params;
     //{ route }, { navigation }
     //useState for drop down menu
-    const [selected, setSelected] = React.useState("");
+    const [selected, setSelected] = React.useState([]);
 
     //options for drop down menu
     const hairOptions = [
@@ -67,6 +69,7 @@ export default function SetUpAppoint1({navigation, route}) { // add navigation t
     }
 
     return(
+        <RootSiblingParent>
         <>
         <ScrollView>
           <View style = {styles.container}>
@@ -122,11 +125,16 @@ export default function SetUpAppoint1({navigation, route}) { // add navigation t
                         style={styles.appointmentButton}
                         onPress={() => {
                             const selectedDates = calendarContainerRef.current?.markedDates;
-                            navigation.navigate('SetupAppointment2', { 
-                            userData,
-                            hairStyleData: hairStyleSelected.join(', '),
-                            dateData: selectedDates.join(', '),
-                            });
+                            if(selectedDates.length == 0 || selected.length == 0){
+                                notify('Please select at least one service and one day.');
+                                return;
+                            }else{
+                                navigation.navigate('SetupAppointment2', { 
+                                    userData,
+                                    hairStyleData: hairStyleSelected.join(', '),
+                                    dateData: selectedDates.join(', '),
+                                    });
+                            }
                             }}>
                         <Text style={styles.appointButtonText}>Schedule Appointment</Text>
                     </TouchableOpacity>
@@ -139,6 +147,7 @@ export default function SetUpAppoint1({navigation, route}) { // add navigation t
           </View>
         </ScrollView>
         </>
+        </RootSiblingParent>
     );
 }
 

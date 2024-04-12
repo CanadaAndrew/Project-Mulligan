@@ -307,12 +307,12 @@ export default function SetupAppointment2({route}) { // added route for page nav
                                                     date:selectedDate,
                                                     time:(newTime + ':00:00'),
                                                     userID: userData.userID,
-                                                    type: services.split('\'').join('')
+                                                    type: hairStyleData
                                                 }
                                             }),
                                             type: 'put'
                                         };
-                                        functionGetRetry(funcObj).then(()=>{notify('Your appointment has been booked!')}).catch(() => notify('Error booking an appointment.'));
+                                        functionGetRetry(funcObj).then(()=>{notify('Your appointment has been booked!')}).catch((error) => notify('Error booking an appointment.'));
                                     }
                                     }
                                 }
