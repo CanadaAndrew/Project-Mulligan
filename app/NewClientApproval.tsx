@@ -7,9 +7,7 @@ import {funcObj, functionGetRetry, notify} from './Enums/Enums'
 import { RootSiblingParent } from 'react-native-root-siblings'
 
 export default function NewClientApproval() {
-
-    const windowDimensions = Dimensions.get('window')
-
+    const {width, height} = useWindowDimensions();
     const [first, setFirst] = React.useState(0);
 
     interface Client {
@@ -140,14 +138,14 @@ export default function NewClientApproval() {
                     locations={[0.7, 1]}
                     colors={['#DDA0DD', 'white']}
                     //style={{ width: windowDimensions.width, height: windowDimensions.height - 85 }}
-                    style={{ width: useWindowDimensions().width, height: useWindowDimensions().height - 85 }}
+                    style={{ width: width, height: height - 85 }}
                 >
                     <View style={styles.container}>
                         <FlatList
                             data={newClient}
                             horizontal={true}
                             renderItem={({ item }) => (
-                                <View style={[{width: useWindowDimensions().width, height: useWindowDimensions().height}, styles.boxShadowIOS, styles.boxShadowAndroid]}>
+                                <View style={[{width: width, height: height}, styles.boxShadowIOS, styles.boxShadowAndroid]}>
                                     <View style={styles.nameContainer}>
                                         <View style={styles.nameButton}>
                                             <Text style={styles.nameText}>{item.name}</Text>
