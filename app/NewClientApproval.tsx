@@ -78,13 +78,14 @@ export default function NewClientApproval() {
             };
             const data = await functionGetRetry(funcObj);
             console.log(data);
-            updateClientDisplay(data);
+            updateClientDisplay(data.data);
         } catch (error) {
 
         }
     }
 
     function updateClientDisplay(data) {
+        console.log(data);
         let clientList: Client[] = [];
         let i = 0;
         data.forEach((client) => {

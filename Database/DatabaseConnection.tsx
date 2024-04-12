@@ -941,6 +941,37 @@ async function queryUsersFromEmail(email) {
     }
 }
 
+async function queryNewUserFromUserID(userId) {
+
+    try {
+
+        const poolConnection = await connect();
+        const query = `SELECT UserID, ApprovalStatus FROM NewClientView WHERE UserID = '${userId}';`;
+        const resultSet = await poolConnection
+            .request()
+            .query(query);
+        poolConnection.close();
+        return sortingResults(resultSet);
+    } catch (err) {
+        console.error(err.message);
+        throw err;
+    }
+
+}
+
+app.get('/queryNewUserFromUserID', async (req, res) => {
+    try {
+        const userId = req.query.email;
+        if (!userId) {
+            throw new Error('Invalid request. Missing "userId"');
+        }
+    const result = await queryNewUserFromUserID(userId);
+    res.send(result);
+    } catch {
+        res.status(400).send('Bad Request');
+    }
+});
+
 app.get('/queryUsersFromEmail', async (req, res) => {
     try {
         const email = req.query.email;
