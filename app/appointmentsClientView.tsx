@@ -5,7 +5,9 @@ import database from './axiosConfig'; // Import axios from the axiosConfig.js fi
 import Constants from 'expo-constants';
 import { UTCtoPST, UTCtoPSTString, funcObj, functionGetRetry, notify} from './Enums/Enums';
 import {RootSiblingParent} from 'react-native-root-siblings'
-export default function AppointmentsClientView(){
+export default function AppointmentsClientView({route}){
+
+    const { userData } = route.params;
 
     const windowDimensions = Dimensions.get('window')
     interface Appointment {
@@ -27,9 +29,9 @@ export default function AppointmentsClientView(){
             let date = UTCtoPST(new Date);
             let dateString = UTCtoPSTString(date); //NOTE THAT THE DATE IS CURRENTLY OFF, NEED TO FIX IN ANOTHER SPRINT //UTCtoPSTString should fix this -Tai
             let name;
-            name = await getName(1);
-            updateUpcomingAppointments(dateString.split("T")[0], 1, name); //Note that currently using ID 1 until the use of UserID transfer comes in
-            updatePastAppointments(dateString.split("T")[0], 1, name);
+            name = await getName(userData.userID);
+            updateUpcomingAppointments(dateString.split("T")[0], userData.userID, name); //Note that currently using ID 1 until the use of UserID transfer comes in
+            updatePastAppointments(dateString.split("T")[0], userData.userID, name);
         }
     }
     //Updates the upcoming appointments given a date.
