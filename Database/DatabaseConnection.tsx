@@ -823,6 +823,8 @@ app.get('/selectAppointmentsByTime', async (req, res) => {
     try {
         const beginDay = req.query.beginDay;
         const endDay = req.query.endDay;
+        console.log('Begin Day: ', beginDay);
+        console.log("endDay: ", endDay);
         if (!beginDay) {
             throw new Error('Invalid requestt. Missing "beginDay"');
         }
@@ -913,11 +915,12 @@ async function selectAppointmentsByTime(beginDay, endDay) {
     try {
         const poolConnection = await connect();
         const query = `SELECT * FROM Appointments WHERE AppointmentDate >= '${beginDay}' AND AppointmentDate <= '${endDay}' AND VacancyStatus = 0;`;
+        console.log(query);
         const resultSet = await poolConnection
             .request()
             .query(query);
         poolConnection.close();
-        return resultSet.recordSet;
+        return sortingResults(resultSet);
     } catch (err) {
         console.error(err.message);
         throw err;

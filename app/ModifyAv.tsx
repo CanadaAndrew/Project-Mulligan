@@ -84,6 +84,7 @@ export default function ModifyAv() {
                     type: 'get'
                 };
                 const responseToQ = await functionGetRetry(funcObj);
+                console.log(responseToQ);
                             //appointmentData then gets the data from the responding query
                 let appointmentData = responseToQ.data;
                 //console.log('response', responseToQ.data); //for testing purposes
