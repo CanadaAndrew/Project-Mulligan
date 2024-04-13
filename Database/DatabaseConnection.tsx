@@ -819,6 +819,25 @@ app.get('/clientHistoryAppointmentsQuery', async (req, res) => {
     }
 });
 
+app.get('/selectAppointmentsByTime', async (req, res) => {
+    try {
+        const beginDay = req.query.beginDay;
+        const endDay = req.query.endDay;
+        console.log('Begin Day: ', beginDay);
+        console.log("endDay: ", endDay);
+        if (!beginDay) {
+            throw new Error('Invalid requestt. Missing "beginDay"');
+        }
+        if (!endDay) {
+            throw new Error('Invalid request. Missing "endDay"');
+        }
+    const result = await selectAppointmentsByTime(beginDay, endDay);
+    res.send(result);
+    } catch {
+        res.status(400).send('Bad Request');
+    }
+});
+
 //async function upcomingAppointmentsQuery(startDate, endDate){   
 async function clientHistoryAppointmentsQuery(startDate, endDate){
     try {
@@ -850,6 +869,15 @@ app.get('/queryCurrentUserFromEmail', async (req, res) => {
     }
 });
 
+app.get('/getNewClientInfo', async (req, res) => {
+    try {
+        const result = await getNewClientInfo();
+        res.send(result);
+    } catch {
+        res.status(400).send('Bad Request');
+    }
+});
+
 async function queryCurrentUserFromEmail(email) {
 
     try {
@@ -867,6 +895,40 @@ async function queryCurrentUserFromEmail(email) {
 
 }
 
+async function getNewClientInfo() {
+    try {
+        const poolConnection = await connect();
+        const query = 'SELECT ServicesWanted.ServiceName, NewClientView.FirstName, NewClientView.LastName, NewClientView.Email, NewClientView.PhoneNumber, NewClientView.ApprovalStatus, NewClientView.UserID FROM ServicesWanted INNER JOIN NewClientView ON ServicesWanted.UserID = NewClientView.UserID WHERE ApprovalStatus = 1;';
+        const resultSet = await poolConnection
+            .request()
+            .query(query);
+        poolConnection.close();
+        return sortingResults(resultSet);
+    } catch (err) {
+        console.error(err.message);
+        throw err;
+    }
+}
+
+async function selectAppointmentsByTime(beginDay, endDay) {
+
+    try {
+        const poolConnection = await connect();
+        const query = `SELECT * FROM Appointments WHERE AppointmentDate >= '${beginDay}' AND AppointmentDate <= '${endDay}' AND VacancyStatus = 0;`;
+        console.log(query);
+        const resultSet = await poolConnection
+            .request()
+            .query(query);
+        poolConnection.close();
+        return sortingResults(resultSet);
+    } catch (err) {
+        console.error(err.message);
+        throw err;
+    }
+
+}
+
+
 async function queryUsersFromEmail(email) {
     try {
         const poolConnection = await connect();
@@ -881,6 +943,37 @@ async function queryUsersFromEmail(email) {
         throw err;
     }
 }
+
+async function queryNewUserFromUserID(userId) {
+
+    try {
+
+        const poolConnection = await connect();
+        const query = `SELECT UserID, ApprovalStatus FROM NewClientView WHERE UserID = '${userId}';`;
+        const resultSet = await poolConnection
+            .request()
+            .query(query);
+        poolConnection.close();
+        return sortingResults(resultSet);
+    } catch (err) {
+        console.error(err.message);
+        throw err;
+    }
+
+}
+
+app.get('/queryNewUserFromUserID', async (req, res) => {
+    try {
+        const userId = req.query.email;
+        if (!userId) {
+            throw new Error('Invalid request. Missing "userId"');
+        }
+    const result = await queryNewUserFromUserID(userId);
+    res.send(result);
+    } catch {
+        res.status(400).send('Bad Request');
+    }
+});
 
 app.get('/queryUsersFromEmail', async (req, res) => {
     try {
@@ -1255,6 +1348,7 @@ async function QueryServicesWantedWithID(userID){
         throw err;
     }
 }
+
 
 /**
  * This breaks down the params, getting the string and storing it before calling the query method.

@@ -104,20 +104,39 @@ export default function NewClientInfo({route}) {
         }
     }
 
-    function getApprovalStatus(userId){
-        let data;
-        let funcObj:funcObj = {
-            entireFunction: () => database.get('/customQuery', {
-                params: {
-                    query: 'SELECT UserID, ApprovalStatus FROM NewClientView WHERE UserID = ' + userId + ';'
-                }
-            }),
-            type: 'get'
-        };
-            functionGetRetry(funcObj)
-            .then((ret) => data = ret.data)
-            .then(() => { isApproved(data) })
-            .catch(() => { notify("error"); });
+    // function getApprovalStatus(userId){
+    //     let data;
+    //     let funcObj:funcObj = {
+    //         entireFunction: () => database.get('/customQuery', {
+    //             params: {
+    //                 query: 'SELECT UserID, ApprovalStatus FROM NewClientView WHERE UserID = ' + userId + ';'
+    //             }
+    //         }),
+    //         type: 'get'
+    //     };
+    //         functionGetRetry(funcObj)
+    //         .then((ret) => data = ret.data)
+    //         .then(() => { isApproved(data) })
+    //         .catch(() => { notify("error"); });
+    // }
+
+    async function getApprovalStatus(userId) {
+        try {
+            const funcObj: funcObj = {
+                entireFunction: () => database.get('/queryNewUserFromUserID', {
+                    params: {
+                        userId: userId
+                    }
+                }),
+                type: 'get'
+            };
+            const data = await functionGetRetry(funcObj);
+            console.log(data);
+            isApproved(data.data);
+        } catch (error) {
+            //IDK
+            console.log(error);
+        }
     }
 
 
