@@ -18,37 +18,12 @@ export default function NewClientApproval() {
         ID: string;
     }
 
-    //dummy data for testing
-    /*const dummyClients: Client[] = [
-        {
-            name: 'John Doe',
-            email: 'john@doe.com',
-            phoneNumber: '123-456-7890',
-            service: 'Haircut'
-        },
-        {
-            name: 'Jane Doe',
-            email: 'jane@doe.com',
-            phoneNumber: '123-456-7890',
-            service: 'Nails'
-        }
-    ];*/
     const [newClient, setNewClient] = React.useState([]); //set to dummyClients for testing
     //let defaultClient: Client[] = [];
     //const [newClient, setNewClient] = React.useState(defaultClient);
     useEffect(() => {
         updateClient();
     }, [])
-     //old code replaced with useEffect Hook ^^^
-    /*firstUpdate();
-    async function firstUpdate() {
-        if (first === 0) {
-            setFirst(1);
-            //let name = await getName(5);
-            //updateClient(1, name); //Note that currently using ID 1 until the use of UserID transfer comes in
-            updateClient(5);
-        }
-    }*/
 
     // function updateClient() {
     //     let data;

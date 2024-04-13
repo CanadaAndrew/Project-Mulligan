@@ -85,68 +85,12 @@ export default function Login({ route, navigation }) {
         } else {
             return input
         }
-        //return input.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
     }
     const setPhoneNumFormat = (input) => {
         const formatPhoNum = formattingPhoneNumber(input);
         setEmail(formatPhoNum);
     }
 
-    // async function checkEmailExists(email) {
-
-    //     try {
-    //         const funcObj: funcObj = {
-    //             entireFunction: () => database.get('/queryCurrentUserFromEmail', {
-    //                 params: {
-    //                     email: email
-    //                 }
-    //             }),
-    //             type: 'get'
-    //         };
-    //         const response = await functionGetRetry(funcObj);
-    //         //userData.userID = response.data.UserID;
-    //         //setUser(response.data);
-    //         console.log('Look here dumbass');
-    //         console.log('This is a current User');
-    //         console.log('response', response.data); // For debugging
-    //         userData.userID = response.data[0].UserID;
-    //         //console.log('Index 3', response.data[3].AdminPriv);
-    //         if (response.data[0].AdminPriv == 1) {
-    //             userData.adminPriv = false;
-    //         } else {
-    //             userData.adminPriv = true;
-    //         }
-    //         userData.newClient = false;
-
-    //     } catch (error) {
-    //         //console.error('Error finding User from email: ', error);
-    //         userData.adminPriv = false;
-    //         userData.newClient = true;
-    //         //console.log(userData);
-    //         try {
-    //             const funcObj: funcObj = {
-    //                 entireFunction: () => database.get('/queryNewUserFromEmail', {
-    //                     params: {
-    //                         email: email
-    //                     }
-    //                 }),
-    //                 type: 'get'
-    //             };
-    //             const response = await functionGetRetry(funcObj);
-    //             alert(JSON.stringify(response.data[0]));
-    //             userData.userID = response.data[0].UserID;
-    //             if (response.data[0].ApprovalStatus == 1) {
-    //                 userData.approved = false;
-    //             } else {
-    //                 userData.approved = true;
-    //             }
-    //         } catch (error) {
-    //             console.log(error);
-    //         }
-
-    //     }
-
-    // }
 
     async function checkEmailExists(email) {
         console.log('Test email: ' ,email);

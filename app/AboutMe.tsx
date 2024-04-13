@@ -22,18 +22,6 @@ export default function AboutMe() {
  
 </View>
 
-     {/*  <View style={styles.backButton}> //obsolete?
-                        <Pressable
-                            style={({ pressed }) => [{ backgroundColor: pressed ? '#D8BFD8' : '#C154C1' }, styles.backButtonText]}
-                        >
-                            {({ pressed }) => (
-                                <Link href="/">
-                                    <Text style={styles.backButtonText}>Back</Text>
-                                </Link>
-                            )}
-                        </Pressable>
-                    </View>*/} 
-
                    
                     <Image style = {styles.logo} source={require('./images/Melissa.jpg')} />
                     <View>

@@ -27,20 +27,6 @@ export default function ServicesOffered() {
             <StatusBar backgroundColor={'black'} />
             <LinearGradient locations={[0.7, 1]} colors={['#DDA0DD', 'white']} style={styles.container}>
                 <View style={styles.container}>
-                    {/* <View style={styles.header}>
-                        <Text style={styles.headerText}>Services Offered</Text>
-                    </View> */}
-                    {/* <View style={styles.backButton}>
-                        <Pressable
-                            style={({ pressed }) => [{ backgroundColor: pressed ? '#D8BFD8' : '#C154C1' }, styles.backButtonText]}
-                        >
-                            {({ pressed }) => (
-                                <Link href="/">
-                                    <Text style={styles.backButtonText}>Back</Text>
-                                </Link>
-                            )}
-                        </Pressable>
-                    </View> */}
                     <FlatList
                         data={services}
                         keyExtractor={(item, index) => index.toString()}

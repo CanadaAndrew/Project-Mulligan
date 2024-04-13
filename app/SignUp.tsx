@@ -54,13 +54,6 @@ export default function SignUp({ navigation, route }) { // added route for page 
         contactSelected = temparr;
     }
 
-    /*useEffect(() => { //for testing purposes -> prints to console whenever lists are updated
-        console.log('hairStyleSelected', hairStyleSelected); //for testing purposes
-    }, [hairStyleSelected]);*/
-
-    //using this dummy data because the dateData variable isn't working currently ^^^ keeps spitting out Monday, December 4th, 2023
-    let dateChosen = 'Mon, 04 December 2023';
-
     // for text input fields
     const [firstName, newFirstName] = React.useState('');
     const [lastName, newLastName] = React.useState('');
@@ -82,16 +75,6 @@ export default function SignUp({ navigation, route }) { // added route for page 
 
     //is everything filled out? if so, unlock the sign up button
     const formComplete =  !(firstNameValid && lastNameValid && emailValid && phoneNumberValid && passwordValid && confirmPasswordValid && selected.length != 0 && selectedCont.length != 0); 
-
-    /*useEffect(() => { //for testing purposes -> prints to console whenever lists are updated
-        console.log('firstNameValid', firstNameValid); //for testing purposes
-        console.log('lastNameValid', lastNameValid); //for testing purposes
-        console.log('emailValid', emailValid); //for testing purposes
-        console.log('phoneNumberValid', phoneNumberValid); //for testing purposes
-        console.log('passwordValid', passwordValid); //for testing purposes
-        console.log('confirmPasswordValid', confirmPasswordValid); //for testing purposes
-        console.log('selected.length', selected.length); //for testing purposes
-    }, [firstNameValid, lastNameValid, emailValid, phoneNumberValid, passwordValid, confirmPasswordValid, selected.length]);*/
 
     //check() functions set the letter/number/length requirement of each text field
     //TODO: determine each requirement for each field 
@@ -153,17 +136,6 @@ export default function SignUp({ navigation, route }) { // added route for page 
         {key: ' Phone number ', value: ' Phone Number'},
         {key: ' email ', value: ' Email '}
     ];
-
-    //demo data for postNewUser function until Firebase authentication is set up
-    /*const e_mail = 'joeshmoe@anywhere.com';
-    const phone_number = '5555555555';
-    const pass_word = 'JoesPassword';
-    const admin_priv = 0; //no admin privileges
-    const first_name = 'Joe';
-    const middle_name = 'Sh';
-    const last_name = 'Moe';
-    const preferred_way_of_contact = 'email';
-    const approval_status = 1; //not sure what 1 represents - Chris*/
 
     //posts new user to the database, assumes user is verified by firebase
     const postNewUser = async () => {
@@ -260,25 +232,6 @@ export default function SignUp({ navigation, route }) { // added route for page 
             alert("No password was entered. Please enter in a password.")
         }
         else {
-            /*
-            IMPORTANT
-
-            We are going to talk with Melissa about using emails instead of Phone numbers for authentication
-            For some reason the phone number verification doesn't want to work and we've been trying but have only had
-            success with the email verification. We may implement this at a later date.
-            */
-            //if(phoneNumber != "")
-            //{
-            //not able to get the phone number verification to work. 
-            /*window.RecaptchaVerifier = new RecaptchaVerifier(auth, 'sign-in-button', {
-                'size': 'invisible',
-                'callback': (response) => {
-                // reCAPTCHA solved, allow signInWithPhoneNumber.
-                }
-            });*/
-            //}
-            //else
-            //{
             createUserWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
                     const user = userCredential.user;
@@ -429,17 +382,6 @@ export default function SignUp({ navigation, route }) { // added route for page 
         </>
     );
 }
-
-//a bunch of checks to see if the text fields are being filled correctly.
-
-//{ firstNameValid && <Text> firstName is valid</Text> /*debugging*/ } 
-//{ lastNameValid && <Text> lastName is valid</Text> /*debugging*/ } 
-//{ emailValid && <Text> email is valid</Text> /*debugging*/ } 
-//{ phoneNumberValid && <Text> phone is valid</Text> /*debugging*/ } 
-//{ passwordValid && <Text> password is valid</Text> /*debugging*/ } 
-//{confirmPasswordValid && <Text>confirm password is valid</Text> /*debugging*/ }
-//{phoneNumber.length != 0 && <Text> phoneNumber length is: {phoneNumber.length} </Text>}
-//{selected.length != 0 && <Text> service/services selected </Text>}
 
 const styles = StyleSheet.create({
     container: {

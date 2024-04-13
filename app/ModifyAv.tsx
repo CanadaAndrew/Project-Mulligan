@@ -20,9 +20,6 @@ export default function ModifyAv() {
     //make a local const this way using route.params
     //const { userData } = route.params;
 
-    //Tester lines for console
-    // console.log("Test");
-    // console.log('UserData in ModifyAv: ', userData);
 
     const [selectedDate, setSelectedDate] = useState(null);
     const [appointmentTimes, setAppointmentTimes] = useState([]); //holds selected appointment times
@@ -196,9 +193,6 @@ export default function ModifyAv() {
         //console.log('tempArray', tempArray); //for debugging
         setFilteredTimes(tempArray);
         tempArray = [];
-        //console.log("Time 1: " + getTime1()) //for testing purposes
-        //console.log("Time 2: " + getTime2()) //for testing purposes
-        //console.log(currentDate.getHours())  //for testing purposes
     };
 
     //changes time with time picker to set closing time
@@ -224,9 +218,6 @@ export default function ModifyAv() {
         if(date1.getHours() <= currentDate.getHours()) {
             //not sure what this is for??? -> anyone know?
         }
-        //console.log("Time 1: " + getTime1()) //for testing purposes
-        //console.log("Time 2: " + getTime2()) //for testing purposes
-        //console.log(currentDate.getHours())  //for testing purposes
     };
   
     const showTimePicker1 = () => {setShow1(true); };
@@ -281,12 +272,8 @@ export default function ModifyAv() {
 
         const insertions = appointmentTimes.filter(time => !databaseTimes.includes(time)); //times to insert into database
         const deletions = deletedTimes.filter(time => !bookedAppointmentTimes.includes(time)); //times to delete from database
-        //console.log('insertions', insertions); //for testing purposes
-        //console.log('deletions', deletions); //for testing purposes
         const timesToInsert = insertions.map(convertTo24Hour);
         let timesToDelete = deletions.map(convertTo24Hour);
-        //console.log('timesToInsert', timesToInsert); //for testing purposes
-        //console.log('timesToDelete', timesToDelete); //for testing purposes
 
         //check if there are times to delete that are booked
         if (deletions.filter(time => bookedAppointmentTimes.includes(time)).length > 0) { //might not need
@@ -321,12 +308,6 @@ export default function ModifyAv() {
                     //wait for all create operations to complete
                     await Promise.all(addPromises);
                 }
-
-                //trying to fix to remove bug when clicking twice on a time -> adds to deletions
-                /*const notAppointmentTimes = listOfTimesDefault.filter(time => !databaseTimes.includes(time));
-                console.log('notAppointmentTimes', notAppointmentTimes); //for testing purposes
-                timesToDelete = timesToDelete.filter(time => notAppointmentTimes.includes(time));
-                console.log('timesToDelete', timesToDelete); //for testing purposes*/
 
                 //check if there are times to delete
                 if (timesToDelete.length > 0) {
@@ -382,15 +363,6 @@ export default function ModifyAv() {
         //update button colors
         setButtonColors(updatedColors);
     }, [listOfTimes, appointmentTimes, bookedAppointmentTimes]);
-    
-    /*useEffect(() => { //for testing purposes -> prints to console whenever lists are updated
-        console.log('databaseTimes', databaseTimes); //for testing purposes
-        console.log('appointmentTimes', appointmentTimes); //for testing purposes
-        console.log('listOfTimes', listOfTimes); //for testing purposes
-        console.log('bookedAppointmentTimes', bookedAppointmentTimes); //for testing purposes
-        console.log('deletedTimes', deletedTimes); //for testing purposes
-        console.log('filteredTimes', filteredTimes); //for testing purposes
-    }, [databaseTimes, appointmentTimes, listOfTimes, bookedAppointmentTimes, deletedTimes, filteredTimes]);*/
 
     return (
         <RootSiblingParent>

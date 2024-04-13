@@ -11,8 +11,6 @@ const windowDimensions = Dimensions.get('window')
 
 export default function ModifyClientInfoSearch({navigation, route}) {
 
-    //const navigation = useNavigation<any>(); //Initialize navigation hook
-
     const windowDimensions = Dimensions.get('window')
 
     const handleNamePress = async (item) => {
@@ -23,7 +21,6 @@ export default function ModifyClientInfoSearch({navigation, route}) {
         while (i < clientList.length) {
             if (clientList[i].FirstName + ' ' + clientList[i].LastName == item) {
                 id = clientList[i].UserID;
-                //console.log(id); //Test to confirm correct ID
                 break;
             }
             i++;

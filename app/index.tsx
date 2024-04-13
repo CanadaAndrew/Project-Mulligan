@@ -117,37 +117,5 @@ export default function index() {
          />
       </Stack.Navigator>
    </NavigationContainer>
-  
-
-/*export default function index(){
-  return (
-
-    <View> 
-      <Stack.Navigator>
-        <Stack.Screen name = "ClientAp" component={ClientAp}/>
-        <Stack.Screen name = "setUpAppoint1" component={setUpAppoint1}/>
-      </Stack.Navigator>
-        <Text>Navigation to currently developed/developing screens, placeholder for homepage.</Text>
-        <View><Text></Text></View>
-        <Link href = "/ModifyAv">Click/Tap here for ModifyAv</Link>
-        <View><Text></Text></View>
-        <Link href = "/ClientAp">Click/Tap here for ClientAp</Link>
-        <View><Text></Text></View>
-        <Link href = "/setUpAppoint1">Click/Tap here for setUpAppoint1</Link>
-        <View><Text></Text></View>
-        <Link href = "/setupAppointment2">Click/Tap here for setupAppointment2</Link>
-    </View>
-    
-    
-    /*
-        <StatusBar style = 'light'/>
-        <ModifyAv/>
-    */
-    /*
-    <View>
-      <StatusBar style='light' />
-      <ClientAp/>
-    </View>
-    */
   );
 }

@@ -117,7 +117,7 @@ function filterButtons(){
   //This block constructs buttons that only old clients can see
   else if(userData.newClient == false)
   {
-    //Takes you to the Set Up Appointment Page 
+    //Takes you to the Set Up Appointment Page
     var scheduleAppointmentButton2 = <TouchableOpacity
       style = {styles.homeButton}
       onPress = {() => navigation.navigate("SetUpAppoint1", {userData})}

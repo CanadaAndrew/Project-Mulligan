@@ -166,9 +166,6 @@ export default function ClientHistory() {
             const day = todaysDate.slice(8, 10);
             const pastDay = String(parseInt(day) - 3);
             const upcomingDay = String(parseInt(day) + 3);
-            //console.log('day: ', day); //for debugging
-            //console.log('pastDay: ', pastDay); //for debugging
-            //console.log('upcomingDay: ', upcomingDay); //for debugging
             const firstDayOfWeek = todaysDate.slice(0, 8) + pastDay + "T00:00:00.000Z"; //sql DateTime2 format
             const lastDayOfWeek = todaysDate.slice(0, 8) + upcomingDay + "T23:59:59.999Z"; //sql DateTime2 format
             let funcObj:funcObj;
@@ -223,13 +220,8 @@ export default function ClientHistory() {
             const month = todaysDate.slice(5, 7); //will use later to get month from string
             const firstDay = '01';
             const lastDay = '28';
-            //console.log('month: ', month); //for debugging
-            //console.log('firstDay: ', firstDay); //for debugging
-            //console.log('lastDay: ', lastDay); //for debugging
             const firstDayOfMonth = todaysDate.slice(0, 8) + firstDay + "T00:00:00.000Z"; //sql DateTime2 format
             const lastDayOfMonth = todaysDate.slice(0, 8) + lastDay + "T23:59:59.999Z"; //sql DateTime2 format
-            //console.log('firstDayOfMonth: ', firstDayOfMonth); //for debugging
-            //console.log('lastDayOfMonth: ', lastDayOfMonth); //for debugging
 
             //past appointments
             let funcObj:funcObj;
@@ -282,9 +274,6 @@ export default function ClientHistory() {
 
             const filteredAppointments = pastClientAppointments.filter(appointment => {
                 const clientName = `${appointment.FirstName} ${appointment.LastName}`.toLowerCase();
-                //console.log("Client Name");
-                //console.log(clientName);
-                //console.log('clientname: ', clientName);
                 return clientName.includes(searchName.toLowerCase());
             });
 
@@ -320,23 +309,6 @@ export default function ClientHistory() {
                 colors={['#DDA0DD', 'white']}
                 style={styles.container}>
                 <View style={styles.container}>
-                    {/*<View style={styles.header}>
-                        <Text style={styles.headerTitle}>Client History</Text>
-                    </View>
-                    <View style={styles.backButton}>
-                        <Pressable
-                            style={({ pressed }) => [{
-                                backgroundColor: pressed ? '#D8BFD8' : '#C154C1'
-                            },
-                            styles.backButtonText
-                            ]}>
-                            {({ pressed }) => (
-                                <Link href="/" asChild>
-                                    <Text style={styles.backButtonText}>Back</Text>
-                                </Link>
-                            )}
-                        </Pressable>
-                    </View>
 
                     {/*Upcoming Appointments*/}
                     <View style = {styles.sectionTitle}>
@@ -424,18 +396,6 @@ export default function ClientHistory() {
                         <Text>Filtered Past Appointments:</Text>
                     </View>
 
-                    {/*<FlatList
-                        data = {pastClientAppointments}
-                        renderItem = {({ item }) => (
-                            <View>
-                                <Text>Customer: {item.FirstName} {item.LastName}</Text>
-                                <Text>Service: {item.TypeOfAppointment}</Text>
-                                <Text>Date: {item.AppointmentDate.substring(0, 10)}</Text>
-                                <Text>Time: {item.AppointmentDate.substring(11, 16)}</Text>
-                            </View>
-                        )}
-                        keyExtractor={(item, index) => index.toString()}
-                    /> */}
                     {/* flat list is replacing the hard coded list from before as this can work with database data and print out the entire list at once */}
                     <FlatList
                         data={pastClientAppointments}

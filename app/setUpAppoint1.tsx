@@ -7,6 +7,8 @@ import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-lis
 import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useRef } from 'react';
+import { notify } from './Enums/Enums';
+import { RootSiblingParent } from 'react-native-root-siblings'
 
 //made this available for all pages in the app
 export let hairStyleSelected: string[] = [];
@@ -29,7 +31,7 @@ export default function SetUpAppoint1({navigation, route}) { // add navigation t
     const { userData } = route.params;
     //{ route }, { navigation }
     //useState for drop down menu
-    const [selected, setSelected] = React.useState("");
+    const [selected, setSelected] = React.useState([]);
 
     //options for drop down menu
     const hairOptions = [
@@ -54,11 +56,6 @@ export default function SetUpAppoint1({navigation, route}) { // add navigation t
     /*I have genuinely no idea why this function is needed*/
     const handleDatesSelected = (selectedDates: string[]) => {};
 
-    
-
-    //the hairStyleSelected string array that is able to be given to different pages
-    //let hairStyleSelected: string[] = [];
-
     //function that handles the selection of the drop down menu
     //converts selected items to a string so it is 100% a string, splits selected based on "," and stores
     //them in the global hairStyleSelected array
@@ -72,6 +69,7 @@ export default function SetUpAppoint1({navigation, route}) { // add navigation t
     }
 
     return(
+        <RootSiblingParent>
         <>
         <ScrollView>
           <View style = {styles.container}>
@@ -122,30 +120,21 @@ export default function SetUpAppoint1({navigation, route}) { // add navigation t
                 <View style = {[styles.dummyCalendar, styles.boxShadowIOS, styles.boxShadowAndroid]}>
                     <MyCalendar pageName='SetUpAppoint1' onDatesSelected={handleDatesSelected} disabled={false} ref={calendarContainerRef}/>
                 </View>
-
-                {/*appointment button no functionality yet*/}
-                {/*<View style = {styles.appointmentButton}>
-                  <Pressable
-                    style = {({ pressed }) => [{ backgroundColor: pressed ? '#C154C1' : '#BE42B2'}, styles.appointButtonText ]}>
-                        {({ pressed }) => (
-                        <Link href = "/ClientAp">
-                            <Text style = {styles.appointButtonText}>Schedule Appointment</Text>  
-                        </Link>)}
-                  </Pressable>
-                        </View> */}
-
-                {/*appointment button can send data over to setupAppointemnt2 currently
-                only sending data for hairstyles, data for dates is placeholder data for now*/}
                 <View>
                     <TouchableOpacity
                         style={styles.appointmentButton}
                         onPress={() => {
                             const selectedDates = calendarContainerRef.current?.markedDates;
-                            navigation.navigate('SetupAppointment2', { 
-                            userData,
-                            hairStyleData: hairStyleSelected.join(', '),
-                            dateData: selectedDates.join(', '),
-                            });
+                            if(selectedDates.length == 0 || selected.length == 0){
+                                notify('Please select at least one service and one day.');
+                                return;
+                            }else{
+                                navigation.navigate('SetupAppointment2', { 
+                                    userData,
+                                    hairStyleData: hairStyleSelected.join(', '),
+                                    dateData: selectedDates.join(', '),
+                                    });
+                            }
                             }}>
                         <Text style={styles.appointButtonText}>Schedule Appointment</Text>
                     </TouchableOpacity>
@@ -158,6 +147,7 @@ export default function SetUpAppoint1({navigation, route}) { // add navigation t
           </View>
         </ScrollView>
         </>
+        </RootSiblingParent>
     );
 }
 
