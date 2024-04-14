@@ -11,6 +11,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import Constants from 'expo-constants';
 import { UTCtoPST, UTCtoPSTString, functionGetRetry, funcObj, notify} from './Enums/Enums';
 import { RootSiblingParent } from 'react-native-root-siblings'
+import { SERVICES } from './Enums/Enums'
 
 
 export default function ClientAp({ route }){ 
@@ -29,36 +30,7 @@ export default function ClientAp({ route }){
     const handleDatesSelected = (selectedDates: string[]) => {};
 
     //new list that makes it work better with filtering and acts more like actual data from the database
-    let clientAppointmentsDefault: Appointment[] = [
-        {
-            name: "Will Smith",
-            service: "Mens Haircut",
-            date: "10/27/23, Fri, 1:00pm",
-            stylist: 'Melissa Wright',
-            realDate: UTCtoPST(new Date("2023-10-27"))
-        },
-        {
-            name: "Bob Smith",
-            service: "Mens Haircut",
-            date: "11/27/23, Mon, 2:00pm",
-            stylist: 'Melissa Wright',
-            realDate: UTCtoPST(new Date("2023-11-27"))
-        },
-        {
-            name: "Jane Doe",
-            service: "Womens Haircut",
-            date: "11/18/23, Fri, 3:00pm",
-            stylist: 'Melissa Wright',
-            realDate: UTCtoPST(new Date("2023-11-18"))
-        },
-        {
-            name: "Melinda Jackson",
-            service: "Hair Extensions",
-            date: "11/15/23, Sat, 2:00pm",
-            stylist: 'Melissa Wright',
-            realDate: UTCtoPST(new Date("2023-11-15"))
-        }
-    ]
+    let clientAppointmentsDefault: Appointment[] = []
 
     //updateAppointments("2023-12-01")
 
@@ -85,13 +57,6 @@ export default function ClientAp({ route }){
     ]
 
 
-    //will probably remove this when the database is added and just work with the date objects it has in it
-    const dateFormat = (date) => {
-        const dd = String(date.getDate()).padStart(2, '0');
-        const mm = String(date.getMonth() + 1).padStart(2, '0');
-        const yy = String(date.getFullYear()).slice(2);
-        return `${mm}/${dd}/${yy}`;
-    }
 
 
     const [first, setFirst] = React.useState(0);
@@ -135,10 +100,23 @@ export default function ClientAp({ route }){
                 promises.push(name);
                 names[appointment.UserID] = name;
             }
+
+            //this block converts the db formatted services to readable services 
+            //splits the appointments up by "," then a for each loop happens for each service in the array. It trims the whitespace
+            //if there is any and uses that trimmed service to find the readable service name in the SERVICES array from enums
+            //then pushes it to the clientServices string array
+            let serviceArr = appointment.TypeOfAppointment.split(",");
+            let clientServices: string[] = [];
+            serviceArr.forEach(serviceEl => {
+                let temp = serviceEl.trim();
+                clientServices.push(SERVICES[temp]['service']);
+            });
+            
             let completeName = await names[appointment.UserID]; 
             let newAppointment : Appointment = {
                 name: completeName,
-                service: appointment.TypeOfAppointment,
+                //uses ClientServices now
+                service: clientServices.join(", ").toString(),
                 date: newDate + ", " + newTime,
                 stylist: 'Melissa Wright',
                 realDate: newDate

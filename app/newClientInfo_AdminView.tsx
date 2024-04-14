@@ -5,8 +5,9 @@ import React, {useState, useEffect} from 'react';
 import database from './axiosConfig'; // Import axios from the axiosConfig.js file
 import firebase from './Firebase';
 import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
-import { notify } from './Enums/Enums';
+import { notify, SERVICES } from './Enums/Enums';
 import { RootSiblingParent } from 'react-native-root-siblings'
+import { MultipleSelectList } from 'react-native-dropdown-select-list';
 
 //Declaring Window as a global variable to be accessed
 declare global {
@@ -17,9 +18,35 @@ declare global {
   
 export default function NewClientInfo_AdminView({ navigation, route}){
 
+    const [selected, setSelected] = React.useState([]);
+    let [hairStyleSelected, setHairStyleSelected] = React.useState([])
+    //options for drop down menu
+    const hairOptions = [
+        {key: 'MENS_HAIRCUT', value: 'Mens Haircut'},
+        {key: 'WOMANS_HAIRCUT', value: 'Womens Haircut'},
+        {key: 'KIDS_HAIRCUT', value: 'Kids Haircut'},
+        {key: 'PARTIAL_HIGHLIGHT', value: 'Partial Highlight'},
+        {key: 'FULL_HIGHLIGHT', value: 'Full Highlight'},
+        {key: 'ROOT_TOUCH_UP', value: 'Root Touch Up'},
+        {key: 'FULL_COLOR', value: 'Full Color'},
+        {key: 'EXTENSION_CONSULTATION', value: 'Extension Consultation'},
+        {key: 'EXTENSION_INSTALLATION', value: 'Extension Installation'},
+        {key: 'EXTENSION_MOVE_UP', value: 'Extension Move-Up'},
+        {key: 'MAKEUP', value: 'Make-Up'},
+        {key: 'SPECIAL_OCCASION_HAIRSTYLE', value: 'Special Occasion Hairstyle'},
+        {key: 'PERM', value: 'Perm'},
+        {key: 'DEEP_CONDITIONING_TREATMENT', value: 'Deep Conditioning Treatment'},
+        {key: 'BLOW_DRY_AND_STYLE', value: 'Blow Dry and Style'},
+        {key: 'WAXING', value: 'Waxing'}
+    ];
+
+
+
     const { id } = route.params;
 
     console.log(id);
+
+    const [defaultOptions, setDefaultOptions] = useState([]);
 
     //Variables to set customer info
 
@@ -49,8 +76,6 @@ export default function NewClientInfo_AdminView({ navigation, route}){
     const [newCustZip, setNewCustZip] = useState('');
 
     const [editingPreferences, setEditingPreferences] = useState(false);
-    const [originalCustServices, setOriginalCustServices] = useState('');
-    const [newCustServices, setNewCustServices] = useState('');
     const [originalCustNotes, setOriginalCustNotes] = useState('');
     const [newCustNotes, setNewCustNotes] = useState('');
 
@@ -156,49 +181,7 @@ export default function NewClientInfo_AdminView({ navigation, route}){
             };
         };
         
-        //update client's services wanted in database
-        if (newCustServices !== originalCustServices) { //new services wanted info entered
-           
-            //determine which services were added and/or removed
-            const newServices = newCustServices.split(',').map(service => service.trim()).filter(Boolean); 
-            const oldServices = originalCustServices.split(',').map(service => service.trim()).filter(Boolean); 
-            const addedServices = newServices.filter(service => !oldServices.includes(service)); //remove old services from new services to get added services
-            const removedServices = oldServices.filter(service => !newServices.includes(service)); //remove new services from old services to get removed services
-
-            if (addedServices.length > 0) { //there are services to be added
-                try {
-                    addedServices.forEach(async (service) => {
-                        await database.post('/servicesWantedPost', {
-                            userID: userID,
-                            serviceName: service
-                        });
-                    });
-                notify('Services added successfully!');
-                } catch (error) {
-                    console.error('Problem updating services wanted', error);
-                    notify('Problem updating services wanted' + error);
-                };
-            };
-            
-            if (removedServices.length > 0) { //there are services to be removed
-                try {
-                    removedServices.forEach(async (service) => {
-                        await database.delete('/deleteServicesWanted', {
-                            data: {
-                                userID: userID,
-                                serviceName: service
-                            }
-                        });
-                    });
-                notify('Services removed successfully!');
-                } catch (error) {
-                    console.error('Problem updating services wanted', error);
-                    notify('Problem updating services wanted' + error)
-                };
-            };
-            setOriginalCustServices(newCustServices); //update original services wanted info with new services wanted info
-            setEditingPreferences(false); //after saving, switch back to view mode*/
-        };
+        setEditingPreferences(false); //after saving, switch back to view mode*/
     };
 
     //this function gets the client info based on the UserID that is passed in to this page
@@ -250,31 +233,7 @@ export default function NewClientInfo_AdminView({ navigation, route}){
             setOriginalCustNotes(clientData2[0].ClientNotes);
             setNewCustNotes(clientData2[0].ClientNotes);
             
-            //the last query gets the services wanted. Since we know the client is in the current client view in this block of the code
-            //they should have entered in their preferred services when being made a current client. 
-            let response3 = await database.get('/queryServicesWantedWithID', {
-                params: {
-                    UserID: userID
-                }
-            });
-            let clientServices = response3.data;
 
-            //formats the preferred services. This block really only matters if there is more than one preferred service
-            //it will look the same for everyone who has just one preferred service
-            let prefServices = "";
-            for(let i = 0; i < clientServices.length; i++)
-            {
-                if (i < clientServices.length - 1){
-                prefServices = prefServices + clientServices[i].ServiceName + ", "
-                }
-                else{
-                    prefServices = prefServices + clientServices[i].ServiceName;
-                }
-            }
-
-            //sets the clients services
-            setOriginalCustServices(prefServices);
-            setNewCustServices(prefServices);
         }
         else
         {
@@ -291,8 +250,6 @@ export default function NewClientInfo_AdminView({ navigation, route}){
             setNewCustStateAbbrev(newClientString);
             setOriginalCustZip(newClientString);
             setNewCustZip(newClientString);
-            setOriginalCustServices(newClientString);
-            setNewCustServices(newClientString);
             setOriginalCustNotes(newClientString);
             setNewCustNotes(newClientString);
         }
@@ -319,6 +276,9 @@ export default function NewClientInfo_AdminView({ navigation, route}){
             }
         }
     }
+
+
+
 
     useEffect(() => {
         getClientInfo();
@@ -441,7 +401,7 @@ export default function NewClientInfo_AdminView({ navigation, route}){
 
                 {/* Edit button and title for Preferences */}
                 <View style={styles.inlineLayout}>
-                <Text style={styles.objectTitle}>Preferences</Text>
+                <Text style={styles.objectTitle}>Notes</Text>
                 <TouchableOpacity
                 style={styles.editButton}
                 onPress={editingPreferences ? savePreferencesChanges : toggleEditPreferences}
@@ -452,19 +412,7 @@ export default function NewClientInfo_AdminView({ navigation, route}){
 
                 {/* Client Info Box for Preferences */}
             <View style={[styles.clientBox, styles.container]}>
-                <Text style={styles.clientTilteText}>Preferred Services (Commas between services)</Text>
-                {editingPreferences ? (
-                <TextInput
-                    style={styles.clientTextInput}
-                    value={newCustServices}
-                    onChangeText={setNewCustServices}
-                    multiline={true}
-                />
-                ) : (
-                <Text style={styles.clientText}>{originalCustServices}</Text>
-                )}
-                <Text>{'\n'}</Text>
-                <Text style={styles.clientTilteText}>Notes</Text>
+
                 {editingPreferences ? (
                 <TextInput
                     style={styles.clientTextInput}

@@ -3,7 +3,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React, {useEffect} from 'react';
 import database from './axiosConfig'; // Import axios from the axiosConfig.js file
 import Constants from 'expo-constants';
-import {funcObj, functionGetRetry, notify} from './Enums/Enums'
+import {funcObj, functionGetRetry, notify, SERVICES} from './Enums/Enums'
 import { RootSiblingParent } from 'react-native-root-siblings'
 
 export default function NewClientApproval() {
@@ -64,11 +64,19 @@ export default function NewClientApproval() {
         let clientList: Client[] = [];
         let i = 0;
         data.forEach((client) => {
+
+            let serviceArr = client.ServiceName.split(",");
+            let clientServices: string[] = [];
+            serviceArr.forEach(serviceEl => {
+                let temp = serviceEl.trim();
+                clientServices.push(SERVICES[temp]['service']);
+            });
+
             let newClient: Client = {
                 name: getFullName(client.FirstName, client.LastName),
                 email: client.Email,
                 phoneNumber: client.PhoneNumber,
-                service: client.ServiceName,
+                service: clientServices.join(", ").toString(),
                 ID: client.UserID
             }
             clientList[i] = newClient;

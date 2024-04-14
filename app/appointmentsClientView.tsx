@@ -5,9 +5,12 @@ import database from './axiosConfig'; // Import axios from the axiosConfig.js fi
 import Constants from 'expo-constants';
 import { UTCtoPST, UTCtoPSTString, funcObj, functionGetRetry, notify} from './Enums/Enums';
 import {RootSiblingParent} from 'react-native-root-siblings'
+import { SERVICES } from './Enums/Enums'
 export default function AppointmentsClientView({route}){
 
     const { userData } = route.params;
+
+
 
     const windowDimensions = Dimensions.get('window')
     interface Appointment {
@@ -78,9 +81,17 @@ export default function AppointmentsClientView({route}){
             let dateTimeArray = appointment.AppointmentDate.split("T");
             let newDate = dateTimeArray[0];
             let newTime = dateTimeArray[1].split("Z")[0];
+
+            let serviceArr = appointment.TypeOfAppointment.split(",");
+            let clientServices: string[] = [];
+            serviceArr.forEach(serviceEl => {
+                let temp = serviceEl.trim();
+                clientServices.push(SERVICES[temp]['service']);
+            });
+
             let newAppointment : Appointment = {
                 name: name,
-                service: appointment.TypeOfAppointment,
+                service: clientServices.join(", ").toString(),
                 date: newDate + ", " + newTime,
                 stylist: 'Melissa Wright',
                 realDate: newDate
@@ -100,9 +111,17 @@ export default function AppointmentsClientView({route}){
             let dateTimeArray = appointment.AppointmentDate.split("T");
             let newDate = dateTimeArray[0];
             let newTime = dateTimeArray[1].split("Z")[0];
+
+            let serviceArr = appointment.TypeOfAppointment.split(",");
+            let clientServices: string[] = [];
+            serviceArr.forEach(serviceEl => {
+                let temp = serviceEl.trim();
+                clientServices.push(SERVICES[temp]['service']);
+            });
+
             let newAppointment : Appointment = {
                 name: name,
-                service: appointment.TypeOfAppointment,
+                service: clientServices.join(", ").toString(),
                 date: newDate + ", " + newTime,
                 stylist: 'Melissa Wright',
                 realDate: newDate

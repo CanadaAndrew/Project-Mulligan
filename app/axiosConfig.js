@@ -9,7 +9,7 @@ const database = axios.create({
     //baseURL: 'http://10.0.0.119:3000',  // Wilson local
     //baseURL: 'http://10.0.0.192:3000',
     //baseURL: 'http://192.168.1.150:3000', //Chris pc local
-    //baseURL: 'http://10.0.0.14:3000', //Cameron Local
+    baseURL: 'http://10.0.0.14:3000', //Cameron Local
     //baseURL: 'http://10.0.0.112:3000',
     //baseURL: 'http://192.168.1.33:3000' //dru pc local
 });

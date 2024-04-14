@@ -10,6 +10,7 @@ import { text } from 'express';
 import Constants from 'expo-constants';
 import { UTCtoPST, UTCtoPSTString, funcObj, functionGetRetry, notify} from './Enums/Enums';
 import { RootSiblingParent } from 'react-native-root-siblings'
+import { SERVICES } from './Enums/Enums'
 
 export default function ClientHistory() {
 
@@ -97,7 +98,19 @@ export default function ClientHistory() {
                     type: 'get'
                 };
                 const response = await funcObj.entireFunction()
-                setPastClientAppointments(response.data);
+
+                let appointmentArray = response.data;
+                appointmentArray.forEach( (appointment) => {
+                    let serviceArr = appointment.TypeOfAppointment.split(",");
+                    let clientServices: string[] = [];
+                    serviceArr.forEach((serviceEl) => {
+                        let temp = serviceEl.trim();
+                        clientServices.push(SERVICES[temp]['service'])
+                    });
+                    appointment.TypeOfAppointment = clientServices.join(", ").toString()
+                });
+
+                setPastClientAppointments(appointmentArray);
                 //console.log('response', response.data); //for debugging
             } catch (error) {
                 try{
@@ -119,8 +132,20 @@ export default function ClientHistory() {
                     }),
                     type: 'get'
                 };
-                const response = await funcObj.entireFunction()
-                setUpcomingClientAppointments(response.data);
+                const response = await funcObj.entireFunction();
+
+                let appointmentArray = response.data;
+                appointmentArray.forEach( (appointment) => {
+                    let serviceArr = appointment.TypeOfAppointment.split(",");
+                    let clientServices: string[] = [];
+                    serviceArr.forEach((serviceEl) => {
+                        let temp = serviceEl.trim();
+                        clientServices.push(SERVICES[temp]['service'])
+                    });
+                    appointment.TypeOfAppointment = clientServices.join(", ").toString()
+                });
+
+                setUpcomingClientAppointments(appointmentArray);
             } catch (error) {
                 try{
                     const response = await functionGetRetry(funcObj);
@@ -147,9 +172,20 @@ export default function ClientHistory() {
                     type: 'get'
                 };
                 const response = await funcObj.entireFunction()
-                //console.log(response.data); //for debugging
-                setPastClientAppointments(response.data);
-                setUpcomingClientAppointments(response.data);
+                
+                let appointmentArray = response.data;
+                appointmentArray.forEach( (appointment) => {
+                    let serviceArr = appointment.TypeOfAppointment.split(",");
+                    let clientServices: string[] = [];
+                    serviceArr.forEach((serviceEl) => {
+                        let temp = serviceEl.trim();
+                        clientServices.push(SERVICES[temp]['service'])
+                    });
+                    appointment.TypeOfAppointment = clientServices.join(", ").toString()
+                });
+
+                setPastClientAppointments(appointmentArray);
+                setUpcomingClientAppointments(appointmentArray);
             } catch (error) {
                 try{
                     const response = await functionGetRetry(funcObj);
@@ -181,7 +217,19 @@ export default function ClientHistory() {
                         type: 'get'
                 };
                 const response = await funcObj.entireFunction();
-                setPastClientAppointments(response.data);
+
+                let appointmentArray = response.data;
+                appointmentArray.forEach( (appointment) => {
+                    let serviceArr = appointment.TypeOfAppointment.split(",");
+                    let clientServices: string[] = [];
+                    serviceArr.forEach((serviceEl) => {
+                        let temp = serviceEl.trim();
+                        clientServices.push(SERVICES[temp]['service'])
+                    });
+                    appointment.TypeOfAppointment = clientServices.join(", ").toString()
+                });
+
+                setPastClientAppointments(appointmentArray);
             } catch (error) {
                 try{
                     const response = await functionGetRetry(funcObj);
@@ -191,7 +239,7 @@ export default function ClientHistory() {
                 }
             }
 
-            //upcoming appointments
+            //upcoming appointments/
             try {
                 funcObj ={
                     entireFunction: () =>database.get('/clientHistoryAppointmentsQuery', {
@@ -203,7 +251,19 @@ export default function ClientHistory() {
                     type: 'get'
                 };
                 const response = await funcObj.entireFunction();
-                setUpcomingClientAppointments(response.data);
+
+                let appointmentArray = response.data;
+                appointmentArray.forEach( (appointment) => {
+                    let serviceArr = appointment.TypeOfAppointment.split(",");
+                    let clientServices: string[] = [];
+                    serviceArr.forEach((serviceEl) => {
+                        let temp = serviceEl.trim();
+                        clientServices.push(SERVICES[temp]['service'])
+                    });
+                    appointment.TypeOfAppointment = clientServices.join(", ").toString()
+                });
+
+                setUpcomingClientAppointments(appointmentArray);
             } catch (error) {
                 try{
                     const response = await functionGetRetry(funcObj);
@@ -236,7 +296,19 @@ export default function ClientHistory() {
                     type: 'get'
                 };
                 const response = await funcObj.entireFunction();
-                setPastClientAppointments(response.data);
+
+                let appointmentArray = response.data;
+                appointmentArray.forEach( (appointment) => {
+                    let serviceArr = appointment.TypeOfAppointment.split(",");
+                    let clientServices: string[] = [];
+                    serviceArr.forEach((serviceEl) => {
+                        let temp = serviceEl.trim();
+                        clientServices.push(SERVICES[temp]['service'])
+                    });
+                    appointment.TypeOfAppointment = clientServices.join(", ").toString()
+                });
+                
+                setPastClientAppointments(appointmentArray);
             } catch (error) {
                 try{
                     const response = await functionGetRetry(funcObj);
@@ -258,7 +330,19 @@ export default function ClientHistory() {
                     type: 'get'
                 };
                 const response = await functionGetRetry(funcObj);
-                setUpcomingClientAppointments(response.data);
+
+                let appointmentArray = response.data;
+                appointmentArray.forEach( (appointment) => {
+                    let serviceArr = appointment.TypeOfAppointment.split(",");
+                    let clientServices: string[] = [];
+                    serviceArr.forEach((serviceEl) => {
+                        let temp = serviceEl.trim();
+                        clientServices.push(SERVICES[temp]['service'])
+                    });
+                    appointment.TypeOfAppointment = clientServices.join(", ").toString();
+                });
+
+                setUpcomingClientAppointments(appointmentArray);
             } catch (error) {
                 console.error("Error getting this month's upcoming appointments", error);
             }
@@ -391,9 +475,6 @@ export default function ClientHistory() {
                                 />
 
                         </View>
-                    </View>
-                    <View>
-                        <Text>Filtered Past Appointments:</Text>
                     </View>
 
                     {/* flat list is replacing the hard coded list from before as this can work with database data and print out the entire list at once */}
