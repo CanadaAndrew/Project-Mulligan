@@ -3,23 +3,16 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState, } from 'react';
 import { Link } from 'expo-router';
 import { SelectList } from 'react-native-dropdown-select-list';
-import axios from 'axios'; //used to get data from the backend nodejs
+import database from './axiosConfig'; // Import axios from the axiosConfig.js file
 import moment from 'moment-timezone';
-import { TextInput } from 'react-native-gesture-handler';
+import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import { text } from 'express';
 import Constants from 'expo-constants';
-import { UTCtoPST, UTCtoPSTString, funcObj, functionGetRetry } from './Enums/Enums';
+import { UTCtoPSTString, funcObj, functionGetRetry, notify} from './Enums/Enums';
+import { RootSiblingParent } from 'react-native-root-siblings'
+import { SERVICES } from './Enums/Enums'
 
 export default function ClientHistory() {
-
-    //server connection
-    const database = axios.create({
-        baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
-        //baseURL: 'http://192.168.1.150:3000', //Chris pc local
-        //baseURL: 'http://10.0.0.192:3000'
-        //baseURL: 'http://10.0.0.112:3000',
-    });
-
 
     interface Appointment {
         name: string;
@@ -105,7 +98,19 @@ export default function ClientHistory() {
                     type: 'get'
                 };
                 const response = await funcObj.entireFunction()
-                setPastClientAppointments(response.data);
+
+                let appointmentArray = response.data;
+                appointmentArray.forEach( (appointment) => {
+                    let serviceArr = appointment.TypeOfAppointment.split(",");
+                    let clientServices: string[] = [];
+                    serviceArr.forEach((serviceEl) => {
+                        let temp = serviceEl.trim();
+                        clientServices.push(SERVICES[temp]['service'])
+                    });
+                    appointment.TypeOfAppointment = clientServices.join(", ").toString()
+                });
+
+                setPastClientAppointments(appointmentArray);
                 //console.log('response', response.data); //for debugging
             } catch (error) {
                 try{
@@ -113,6 +118,7 @@ export default function ClientHistory() {
                     setPastClientAppointments(response.data)
                 }catch(err){
                     console.error('Error getting all past appointments: ', err);
+                    notify('Error getting all past appointments: ' + err);
                 }
             }
 
@@ -126,8 +132,20 @@ export default function ClientHistory() {
                     }),
                     type: 'get'
                 };
-                const response = await funcObj.entireFunction()
-                setUpcomingClientAppointments(response.data);
+                const response = await funcObj.entireFunction();
+
+                let appointmentArray = response.data;
+                appointmentArray.forEach( (appointment) => {
+                    let serviceArr = appointment.TypeOfAppointment.split(",");
+                    let clientServices: string[] = [];
+                    serviceArr.forEach((serviceEl) => {
+                        let temp = serviceEl.trim();
+                        clientServices.push(SERVICES[temp]['service'])
+                    });
+                    appointment.TypeOfAppointment = clientServices.join(", ").toString()
+                });
+
+                setUpcomingClientAppointments(appointmentArray);
             } catch (error) {
                 try{
                     const response = await functionGetRetry(funcObj);
@@ -154,9 +172,20 @@ export default function ClientHistory() {
                     type: 'get'
                 };
                 const response = await funcObj.entireFunction()
-                //console.log(response.data); //for debugging
-                setPastClientAppointments(response.data);
-                setUpcomingClientAppointments(response.data);
+                
+                let appointmentArray = response.data;
+                appointmentArray.forEach( (appointment) => {
+                    let serviceArr = appointment.TypeOfAppointment.split(",");
+                    let clientServices: string[] = [];
+                    serviceArr.forEach((serviceEl) => {
+                        let temp = serviceEl.trim();
+                        clientServices.push(SERVICES[temp]['service'])
+                    });
+                    appointment.TypeOfAppointment = clientServices.join(", ").toString()
+                });
+
+                setPastClientAppointments(appointmentArray);
+                setUpcomingClientAppointments(appointmentArray);
             } catch (error) {
                 try{
                     const response = await functionGetRetry(funcObj);
@@ -173,9 +202,6 @@ export default function ClientHistory() {
             const day = todaysDate.slice(8, 10);
             const pastDay = String(parseInt(day) - 3);
             const upcomingDay = String(parseInt(day) + 3);
-            //console.log('day: ', day); //for debugging
-            //console.log('pastDay: ', pastDay); //for debugging
-            //console.log('upcomingDay: ', upcomingDay); //for debugging
             const firstDayOfWeek = todaysDate.slice(0, 8) + pastDay + "T00:00:00.000Z"; //sql DateTime2 format
             const lastDayOfWeek = todaysDate.slice(0, 8) + upcomingDay + "T23:59:59.999Z"; //sql DateTime2 format
             let funcObj:funcObj;
@@ -191,7 +217,19 @@ export default function ClientHistory() {
                         type: 'get'
                 };
                 const response = await funcObj.entireFunction();
-                setPastClientAppointments(response.data);
+
+                let appointmentArray = response.data;
+                appointmentArray.forEach( (appointment) => {
+                    let serviceArr = appointment.TypeOfAppointment.split(",");
+                    let clientServices: string[] = [];
+                    serviceArr.forEach((serviceEl) => {
+                        let temp = serviceEl.trim();
+                        clientServices.push(SERVICES[temp]['service'])
+                    });
+                    appointment.TypeOfAppointment = clientServices.join(", ").toString()
+                });
+
+                setPastClientAppointments(appointmentArray);
             } catch (error) {
                 try{
                     const response = await functionGetRetry(funcObj);
@@ -201,7 +239,7 @@ export default function ClientHistory() {
                 }
             }
 
-            //upcoming appointments
+            //upcoming appointments/
             try {
                 funcObj ={
                     entireFunction: () =>database.get('/clientHistoryAppointmentsQuery', {
@@ -213,7 +251,19 @@ export default function ClientHistory() {
                     type: 'get'
                 };
                 const response = await funcObj.entireFunction();
-                setUpcomingClientAppointments(response.data);
+
+                let appointmentArray = response.data;
+                appointmentArray.forEach( (appointment) => {
+                    let serviceArr = appointment.TypeOfAppointment.split(",");
+                    let clientServices: string[] = [];
+                    serviceArr.forEach((serviceEl) => {
+                        let temp = serviceEl.trim();
+                        clientServices.push(SERVICES[temp]['service'])
+                    });
+                    appointment.TypeOfAppointment = clientServices.join(", ").toString()
+                });
+
+                setUpcomingClientAppointments(appointmentArray);
             } catch (error) {
                 try{
                     const response = await functionGetRetry(funcObj);
@@ -230,13 +280,8 @@ export default function ClientHistory() {
             const month = todaysDate.slice(5, 7); //will use later to get month from string
             const firstDay = '01';
             const lastDay = '28';
-            //console.log('month: ', month); //for debugging
-            //console.log('firstDay: ', firstDay); //for debugging
-            //console.log('lastDay: ', lastDay); //for debugging
             const firstDayOfMonth = todaysDate.slice(0, 8) + firstDay + "T00:00:00.000Z"; //sql DateTime2 format
             const lastDayOfMonth = todaysDate.slice(0, 8) + lastDay + "T23:59:59.999Z"; //sql DateTime2 format
-            //console.log('firstDayOfMonth: ', firstDayOfMonth); //for debugging
-            //console.log('lastDayOfMonth: ', lastDayOfMonth); //for debugging
 
             //past appointments
             let funcObj:funcObj;
@@ -251,7 +296,19 @@ export default function ClientHistory() {
                     type: 'get'
                 };
                 const response = await funcObj.entireFunction();
-                setPastClientAppointments(response.data);
+
+                let appointmentArray = response.data;
+                appointmentArray.forEach( (appointment) => {
+                    let serviceArr = appointment.TypeOfAppointment.split(",");
+                    let clientServices: string[] = [];
+                    serviceArr.forEach((serviceEl) => {
+                        let temp = serviceEl.trim();
+                        clientServices.push(SERVICES[temp]['service'])
+                    });
+                    appointment.TypeOfAppointment = clientServices.join(", ").toString()
+                });
+                
+                setPastClientAppointments(appointmentArray);
             } catch (error) {
                 try{
                     const response = await functionGetRetry(funcObj);
@@ -273,7 +330,19 @@ export default function ClientHistory() {
                     type: 'get'
                 };
                 const response = await functionGetRetry(funcObj);
-                setUpcomingClientAppointments(response.data);
+
+                let appointmentArray = response.data;
+                appointmentArray.forEach( (appointment) => {
+                    let serviceArr = appointment.TypeOfAppointment.split(",");
+                    let clientServices: string[] = [];
+                    serviceArr.forEach((serviceEl) => {
+                        let temp = serviceEl.trim();
+                        clientServices.push(SERVICES[temp]['service'])
+                    });
+                    appointment.TypeOfAppointment = clientServices.join(", ").toString();
+                });
+
+                setUpcomingClientAppointments(appointmentArray);
             } catch (error) {
                 console.error("Error getting this month's upcoming appointments", error);
             }
@@ -289,9 +358,6 @@ export default function ClientHistory() {
 
             const filteredAppointments = pastClientAppointments.filter(appointment => {
                 const clientName = `${appointment.FirstName} ${appointment.LastName}`.toLowerCase();
-                //console.log("Client Name");
-                //console.log(clientName);
-                //console.log('clientname: ', clientName);
                 return clientName.includes(searchName.toLowerCase());
             });
 
@@ -319,29 +385,14 @@ export default function ClientHistory() {
     }, [pastClientAppointments, upcomingClientAppointments]);
 
     return (
+        <RootSiblingParent>
         <>
+        <ScrollView>
             <LinearGradient
                 locations={[0.7, 1]}
                 colors={['#DDA0DD', 'white']}
                 style={styles.container}>
                 <View style={styles.container}>
-                    <View style={styles.header}>
-                        <Text style={styles.headerTitle}>Client History</Text>
-                    </View>
-                    <View style={styles.backButton}>
-                        <Pressable
-                            style={({ pressed }) => [{
-                                backgroundColor: pressed ? '#D8BFD8' : '#C154C1'
-                            },
-                            styles.backButtonText
-                            ]}>
-                            {({ pressed }) => (
-                                <Link href="/" asChild>
-                                    <Text style={styles.backButtonText}>Back</Text>
-                                </Link>
-                            )}
-                        </Pressable>
-                    </View>
 
                     {/*Upcoming Appointments*/}
                     <View style = {styles.sectionTitle}>
@@ -425,22 +476,7 @@ export default function ClientHistory() {
 
                         </View>
                     </View>
-                    <View>
-                        <Text>Filtered Past Appointments:</Text>
-                    </View>
 
-                    {/*<FlatList
-                        data = {pastClientAppointments}
-                        renderItem = {({ item }) => (
-                            <View>
-                                <Text>Customer: {item.FirstName} {item.LastName}</Text>
-                                <Text>Service: {item.TypeOfAppointment}</Text>
-                                <Text>Date: {item.AppointmentDate.substring(0, 10)}</Text>
-                                <Text>Time: {item.AppointmentDate.substring(11, 16)}</Text>
-                            </View>
-                        )}
-                        keyExtractor={(item, index) => index.toString()}
-                    /> */}
                     {/* flat list is replacing the hard coded list from before as this can work with database data and print out the entire list at once */}
                     <FlatList
                         data={pastClientAppointments}
@@ -469,12 +505,15 @@ export default function ClientHistory() {
                   
                 </View>
             </LinearGradient>
+            </ScrollView>
         </>
+        </RootSiblingParent>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
+        paddingBottom: 300,
     },
     // title of page
     headerTitle: {

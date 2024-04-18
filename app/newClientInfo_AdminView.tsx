@@ -2,9 +2,12 @@ import { StyleSheet, Text, View, ScrollView, TextInput, ImageBackground,} from '
 import { LinearGradient } from 'expo-linear-gradient';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import React, {useState, useEffect} from 'react';
-import axios from 'axios';
+import database from './axiosConfig'; // Import axios from the axiosConfig.js file
 import firebase from './Firebase';
 import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
+import { notify, SERVICES } from './Enums/Enums';
+import { RootSiblingParent } from 'react-native-root-siblings'
+import { MultipleSelectList } from 'react-native-dropdown-select-list';
 
 //Declaring Window as a global variable to be accessed
 declare global {
@@ -13,13 +16,43 @@ declare global {
     }
   }
   
-export default function newClientInfo_AdminView({ navigation }){
+export default function NewClientInfo_AdminView({ navigation, route}){
+
+    const [selected, setSelected] = React.useState([]);
+    let [hairStyleSelected, setHairStyleSelected] = React.useState([])
+    //options for drop down menu
+    const hairOptions = [
+        {key: 'MENS_HAIRCUT', value: 'Mens Haircut'},
+        {key: 'WOMANS_HAIRCUT', value: 'Womens Haircut'},
+        {key: 'KIDS_HAIRCUT', value: 'Kids Haircut'},
+        {key: 'PARTIAL_HIGHLIGHT', value: 'Partial Highlight'},
+        {key: 'FULL_HIGHLIGHT', value: 'Full Highlight'},
+        {key: 'ROOT_TOUCH_UP', value: 'Root Touch Up'},
+        {key: 'FULL_COLOR', value: 'Full Color'},
+        {key: 'EXTENSION_CONSULTATION', value: 'Extension Consultation'},
+        {key: 'EXTENSION_INSTALLATION', value: 'Extension Installation'},
+        {key: 'EXTENSION_MOVE_UP', value: 'Extension Move-Up'},
+        {key: 'MAKEUP', value: 'Make-Up'},
+        {key: 'SPECIAL_OCCASION_HAIRSTYLE', value: 'Special Occasion Hairstyle'},
+        {key: 'PERM', value: 'Perm'},
+        {key: 'DEEP_CONDITIONING_TREATMENT', value: 'Deep Conditioning Treatment'},
+        {key: 'BLOW_DRY_AND_STYLE', value: 'Blow Dry and Style'},
+        {key: 'WAXING', value: 'Waxing'}
+    ];
+
+
+
+    const { id } = route.params;
+
+    console.log(id);
+
+    const [defaultOptions, setDefaultOptions] = useState([]);
 
     //Variables to set customer info
 
     //This userID is temporary right now as there is no feature to bring the userID over from the previous page yet.
     //Need this to be changed later!!!!*************
-    let userID = 3; //for testing purposes
+    let userID = id; //for testing purposes
     //const userID = 6; //for testing purposes
 
     const [editingContactInfo, setEditingContactInfo] = useState(false);
@@ -28,24 +61,26 @@ export default function newClientInfo_AdminView({ navigation }){
     const [newCustPhone, setNewCustPhone] = useState('');
     const [originalCustEmail, setOriginalCustEmail] = useState('');
     const [newCustEmail, setNewCustEmail] = useState('');
-    const [originalCustAddress, setOriginalCustAddress] = useState('');
-    const [newCustAddress, setNewCustAddress] = useState('');
+
+    //const [originalCustAddress, setOriginalCustAddress] = useState('');
+    //const [newCustAddress, setNewCustAddress] = useState('');
+    const [originalCustStreet, setOriginalCustStreet] = useState('');
+    const [newCustStreet, setNewCustStreet] = useState('');
+    const [originalCustAddress2, setOriginalCustAddress2] = useState('');
+    const [newCustAddress2, setNewCustAddress2] = useState('');
+    const [originalCustCity, setOriginalCustCity] = useState('');
+    const [newCustCity, setNewCustCity] = useState('');
+    const [originalCustStateAbbrev, setOriginalCustStateAbbrev] = useState('');
+    const [newCustStateAbbrev, setNewCustStateAbbrev] = useState('');
+    const [originalCustZip, setOriginalCustZip] = useState('');
+    const [newCustZip, setNewCustZip] = useState('');
 
     const [editingPreferences, setEditingPreferences] = useState(false);
-    const [originalCustServices, setOriginalCustServices] = useState('');
-    const [newCustServices, setNewCustServices] = useState('');
     const [originalCustNotes, setOriginalCustNotes] = useState('');
     const [newCustNotes, setNewCustNotes] = useState('');
 
     const auth = getAuth(firebase);
     auth.languageCode = 'en';
-
-    const database = axios.create({
-        //baseURL: 'http://10.0.0.192:3000', //Andrew pc local
-        baseURL: 'http://192.168.1.150:3000', //Chris pc local
-        //baseURL: 'http://10.0.0.133:3000',
-        //baseURL: 'http://10.0.0.14:3000', //Cameron pc local
-    })
 
     //Toggles the edit permissions for the contact info box
     const toggleEditContactInfo = () => {
@@ -59,33 +94,41 @@ export default function newClientInfo_AdminView({ navigation }){
     
     //updates database with contact info changes
     const saveContactInfoChanges = () => {
-        if (newCustAddress !== originalCustAddress) { //new address info entered
+        if (newCustStreet !== originalCustStreet || newCustAddress2 !== originalCustAddress2 || newCustCity != originalCustCity
+            || newCustStateAbbrev != originalCustStateAbbrev || newCustZip != originalCustZip) { //new address info entered
 
-            const addressTokens = newCustAddress.split(','); //tokenize address string
+            /*const addressTokens = newCustAddress.split(','); //tokenize address string
             if (addressTokens.length !== 4) { //address must have 4 parts
                 alert('Address must have four parts separated by commas: street, city, state abbreviation, and zip code');
                 return;
-            };
+            };*/
 
             //update client's address info in database
             try {
-                const custStreet = addressTokens[0].trim();
-                const custCity = addressTokens[1].trim();
-                const custStateAbbrev = addressTokens[2].trim();
-                const custZip = addressTokens[3].trim();
+                const custStreet = newCustStreet.trim();
+                const custAddress2 = newCustAddress2.trim();
+                const custCity = newCustCity.trim();
+                const custStateAbbrev = newCustStateAbbrev.trim();
+                const custZip = newCustZip.trim();
 
-                //database.patch('/updateCurrentClientViewContactInfo', {
                 database.patch('/updateCurrentClientsAddress', {
                     userID: userID,
                     street: custStreet,
+                    addressLine2: custAddress2,
                     city: custCity,
                     stateAbbreviation: custStateAbbrev,
                     zip: custZip
                 });
-                alert('Address updated successfully');
-                setOriginalCustAddress(newCustAddress); //update original address info with new address info
+                notify('Address updated successfully!');
+                //setOriginalCustAddress(newCustAddress); //update original address info with new address info
+                setOriginalCustStreet(custStreet);
+                setOriginalCustAddress2(custAddress2);
+                setOriginalCustCity(custCity);
+                setOriginalCustStateAbbrev(custStateAbbrev);
+                setOriginalCustZip(custZip);
             } catch (error) {
                 console.error('Problem updating address info', error);
+                notify('Problem updating address info: ' + error)
             };
         };
 
@@ -96,10 +139,11 @@ export default function newClientInfo_AdminView({ navigation }){
                     userID: userID,
                     email: newCustEmail,
                 });
-                alert('Email updated successfully');
+                notify('Email updated successfully!');
                 setOriginalCustEmail(newCustEmail); //update original email info with new email info
             } catch (error) {
                 console.error('Problem updating email', error);
+                notify('Problem updating email: ' + error)
             };
         };
 
@@ -110,10 +154,11 @@ export default function newClientInfo_AdminView({ navigation }){
                     userID: userID,
                     phoneNumber: newCustPhone
                 });
-                alert('Phone number updated successfully');
+                notify('Phone number updated successfully!');
                 setOriginalCustPhone(newCustPhone); //update original phone number info with new phone number info
             } catch (error) {
                 console.error('Problem updating phone number', error);
+                notify('Problem updating phone number: ' + error);
             };
         }
         setEditingContactInfo(false); //after saving, switch back to view mode
@@ -128,56 +173,15 @@ export default function newClientInfo_AdminView({ navigation }){
                     userID: userID,
                     clientNotes: newCustNotes
                 });
-                alert('Notes updated successfully');
+                notify('Notes updated successfully!');
                 setOriginalCustNotes(newCustNotes); //update original notes info with new notes info
             } catch (error) {
                 console.error("Problem updating client's notes", error);
+                notify("Problem updating client's notes: " + error);
             };
         };
         
-        //update client's services wanted in database
-        if (newCustServices !== originalCustServices) { //new services wanted info entered
-           
-            //determine which services were added and/or removed
-            const newServices = newCustServices.split(',').map(service => service.trim()).filter(Boolean); 
-            const oldServices = originalCustServices.split(',').map(service => service.trim()).filter(Boolean); 
-            const addedServices = newServices.filter(service => !oldServices.includes(service)); //remove old services from new services to get added services
-            const removedServices = oldServices.filter(service => !newServices.includes(service)); //remove new services from old services to get removed services
-            //console.log('addedServices:', addedServices); //for testing purposes
-            //console.log('removedServices:', removedServices); //for testing purposes
-
-            if (addedServices.length > 0) { //there are services to be added
-                try {
-                    addedServices.forEach(async (service) => {
-                        await database.post('/servicesWantedPost', {
-                            userID: userID,
-                            serviceName: service
-                        });
-                    });
-                alert('Services added successfully');
-                } catch (error) {
-                    console.error('Problem updating services wanted', error);
-                };
-            };
-            
-            if (removedServices.length > 0) { //there are services to be removed
-                try {
-                    removedServices.forEach(async (service) => {
-                        await database.delete('/deleteServicesWanted', {
-                            data: {
-                                userID: userID,
-                                serviceName: service
-                            }
-                        });
-                    });
-                alert('Services removed successfully');
-                } catch (error) {
-                    console.error('Problem updating services wanted', error);
-                };
-            };
-            setOriginalCustServices(newCustServices); //update original services wanted info with new services wanted info
-            setEditingPreferences(false); //after saving, switch back to view mode*/
-        };
+        setEditingPreferences(false); //after saving, switch back to view mode*/
     };
 
     //this function gets the client info based on the UserID that is passed in to this page
@@ -216,64 +220,78 @@ export default function newClientInfo_AdminView({ navigation }){
         if(clientData2 != null)
         {
             //formatting the address of the client and setting it along with the clients notes
-            let clientAddress = clientData2[0].Street + ", " + clientData2[0].City + ", " + clientData2[0].StateAbbreviation + ", " + clientData2[0].Zip;
-            setOriginalCustAddress(clientAddress);
-            setNewCustAddress(clientAddress);
+            setOriginalCustStreet(clientData2[0].Street);
+            setNewCustStreet(clientData2[0].Street);
+            setOriginalCustAddress2(clientData2[0].AddressLine2);
+            setNewCustAddress2(clientData2[0].AddressLine2);
+            setOriginalCustCity(clientData2[0].City);
+            setNewCustCity(clientData2[0].City);
+            setOriginalCustStateAbbrev(clientData2[0].StateAbbreviation);
+            setNewCustStateAbbrev(clientData2[0].StateAbbreviation);
+            setOriginalCustZip(clientData2[0].Zip);
+            setNewCustZip(clientData2[0].Zip);
             setOriginalCustNotes(clientData2[0].ClientNotes);
             setNewCustNotes(clientData2[0].ClientNotes);
             
-            //the last query gets the services wanted. Since we know the client is in the current client view in this block of the code
-            //they should have entered in their preferred services when being made a current client. 
-            let response3 = await database.get('/queryServicesWantedWithID', {
-                params: {
-                    UserID: userID
-                }
-            });
-            let clientServices = response3.data;
 
-            //formats the preferred services. This block really only matters if there is more than one preferred service
-            //it will look the same for everyone who has just one preferred service
-            let prefServices = "";
-            for(let i = 0; i < clientServices.length; i++)
-            {
-                if (i < clientServices.length - 1){
-                prefServices = prefServices + clientServices[i].ServiceName + ", "
-                }
-                else{
-                    prefServices = prefServices + clientServices[i].ServiceName;
-                }
-            }
-
-            //sets the clients services
-            setOriginalCustServices(prefServices);
-            setNewCustServices(prefServices);
         }
         else
         {
             //if the client being searched for is not a current client they will not have the necessary data to fill out the remaining
             //fields so this is the place holder text
             const newClientString = 'New Client, Space is Blank'
-            setOriginalCustAddress(newClientString);
-            setNewCustAddress(newClientString);
-            setOriginalCustServices(newClientString);
-            setNewCustServices(newClientString);
+            setOriginalCustStreet(newClientString);
+            setNewCustStreet(newClientString);
+            setOriginalCustAddress2(newClientString);
+            setNewCustAddress2(newClientString);
+            setOriginalCustCity(newClientString);
+            setNewCustCity(newClientString);
+            setOriginalCustStateAbbrev(newClientString);
+            setNewCustStateAbbrev(newClientString);
+            setOriginalCustZip(newClientString);
+            setNewCustZip(newClientString);
             setOriginalCustNotes(newClientString);
             setNewCustNotes(newClientString);
         }
 
     }
 
+    const formattingPhoneNumber = (input) => {
+        if (/^\d*$/.test(input)){
+            if (input.length <=10){
+                return input.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+            }
+        } else {
+            return input
+        }
+    }
+    const setPhoneNumFormat = (input) => {
+        if( input.length <= 14){
+            if( /^\d*$/.test(input)){
+                const formatPhoNum = formattingPhoneNumber(input);
+                setNewCustPhone(formatPhoNum);
+            }else{
+                const newPhone = input.replace(/\D/g, ''); 
+                setNewCustPhone(newPhone);
+            }
+        }
+    }
+
+
+
+
     useEffect(() => {
         getClientInfo();
     }, [])
 
     return (
+        <RootSiblingParent>
         <View >
           <ScrollView>
             
             <LinearGradient
               locations = {[0.7, 1]}
-              colors = {['#EB73C9', 'white']}
+              colors = {['#DDA0DD', 'white']}
               style = {styles.background}
              >
 
@@ -316,21 +334,65 @@ export default function newClientInfo_AdminView({ navigation }){
                         <TextInput
                             style={styles.clientTextInput}
                             value={newCustPhone}
-                            onChangeText={setNewCustPhone}
+                            onChangeText={setPhoneNumFormat}
                         />
                     ) : (
                     <Text style={styles.clientText}>{originalCustPhone}</Text>
                     )}
                         <Text>{'\n'}</Text>
-                        <Text style={styles.clientTilteText}>Address (Commas between street, city, state abbreviation, zip code)</Text>
+                        <Text style={styles.clientTilteText}>Street</Text>
                     {editingContactInfo ? (
                         <TextInput
                             style={styles.clientTextInput}
-                            value={newCustAddress}
-                            onChangeText={setNewCustAddress}
+                            value={newCustStreet}
+                            onChangeText={setNewCustStreet}
                         />
                     ) : (
-                    <Text style={styles.clientText}>{originalCustAddress}</Text>
+                    <Text style={styles.clientText}>{originalCustStreet}</Text>
+                    )}
+                        <Text>{'\n'}</Text>
+                        <Text style={styles.clientTilteText}>Apt/Suite #</Text>
+                    {editingContactInfo ? (
+                        <TextInput
+                            style={styles.clientTextInput}
+                            value={newCustAddress2}
+                            onChangeText={setNewCustAddress2}
+                        />
+                    ) : (
+                    <Text style={styles.clientText}>{originalCustAddress2}</Text>
+                    )}
+                        <Text>{'\n'}</Text>
+                        <Text style={styles.clientTilteText}>City</Text>
+                    {editingContactInfo ? (
+                        <TextInput
+                            style={styles.clientTextInput}
+                            value={newCustCity}
+                            onChangeText={setNewCustCity}
+                        />
+                    ) : (
+                    <Text style={styles.clientText}>{originalCustCity}</Text>
+                    )}
+                        <Text>{'\n'}</Text>
+                        <Text style={styles.clientTilteText}>State Abbreviation</Text>
+                    {editingContactInfo ? (
+                        <TextInput
+                            style={styles.clientTextInput}
+                            value={newCustStateAbbrev}
+                            onChangeText={setNewCustStateAbbrev}
+                        />
+                    ) : (
+                    <Text style={styles.clientText}>{originalCustStateAbbrev}</Text>
+                    )}
+                        <Text>{'\n'}</Text>
+                        <Text style={styles.clientTilteText}>Zip Code</Text>
+                    {editingContactInfo ? (
+                        <TextInput
+                            style={styles.clientTextInput}
+                            value={newCustZip}
+                            onChangeText={setNewCustZip}
+                        />
+                    ) : (
+                    <Text style={styles.clientText}>{originalCustZip}</Text>
                     )}
                 </View>
                 <View>
@@ -339,7 +401,7 @@ export default function newClientInfo_AdminView({ navigation }){
 
                 {/* Edit button and title for Preferences */}
                 <View style={styles.inlineLayout}>
-                <Text style={styles.objectTitle}>Preferences</Text>
+                <Text style={styles.objectTitle}>Notes</Text>
                 <TouchableOpacity
                 style={styles.editButton}
                 onPress={editingPreferences ? savePreferencesChanges : toggleEditPreferences}
@@ -350,19 +412,7 @@ export default function newClientInfo_AdminView({ navigation }){
 
                 {/* Client Info Box for Preferences */}
             <View style={[styles.clientBox, styles.container]}>
-                <Text style={styles.clientTilteText}>Preferred Services (Commas between services)</Text>
-                {editingPreferences ? (
-                <TextInput
-                    style={styles.clientTextInput}
-                    value={newCustServices}
-                    onChangeText={setNewCustServices}
-                    multiline={true}
-                />
-                ) : (
-                <Text style={styles.clientText}>{originalCustServices}</Text>
-                )}
-                <Text>{'\n'}</Text>
-                <Text style={styles.clientTilteText}>Notes</Text>
+
                 {editingPreferences ? (
                 <TextInput
                     style={styles.clientTextInput}
@@ -379,6 +429,7 @@ export default function newClientInfo_AdminView({ navigation }){
              
             </ScrollView>
         </View>
+        </RootSiblingParent>
     );
 }
 
@@ -397,7 +448,7 @@ const styles = StyleSheet.create({
     },
     // background under logo image
     background: {
-        paddingBottom: 200,
+        paddingBottom: 250,
         alignItems: 'center',
     },
     // shadow for objects IOS

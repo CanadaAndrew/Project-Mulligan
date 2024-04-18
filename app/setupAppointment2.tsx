@@ -12,18 +12,13 @@ import {
     ScrollView
 } from 'react-native';
 import { Link } from 'expo-router';
-import axios from 'axios';
-import { SERVICES, militaryHours, displayHours, funcObj, functionGetRetry} from './Enums/Enums';
+import database from './axiosConfig'; // Import axios from the axiosConfig.js file
+import { SERVICES, militaryHours, displayHours, funcObj, functionGetRetry, notify} from './Enums/Enums';
 import Constants from 'expo-constants';
 import { UTCtoPST } from './Enums/Enums';
+import { RootSiblingParent } from 'react-native-root-siblings'
 
 export default function SetupAppointment2({route}) { // added route for page navigation
-    
-    //server connection
-    const database = axios.create({
-        baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
-        //baseURL: 'http://192.168.1.150:3000', //Chris pc local
-    });
 
     const [selectedDate, setSelectedDate] = useState(null);
     const [appointmentTimes, setAppointmentTimes] = useState([[]]); //list of selected times to push to db upon confirmation
@@ -35,57 +30,6 @@ export default function SetupAppointment2({route}) { // added route for page nav
     const {hairStyleData} = route.params;
     const {dateData} = route.params;
     const { userData } = route.params;
-
-    //Doesn't work anymore, this is getting replaced by the function directly below this one.
-    /*function updateTimeList(appointmentData){
-        //creates a new date object based on the dateChosen variable. getter/setter isn't working properly for it yet so it is still
-        //using dummy data
-        var appointmentDateChosen = new Date(dateChosen).toISOString().slice(0, 10);
-
-        let appointment;
-        let Times = [];
-        
-        for loop that searches the appointments in the database. If it matches the appointments that are of the same date chosen
-        and the vacancy status is 0 meaning that there is no appointment scheduled for that time slot then it formats the time from
-        the database and puts it into the Times array
-        
-        for(appointment in appointmentData)
-        {
-            let databaseDate = appointmentData[appointment].AppointmentDate.slice(0, 10);
-
-            if(databaseDate == appointmentDateChosen && appointmentData[appointment].VacancyStatus == 0)
-            {
-                //lots of formatting to be done
-                let aptdate = new Date(appointmentData[appointment].AppointmentDate);
-                const hours = aptdate.getUTCHours().toString().padStart(2, '0');
-                const minutes = aptdate.getUTCMinutes().toString().padStart(2, '0');
-                const seconds = aptdate.getUTCSeconds().toString().padStart(2, '0');
-                const formattedTime = `${hours}:${minutes}:${seconds}`;
-
-                const[hours1, minutes1] = formattedTime.split(':');
-                let period = 'am';
-                let hours12 = parseInt(hours, 10);
-                if(hours12 >= 12)
-                {
-                    period = 'pm';
-                    if(hours12 > 12)
-                    {
-                        hours12 -= 12;
-                    }
-                }
-
-                const formatted12HourTime = `${hours12.toString()}:${minutes}${period}`;
-                //at the end it pushes the formatted time to the Times array
-                Times.push(formatted12HourTime);
-
-
-            }
-        }
-        //useState that keeps track of the alteredListOfTimes array. Setting the alteredListOfTimes array to the correctly
-        //formatted and ordered Times array so it can be used outside of this function.
-        setAlteredTimes(Times);
-    }*/
-
 
     const displayDateTimes = async() =>
     {
@@ -156,6 +100,7 @@ export default function SetupAppointment2({route}) { // added route for page nav
         displayDateTimes();
         calculateHours();
         formatServices()
+        formatDates()
     }, []);
 
     const [hours, setHours] = React.useState(0);
@@ -187,6 +132,23 @@ export default function SetupAppointment2({route}) { // added route for page nav
         setServices(services.join(', '));
     }
 
+    const [formattedDates, setFormattedDates] = React.useState('');
+    const [formattedDatesList, setFormattedDatesList] = React.useState([]);
+    function formatDates(){
+        let i = 0
+        try{
+            dummyDates.forEach((date) => {
+                let newDate = UTCtoPST(date);
+                dates[i] = newDate.toDateString();
+                i++;
+            })
+        }catch(e){
+            notify('Error converting Dates');
+        }
+        setFormattedDatesList(dates);
+        setFormattedDates(dates.join(', '));
+    }
+
     const handleAppointmentPress = (time, date, index) => {
         let currentTime; 
         currentTime = selectedTime;
@@ -205,31 +167,35 @@ export default function SetupAppointment2({route}) { // added route for page nav
                             newTime = '0' + newTime;
                         }
                         if(!alteredListOfTimes[index].includes(displayHours[newTime + ":00:00"]) || parseInt(startingTimeNum) + i > 23 ){
-                            alert("Error, not enough available time");
-                            return [];
+                            notify("Error, not enough available time");
+                            currentTime = [];
+                            return currentTime;
                         }else{
                             currentTime[i] = displayHours[newTime +":00:00"];
                         }
                     }
-                    alert(JSON.stringify(currentTime));
+                    //notify(JSON.stringify(currentTime));
                     return currentTime;
                 }
         }
         );
+        let newDate;
         setSelectedDate((prevDate) => {
-            const newDate = currentTime === null ? null : date;
-            alert('selected date: ' + newDate); //for testing purposes
-            return UTCtoPST(newDate);
+            newDate = currentTime === null ? null : date;
+            //alert('selected date: ' + newDate); //for testing purposes
+            return newDate;
         });
 
         setSelectedIndex(index)
-        alert('index: '+selectedIndex)
+        //notify("Current Times: " + JSON.stringify(currentTime) + "CurrentDate: " + selectedDate + "Index: " + index);
     };
 
 
     return (
+        <RootSiblingParent>
         <>
             <StatusBar backgroundColor={'black'} />
+            <ScrollView>
             <View style={styles.container}>
                 <View style={styles.header}>
                     <View style={styles.backButton}>
@@ -247,28 +213,15 @@ export default function SetupAppointment2({route}) { // added route for page nav
                             </View>
                             <View style={styles.appointmentServicesSelected}>
                                 <Text style={styles.appointmentText}>Services Selected:</Text>
-                                <FlatList
-                                    data={services}
-                                    renderItem={({ item }) => (
-                                        <Text style={styles.appointmentText}>
-                                            {item}
-                                        </Text>
-                                    )}
-                                    horizontal={true}
-                                />
+                                <Text style={styles.appointmentText}>{services}</Text>
                             </View>
                             <View style={styles.appointmentDateChosen}>
                                 <Text style={styles.appointmentText}>Dates Chosen:</Text>
-                                <Text style={styles.appointmentText}>{dateData}</Text>
-                                <FlatList
-                                    data={dates}
-                                    renderItem={({ item }) => (
-                                        <Text style={styles.appointmentText}>
-                                            {item}
-                                        </Text>
-                                    )}
-                                    horizontal={true}
-                                />
+                                <Text style={styles.appointmentText}>{formattedDates}</Text>
+                            </View>
+                            <View style={styles.appointmentDateChosen}>
+                                <Text style={styles.appointmentText}>Approximate appointment duration:</Text>
+                                <Text style={styles.appointmentText}>{hours} hours</Text>
                             </View>
                         </View>
                         <View style={styles.availableContainer}>
@@ -277,7 +230,7 @@ export default function SetupAppointment2({route}) { // added route for page nav
                             </View>
                             <View>
                                 <FlatList
-                                    data={dummyDates}
+                                    data={formattedDatesList}
                                     keyExtractor={(item, index) => index.toString()}
                                     renderItem={({ item, index }) => (
                                         <View style={styles.availableViewInFlatList}>
@@ -332,7 +285,7 @@ export default function SetupAppointment2({route}) { // added route for page nav
                                     try{
                                         startingTimeNum = militaryHours[selectedTime[0]].split(':')[0];
                                     }catch(e){
-                                        alert("Error: Invalid time/Date");
+                                        notify("Error: Invalid time/Date");
                                         return;
                                     }
                                     for(let i = 1; i < hours; i++){
@@ -342,8 +295,8 @@ export default function SetupAppointment2({route}) { // added route for page nav
                                             newTime = '0' + newTime;
                                         }
                                         if(!alteredListOfTimes[selectedIndex].includes(displayHours[newTime + ":00:00"]) || parseInt(startingTimeNum) + i > 23 ){
-                                            alert(newTime);
-                                            alert("Error, not enough available time");
+                                            //alert(newTime);
+                                            notify("Error, not enough available time");
                                             return;
                                         }
                                     }
@@ -359,12 +312,12 @@ export default function SetupAppointment2({route}) { // added route for page nav
                                                     date:selectedDate,
                                                     time:(newTime + ':00:00'),
                                                     userID: userData.userID,
-                                                    type: services.split('\'').join('')
+                                                    type: hairStyleData
                                                 }
                                             }),
                                             type: 'put'
                                         };
-                                        functionGetRetry(funcObj).then(()=>{alert('success')}).catch(() => alert('error'));
+                                        functionGetRetry(funcObj).then(()=>{notify('Your appointment has been booked!')}).catch((error) => notify('Error booking an appointment.'));
                                     }
                                     }
                                 }
@@ -377,14 +330,17 @@ export default function SetupAppointment2({route}) { // added route for page nav
                     </View>
                 </LinearGradient>
             </View>
+            </ScrollView>
         </>
+        </RootSiblingParent>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'white'
+        backgroundColor: 'white',
+        paddingBottom: 400
     },
     body: {
     },

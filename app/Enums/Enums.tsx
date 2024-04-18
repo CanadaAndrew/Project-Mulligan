@@ -1,10 +1,8 @@
 import moment from 'moment-timezone';
+//import database from './axiosConfig'; // Import axios from the axiosConfig.js file. Isn't used in this file
 import axios, { AxiosResponse } from 'axios';
+import Toast from 'react-native-root-toast'
 
-const database = axios.create({
-    baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
-    //baseURL: 'http://192.168.1.150:3000', //Chris pc local
-});
 
 const monthsNum = {
     January: '01',
@@ -113,7 +111,7 @@ function UTCtoPST(date: Date)
 {
     //get the date and convert it to PST
     //returns the date in PST format
-    return new Date(moment(date).tz('America/Los_Angeles').format('YYYY-MM-DDTHH:mm:ss.SSS'));
+    return new Date(moment(date).tz('America/Los_Angeles').format());
 }
 
 function UTCtoPSTString(date: Date)
@@ -203,10 +201,19 @@ async function functionGetRetry(jsonObj:funcObj){
         }catch(error){
             currentAttempts += 1;
             recentError = error;
-            await wait(Math.pow(2, currentAttempts))
+            if(currentAttempts == maxAttempts){
+                await wait(Math.pow(2, currentAttempts))
+                notify('There is a problem connecting to the server. Retrying in: ' + Math.pow(2, currentAttempts) + ' seconds')
+            }
         }
     }
     throw new Error(recentError);
 }
 
-export{monthsNum, monthsWritten, militaryHours, displayHours, UTCtoPST, UTCtoPSTString, listOfStates, SERVICES, functionGetRetry, funcObj};
+function notify(message){
+    Toast.show(message, {
+        duration: Toast.durations.SHORT,
+      });
+}
+
+export{monthsNum, monthsWritten, militaryHours, displayHours, UTCtoPST, UTCtoPSTString, listOfStates, SERVICES, functionGetRetry, funcObj, notify};

@@ -6,22 +6,17 @@ import { Calendar } from 'react-native-calendars';
 import { Link } from 'expo-router';
 import { SelectList } from 'react-native-dropdown-select-list';
 import MyCalendar from './MyCalendar';
-import axios from 'axios';  //Used to get data from the backend nodejs
+import database from './axiosConfig'; // Import axios from the axiosConfig.js file
 import { ScrollView } from 'react-native-gesture-handler';
 import Constants from 'expo-constants';
-import { UTCtoPST, UTCtoPSTString, functionGetRetry, funcObj } from './Enums/Enums';
+import { UTCtoPST, UTCtoPSTString, functionGetRetry, funcObj, notify} from './Enums/Enums';
+import { RootSiblingParent } from 'react-native-root-siblings'
+import { SERVICES } from './Enums/Enums'
 
 
 export default function ClientAp({ route }){ 
 
     const { userData } = route.params;
-
-    //server connection
-    const database = axios.create({
-        baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
-        //baseURL: 'http://192.168.1.150:3000', //Chris pc local
-        //baseURL: 'http://10.0.0.192:3000'
-    });
 
     interface Appointment {
         name: string;
@@ -31,39 +26,11 @@ export default function ClientAp({ route }){
         realDate: Date;
     }
     /*I have genuinely no idea why this function is needed*/
+    //Still unsure
     const handleDatesSelected = (selectedDates: string[]) => {};
 
     //new list that makes it work better with filtering and acts more like actual data from the database
-    let clientAppointmentsDefault: Appointment[] = [
-        {
-            name: "Will Smith",
-            service: "Mens Haircut",
-            date: "10/27/23, Fri, 1:00pm",
-            stylist: 'Melissa Wright',
-            realDate: UTCtoPST(new Date("2023-10-27"))
-        },
-        {
-            name: "Bob Smith",
-            service: "Mens Haircut",
-            date: "11/27/23, Mon, 2:00pm",
-            stylist: 'Melissa Wright',
-            realDate: UTCtoPST(new Date("2023-11-27"))
-        },
-        {
-            name: "Jane Doe",
-            service: "Womens Haircut",
-            date: "11/18/23, Fri, 3:00pm",
-            stylist: 'Melissa Wright',
-            realDate: UTCtoPST(new Date("2023-11-18"))
-        },
-        {
-            name: "Melinda Jackson",
-            service: "Hair Extensions",
-            date: "11/15/23, Sat, 2:00pm",
-            stylist: 'Melissa Wright',
-            realDate: UTCtoPST(new Date("2023-11-15"))
-        }
-    ]
+    let clientAppointmentsDefault: Appointment[] = []
 
     //updateAppointments("2023-12-01")
 
@@ -90,13 +57,6 @@ export default function ClientAp({ route }){
     ]
 
 
-    //will probably remove this when the database is added and just work with the date objects it has in it
-    const dateFormat = (date) => {
-        const dd = String(date.getDate()).padStart(2, '0');
-        const mm = String(date.getMonth() + 1).padStart(2, '0');
-        const yy = String(date.getFullYear()).slice(2);
-        return `${mm}/${dd}/${yy}`;
-    }
 
 
     const [first, setFirst] = React.useState(0);
@@ -120,15 +80,10 @@ export default function ClientAp({ route }){
             }),
             type: "get"
         };
-        FuncObj.entireFunction()
+        functionGetRetry(FuncObj)
         .then((ret) => data = ret.data)
         .then(() => {updateAppointmentsDisplay(data)})
-        .catch(() => {functionGetRetry(FuncObj)
-            .then((ret) => data = ret.data)
-            .then(() => {updateAppointmentsDisplay(data)})
-            .catch((error) => alert(error))}
-            )
-
+        .catch((error) => notify(error));
     }
 
     async function updateAppointmentsDisplay(data){
@@ -145,10 +100,23 @@ export default function ClientAp({ route }){
                 promises.push(name);
                 names[appointment.UserID] = name;
             }
+
+            //this block converts the db formatted services to readable services 
+            //splits the appointments up by "," then a for each loop happens for each service in the array. It trims the whitespace
+            //if there is any and uses that trimmed service to find the readable service name in the SERVICES array from enums
+            //then pushes it to the clientServices string array
+            let serviceArr = appointment.TypeOfAppointment.split(",");
+            let clientServices: string[] = [];
+            serviceArr.forEach(serviceEl => {
+                let temp = serviceEl.trim();
+                clientServices.push(SERVICES[temp]['service']);
+            });
+            
             let completeName = await names[appointment.UserID]; 
             let newAppointment : Appointment = {
                 name: completeName,
-                service: appointment.TypeOfAppointment,
+                //uses ClientServices now
+                service: clientServices.join(", ").toString(),
                 date: newDate + ", " + newTime,
                 stylist: 'Melissa Wright',
                 realDate: newDate
@@ -173,20 +141,12 @@ export default function ClientAp({ route }){
         };
         let name
         try{
-            name = await funcObj.entireFunction()
-        }catch{
-            try{
-                name = await functionGetRetry(funcObj)
-            }catch(error){
-                alert(error)
-                return 'NA'
-            }
+            name = await functionGetRetry(funcObj)
+        }catch(error){
+            notify(error)
+            return 'NA'
         }
-        if(name.data[0].MiddleName == null){
-            return name.data[0].FirstName + " " + name.data[0].LastName;
-        }else{
-            return name.data[0].FirstName + " " + name.data[0].MiddleName + " " + name.data[0].LastName
-        }
+        return name.data[0].FirstName + " " + name.data[0].LastName;
     }
     //handleSelection is called whenever a change is made in the drop down menu. It is passed the key value from the filter array above
     //it then decides which filtering option to use on the data based upon the key that it is passed in this function
@@ -260,6 +220,9 @@ export default function ClientAp({ route }){
     }
 
     return(
+        <RootSiblingParent>
+
+        
       <ScrollView>
         <LinearGradient
         locations = {[0.7, 1]}
@@ -330,6 +293,7 @@ export default function ClientAp({ route }){
             </View>
         </LinearGradient>
       </ScrollView> 
+      </RootSiblingParent>
     );
 }
 

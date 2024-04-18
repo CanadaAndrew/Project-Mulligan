@@ -5,22 +5,21 @@ import { Link } from 'expo-router';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import ClientAp from './ClientAp';
-import setUpAppoint1 from './setUpAppoint1';
+import SetUpAppoint1 from './setUpAppoint1';
 import ModifyAv from './ModifyAv';
-import NavigateHome from './NavigateHome';
 import SetupAppointment2 from './setupAppointment2';
 import ServicesOffered from './ServicesOffered';
 import HomeScreen from './HomeScreen';
-import appointmentsClientView from './appointmentsClientView';
+import AppointmentsClientView from './appointmentsClientView';
 import ClientHistory from './ClientHistory';
 import AboutMe from './AboutMe';
-import newClientInfo from './newClientInfo';
+import NewClientInfo from './newClientInfo';
 import NewClientApproval from './NewClientApproval';
 import ModifyClientInfoSearch from './ModifyClientInfoSearch';
 import ForgotLogin from './ForgotLogin';
 import SignUp from './SignUp';
 import Login from './Login';
-import newClientInfo_AdminView from './newClientInfo_AdminView';
+import NewClientInfo_AdminView from './newClientInfo_AdminView';
 
 const Stack = createNativeStackNavigator()
 
@@ -30,21 +29,21 @@ export default function index() {
    <NavigationContainer independent={true}>
     {/*streamline custom header*/}
      <Stack.Navigator
-       screenOptions={{
+        initialRouteName='Login'
+        screenOptions={{
         headerTintColor:'white',
         headerBackTitle: 'Back',
         headerStyle: {
-          backgroundColor: '#942989'
+            backgroundColor: '#942989'
         }
-       }}
+        }}
      >
-         <Stack.Screen name = "NaviagateHome" component={NavigateHome}/>
-         <Stack.Screen name = "setUpAppoint1" component={setUpAppoint1}
+         <Stack.Screen name = "SetUpAppoint1" component={SetUpAppoint1}
            options = {{
             title: "Set Appointment"
            }}
          />
-         <Stack.Screen name = "setupAppointment2" component={SetupAppointment2}
+         <Stack.Screen name = "SetupAppointment2" component={SetupAppointment2}
            options = {{
             title: "Set Appointment"
            }}
@@ -65,12 +64,16 @@ export default function index() {
             title: "Home"
            }}
          />
-         <Stack.Screen name = "appointmentsClientView" component={appointmentsClientView}
+         <Stack.Screen name = "AppointmentsClientView" component={AppointmentsClientView}
            options = {{
             title: "Your Appointments"
            }}
          />
-         <Stack.Screen name = "newClientInfo" component={newClientInfo}/>
+         <Stack.Screen name = "NewClientInfo" component={NewClientInfo}
+            options={{
+             title: "New Client Info"
+           }}
+         />
         <Stack.Screen name="NewClientApproval" component={NewClientApproval}
             options={{
                 title: "Client Approval"
@@ -107,44 +110,12 @@ export default function index() {
                 title: "Search"
             }}
         />
-         <Stack.Screen name = "newClientInfo_AdminView" component={newClientInfo_AdminView}
+         <Stack.Screen name = "NewClientInfo_AdminView" component={NewClientInfo_AdminView}
            options={{
               title: "New Client Info Admin View"
            }}
          />
       </Stack.Navigator>
    </NavigationContainer>
-  
-
-/*export default function index(){
-  return (
-
-    <View> 
-      <Stack.Navigator>
-        <Stack.Screen name = "ClientAp" component={ClientAp}/>
-        <Stack.Screen name = "setUpAppoint1" component={setUpAppoint1}/>
-      </Stack.Navigator>
-        <Text>Navigation to currently developed/developing screens, placeholder for homepage.</Text>
-        <View><Text></Text></View>
-        <Link href = "/ModifyAv">Click/Tap here for ModifyAv</Link>
-        <View><Text></Text></View>
-        <Link href = "/ClientAp">Click/Tap here for ClientAp</Link>
-        <View><Text></Text></View>
-        <Link href = "/setUpAppoint1">Click/Tap here for setUpAppoint1</Link>
-        <View><Text></Text></View>
-        <Link href = "/setupAppointment2">Click/Tap here for setupAppointment2</Link>
-    </View>
-    
-    
-    /*
-        <StatusBar style = 'light'/>
-        <ModifyAv/>
-    */
-    /*
-    <View>
-      <StatusBar style='light' />
-      <ClientAp/>
-    </View>
-    */
   );
 }

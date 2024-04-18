@@ -5,8 +5,9 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import React, { useState } from 'react';
 import firebase from './Firebase.js'  // import firebase
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import axios from 'axios';
-import {funcObj, functionGetRetry} from './Enums/Enums'
+import database from './axiosConfig'; // Import axios from the axiosConfig.js file
+import { funcObj, functionGetRetry } from './Enums/Enums'
+import {RootSiblingParent} from "react-native-root-siblings"
 export default function Login({ route, navigation }) {
 
     //test@fakemail.com
@@ -21,15 +22,6 @@ export default function Login({ route, navigation }) {
     // error msg if wrong login info is put in
     const [loginError, loginErrorMsg] = useState('');
 
-    const database = axios.create({
-        baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
-        //baseURL: 'http://10.0.0.192:3000'
-        //baseURL: 'http://192.168.1.150:3000', //Chris pc local
-        //baseURL: 'http://10.0.0.133:3000',
-        //baseURL: 'http://10.0.0.112:3000',
-    });
-
-   
     const userData = {
         userID: undefined, // You can omit this line, it will default to undefined
         adminPriv: undefined, // You can omit this line, it will default to undefined
@@ -37,7 +29,13 @@ export default function Login({ route, navigation }) {
         approved: true
     };
 
+    const onClickSignUp = () => {
+        navigation.navigate("SignUp", { userData });
+    }
 
+    const onClickForgotLogin = () => {
+        navigation.navigate("ForgotLogin", { userData });
+    }
 
     const onClickLogin = async () => {
 
@@ -58,14 +56,14 @@ export default function Login({ route, navigation }) {
         //Since the previously declared user only exists in the scope of its function,
         //redeclare the variable and set the auth to the current user
         const user = auth.currentUser;
-            if (user !== null) {
-                console.log(email);
-                await checkEmailExists(email);
-                console.log('Right Before Navigation');
-                navigation.navigate("HomeScreen", {userData});
-            } else {
-                //Once branches are merged change this to route to the signup page
-            }
+        if (user !== null) {
+            console.log(email);
+            await checkEmailExists(email);
+            console.log('Right Before Navigation');
+            navigation.navigate("HomeScreen", { userData });
+        } else {
+            //Once branches are merged change this to route to the signup page
+        }
     }
 
     // to show and hide password
@@ -84,21 +82,29 @@ export default function Login({ route, navigation }) {
             if (input.length <= 10) {
                 return input.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
             }
-        }else{
+        } else {
             return input
         }
-        //return input.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
     }
-    const setPhoneNumFormat = (input) => { 
-        const formatPhoNum = formattingPhoneNumber(input); 
+    const setPhoneNumFormat = (input) => {
+        const formatPhoNum = formattingPhoneNumber(input);
         setEmail(formatPhoNum);
     }
 
-    async function checkEmailExists(email) {
 
+    async function checkEmailExists(email) {
+        console.log('Test email: ' ,email);
+         await queryFromUsers(email);
+
+    }
+
+    // Queries from the Users table based on email and returns an array with an object that contains the row with that email
+    async function queryFromUsers(email) {
         try {
-            const funcObj:funcObj = {
-                entireFunction: () => database.get('/queryCurrentUserFromEmail',{
+
+            const funcObj: funcObj = {
+
+                entireFunction: () => database.get('/queryUsersFromEmail', {
                     params: {
                         email: email
                     }
@@ -106,122 +112,155 @@ export default function Login({ route, navigation }) {
                 type: 'get'
             };
             const response = await functionGetRetry(funcObj);
-            //userData.userID = response.data.UserID;
-            //setUser(response.data);
-            console.log('Look here dumbass');
-            console.log('response', response.data); // For debugging
             userData.userID = response.data[0].UserID;
-            userData.adminPriv = false;
-            userData.newClient = false;
+            
+            if (response.data[0].AdminPriv == 1) {
+                userData.adminPriv = false;
+                await queryFromNewClients(email);
+            } else {
+                userData.adminPriv = true;
+                userData.newClient = false;
+            }
 
         } catch (error) {
-            //console.error('Error finding User from email: ', error);
+            //console.log(error);
+            // Somehow you have a firebase account but are not in the database
+            // Treat as a new user
             userData.adminPriv = false;
+            userData.approved = false;
             userData.newClient = true;
-            //console.log(userData);
-            try {
-                const funcObj:funcObj = {
-                    entireFunction: () => database.get('/queryNewUserFromEmail',{
-                        params: {
-                            email: email
-                        }
-                    }),
-                    type: 'get'
-                };
-                const response = await functionGetRetry(funcObj);
-                alert(JSON.stringify(response.data[0]));
-                userData.userID = response.data[0].UserID;
-                if(response.data[0].ApprovalStatus == 1){
-                    userData.approved = false;
-                }else{
-                    userData.approved = true;
-                }
-            } catch (error) {
-                console.log(error);
+            userData.userID = 'guest';
+        }
+    }
+
+    async function queryFromNewClients(email) {
+        
+        try {
+
+            const funcObj: funcObj = {
+
+                entireFunction: () => database.get('/queryNewUserFromEmail', {
+                    params: {
+                        email: email
+                    }
+                }),
+                type: 'get'
+            };
+            const response = await functionGetRetry(funcObj);
+            
+            if (response.data[0].ApprovalStatus == 1) {
+                userData.approved = false;
+            } else {
+                userData.approved = true;
             }
+
+            userData.newClient = true;
+
+        } catch (error) {
+
+            userData.approved = true;
+            userData.newClient = false;
 
         }
 
     }
 
     return (
-        <View style={styles.container}>
-            {/*added logo image*/}
-            <ImageBackground
-                style={styles.logo}
-                source={require('./images/Hair_Done_Wright_LOGO.png')}
-            >
-            </ImageBackground>
+      <RootSiblingParent>
+        <ScrollView>
+            <View style={styles.container}>
 
-            <LinearGradient
-              locations = {[0.7, 1]}
-              colors = {['#DDA0DD', 'white']}
-              style = {styles.background}
-             >
+                {/*added logo image*/}
+                <ImageBackground
+                    style={styles.logo}
+                    source={require('./images/Hair_Done_Wright_LOGO.png')}
+                >
+                </ImageBackground>
 
-                {/*Login error loginError in brackets*/}
-                <Text style={styles.errorTitle}>{loginError}</Text>
-                <Text style={styles.objectTitle}>Login</Text>
+                <LinearGradient
+                    locations={[0.7, 1]}
+                    colors={['#DDA0DD', 'white']}
+                    style={styles.background}
+                >
 
-                {/*user input for email or phone# partly functional //setEmail*/}
-                <TextInput 
-                  placeholder = ' Email or Phone ' 
-                  placeholderTextColor = {'gray'} 
-                  keyboardType = 'default'
-                  style = {styles.inputBox}
-                  value = {email}
-                  onChangeText = {setPhoneNumFormat}
-                />
 
-                <View>
-                    {/*user input for password partly functional*/}
+                    {/*Login error loginError in brackets*/}
+                    <Text style={styles.errorTitle}>{loginError}</Text>
+                    <Text style={styles.objectTitle}>Login</Text>
+
+                    {/*user input for email or phone# partly functional //setEmail*/}
                     <TextInput
-                        placeholder=' Password '
+                        placeholder=' Email or Phone '
                         placeholderTextColor={'gray'}
                         keyboardType='default'
-                        secureTextEntry={showPassword}
                         style={styles.inputBox}
-                        value={password}
-                        onChangeText={setPassword}
+                        value={email}
+                        onChangeText={setPhoneNumFormat}
                     />
 
-                    {/*button to show password is functional*/}
-                    <TouchableOpacity
-                        style={styles.showButton}
-                        onPress={onClickPW}
-                    >
-                        <Text style={styles.showButtonText}>{buttonClick}</Text>
-                    </TouchableOpacity>
+                    <View>
+                        {/*user input for password partly functional*/}
+                        <TextInput
+                            placeholder=' Password '
+                            placeholderTextColor={'gray'}
+                            keyboardType='default'
+                            secureTextEntry={showPassword}
+                            style={styles.inputBox}
+                            value={password}
+                            onChangeText={setPassword}
+                        />
+                    </View>
+                    <View>
+                        {/*button to show password is functional*/}
+                        <TouchableOpacity
+                            style={styles.showButton}
+                            onPress={onClickPW}
+                        >
+                            <Text style={styles.showButtonText}>{buttonClick}</Text>
+                        </TouchableOpacity>
 
-                    {/*button for forgot password no functionality yet WIP*/}
-                    <TouchableOpacity>
-                        <Text style={styles.showButtonText}>forgot password?</Text>
-                    </TouchableOpacity>
+                        {/*button for forgot password no functionality yet WIP*/}
+                        <TouchableOpacity
+                            onPress={onClickForgotLogin}
+                        >
+                            <Text style={styles.forgotPWButtonText}>Forgot Password?</Text>
+                        </TouchableOpacity>
 
-                </View>
+                    </View>
 
 
-                {/*button to login limited functionality
+                    {/*button to login limited functionality
                    Note from dru: to succesfully login, login button must be pressed twice. Not sure why*/}
-                <View>
-                    <TouchableOpacity
-                        style={styles.loginButton}
-                        onPress={onClickLogin}
-                    >
-                        <Text style={styles.loginButtonText}>Login</Text>
-                    </TouchableOpacity>
-                </View>
+                    <View>
+                        <TouchableOpacity
+                            style={styles.loginButton}
+                            onPress={onClickLogin}
+                        >
+                            <Text style={styles.loginButtonText}>Login</Text>
+                        </TouchableOpacity>
+                    </View>
 
+                    <View style={styles.signUpContainer}>
+                        <Text style={styles.showButtonText}>Don't have an account?  </Text>
+                        <TouchableOpacity
+                            onPress={onClickSignUp}
+                        >
+                            <Text style={styles.signUpText}>Sign Up</Text>
+                        </TouchableOpacity>
+                    </View>
 
-            </LinearGradient>
-        </View>
+                </LinearGradient>
 
+            </View>
+        </ScrollView>
+        </RootSiblingParent>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        borderRadius: 90
+        borderRadius: 90,
+        paddingBottom: 0
     },
     // title styling 
     objectTitle: {
@@ -239,7 +278,7 @@ const styles = StyleSheet.create({
     },
     // background under logo image
     background: {
-        paddingBottom: 100,
+        paddingBottom: 300,
         alignItems: 'center',
     },
     // logo image
@@ -309,7 +348,7 @@ const styles = StyleSheet.create({
         height: 40,
         paddingTop: 12,
         marginLeft: 25,
-        marginBottom: 50,
+        marginBottom: 30,
         //margin: 25,
         shadowColor: 'black',
         shadowOffset: {
@@ -348,10 +387,21 @@ const styles = StyleSheet.create({
         borderRadius: 20,
     },
     // show button text style
-    fotgotPWButtonText: {
+    forgotPWButtonText: {
         color: 'white',
         fontWeight: 'bold',
         fontSize: 15,
         textAlign: 'center',
     },
+    // view for sign up
+    signUpContainer: {
+        flexDirection: 'row',
+        alignContent: 'center'
+    },
+    // sign up text
+    signUpText: {
+        color: '#BE42B2',
+        fontWeight: 'bold',
+        fontSize: 15,
+    }
 })

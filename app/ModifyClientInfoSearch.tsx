@@ -1,24 +1,17 @@
 import { StyleSheet, Text, TextInput, View, ScrollView, FlatList, TouchableOpacity, Dimensions, SafeAreaView, useWindowDimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect } from 'react';
-import axios from 'axios';
+import database from './axiosConfig'; // Import axios from the axiosConfig.js file
 import { SearchBar } from 'react-native-screens';
 import { SelectList } from 'react-native-dropdown-select-list';
+import { notify } from './Enums/Enums'
+import { RootSiblingParent } from 'react-native-root-siblings'
 
 const windowDimensions = Dimensions.get('window')
 
 export default function ModifyClientInfoSearch({navigation, route}) {
 
-    //const navigation = useNavigation<any>(); //Initialize navigation hook
-
     const windowDimensions = Dimensions.get('window')
-    const database = axios.create({
-        //baseURL: 'http://10.0.0.119:3000',  // Wilson local
-        //baseURL: 'http://10.0.0.192:3000',
-        //baseURL: 'http://192.168.1.150:3000', //Chris pc local
-        //baseURL: 'http://10.0.0.14:3000', //Cameron Local
-        baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
-    })
 
     const handleNamePress = async (item) => {
         let id; //Temporary variable to send to next page
@@ -26,9 +19,8 @@ export default function ModifyClientInfoSearch({navigation, route}) {
         //Loops and compares objects queried to find user id
         let i = 0;
         while (i < clientList.length) {
-            if (clientList[i].FirstName + ' ' + clientList[i].MiddleName + ' ' + clientList[i].LastName == item) {
+            if (clientList[i].FirstName + ' ' + clientList[i].LastName == item) {
                 id = clientList[i].UserID;
-                console.log(id); //Test to confirm correct ID
                 break;
             }
             i++;
@@ -36,9 +28,10 @@ export default function ModifyClientInfoSearch({navigation, route}) {
 
        try {
             //Navigate to the next page, passing client id as a parameter. Right now set to navigate to home
-            navigation.navigate("NaviagateHome", { id });
+            navigation.navigate("NewClientInfo_AdminView", { id });
         } catch (error) {
             console.error('Error fetching client information:', error);
+            notify('Error fetching client information: ' + error);
         }
     };
 
@@ -87,7 +80,7 @@ export default function ModifyClientInfoSearch({navigation, route}) {
         let iterable;
         for(iterable in clientData)
         {
-            let name = clientData[iterable].FirstName + " " + clientData[iterable].MiddleName + " " + clientData[iterable].LastName;
+            let name = clientData[iterable].FirstName + " " + clientData[iterable].LastName;
             clientNames.push(name);
         }
 
@@ -147,11 +140,13 @@ export default function ModifyClientInfoSearch({navigation, route}) {
 
      
     return (
+        <RootSiblingParent>
         <SafeAreaView>
+            <ScrollView> 
             
             <LinearGradient
                 locations={[0.7, 1]}
-                colors={['#EB73C9', 'white']}
+                colors={['#DDA0DD', 'white']}
                 //style={{ width: windowDimensions.width, height: windowDimensions.height - 85 }}
                 style={{ width: useWindowDimensions().width, height: useWindowDimensions().height - 85 }}
             >
@@ -211,13 +206,15 @@ export default function ModifyClientInfoSearch({navigation, route}) {
                                     </View>
                                 </View>
                             )}
-                            style={styles.letterFlatListStyle}
+                                style={{height: useWindowDimensions().height*.78}}
                         />
                     </View>
                 </View>
             </LinearGradient>
+            </ScrollView>
             
         </SafeAreaView>
+        </RootSiblingParent>
     );
 }
 
@@ -288,9 +285,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingLeft: 5,
         paddingRight: 5,
-    },
-    letterFlatListStyle: {
-        height: useWindowDimensions().height*.78
     },
     dropdowncont: {
         padding: 16

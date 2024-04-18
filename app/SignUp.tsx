@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-list';
 import { Link } from 'expo-router';
-import axios from 'axios';
+import database from './axiosConfig'; // Import axios from the axiosConfig.js file
 //firebase imports VVV
 import firebase from './Firebase.js'
 import { getAuth, createUserWithEmailAndPassword  } from "firebase/auth";
@@ -54,16 +54,8 @@ export default function SignUp({ navigation, route }) { // added route for page 
         contactSelected = temparr;
     }
 
-    /*useEffect(() => { //for testing purposes -> prints to console whenever lists are updated
-        console.log('hairStyleSelected', hairStyleSelected); //for testing purposes
-    }, [hairStyleSelected]);*/
-
-    //using this dummy data because the dateData variable isn't working currently ^^^ keeps spitting out Monday, December 4th, 2023
-    let dateChosen = 'Mon, 04 December 2023';
-
     // for text input fields
     const [firstName, newFirstName] = React.useState('');
-    const [middleName, newMiddleName] = React.useState('');
     const [lastName, newLastName] = React.useState('');
     const [email, newEmail] = React.useState('');
     const [phoneNumber, newPhoneNumber] = React.useState('');
@@ -75,7 +67,6 @@ export default function SignUp({ navigation, route }) { // added route for page 
 
     
     const [firstNameValid, setfirstNameValid] =  React.useState(false);
-    const [middleNameValid, setmiddleNameValid] =  React.useState(false);
     const [lastNameValid, setlastNameValid] =  React.useState(false);
     const [emailValid, setemailValid] =  React.useState(false);
     const [phoneNumberValid, setphoneNumberValid] =  React.useState(false);
@@ -83,27 +74,12 @@ export default function SignUp({ navigation, route }) { // added route for page 
     const [confirmPasswordValid, setconfirmPasswordValid] =  React.useState(false);
 
     //is everything filled out? if so, unlock the sign up button
-    const formComplete =  !(firstNameValid && middleNameValid && lastNameValid && emailValid && phoneNumberValid && passwordValid && confirmPasswordValid && selected.length != 0 && selectedCont.length != 0); 
-
-    /*useEffect(() => { //for testing purposes -> prints to console whenever lists are updated
-        console.log('firstNameValid', firstNameValid); //for testing purposes
-        console.log('lastNameValid', lastNameValid); //for testing purposes
-        console.log('emailValid', emailValid); //for testing purposes
-        console.log('phoneNumberValid', phoneNumberValid); //for testing purposes
-        console.log('passwordValid', passwordValid); //for testing purposes
-        console.log('confirmPasswordValid', confirmPasswordValid); //for testing purposes
-        console.log('selected.length', selected.length); //for testing purposes
-    }, [firstNameValid, lastNameValid, emailValid, phoneNumberValid, passwordValid, confirmPasswordValid, selected.length]);*/
+    const formComplete =  !(firstNameValid && lastNameValid && emailValid && phoneNumberValid && passwordValid && confirmPasswordValid && selected.length != 0 && selectedCont.length != 0); 
 
     //check() functions set the letter/number/length requirement of each text field
     //TODO: determine each requirement for each field 
     function checkfirstNameValid() {
         setfirstNameValid(firstName.length > 0 ? true : false);
-    }
-
-    function checkmiddleNameValid()
-    {
-        setmiddleNameValid(middleName.length>0 ? true : false);
     }
 
     function checklastNameValid()
@@ -136,48 +112,30 @@ export default function SignUp({ navigation, route }) { // added route for page 
     }
 
     //options for drop down menu
+    //changed the key values to be the format of what is going to be going in the database
     const hairOptions = [
-        { key: ' Mens Haircut', value: ' Mens Haircut' },
-        { key: ' Women\'s Haircut', value: ' Women\'s Haircut' },
-        { key: ' Kids Haircut', value: ' Kids Haircut' },
-        { key: ' Partial Highlight', value: ' Partial Highlight' },
-        { key: ' Full Highlight', value: ' Full Highlight' },
-        { key: ' Root Touch Up', value: ' Root Touch Up' },
-        { key: ' Full Color', value: ' Full Color' },
-        { key: ' Extension Consultation', value: ' Extension Consultation' },
-        { key: ' Extension Installation', value: ' Extension Installation' },
-        { key: ' Extension Move-Up', value: ' Extension Move-Up' },
-        { key: ' Make-Up', value: ' Make-Up' },
-        { key: ' Special Occasion Hairstyle', value: ' Special Occasion Hairstyle' },
-        { key: ' Perm', value: ' Perm' },
-        { key: ' Deep Conditioning Treatment', value: ' Deep Conditioning Treatment' },
-        { key: ' Blow Dry and Style', value: 'Blow Dry and Style' }
+        {key: 'MENS_HAIRCUT', value: 'Mens Haircut'},
+        {key: 'WOMANS_HAIRCUT', value: 'Womens Haircut'},
+        {key: 'KIDS_HAIRCUT', value: 'Kids Haircut'},
+        {key: 'PARTIAL_HIGHLIGHT', value: 'Partial Highlight'},
+        {key: 'FULL_HIGHLIGHT', value: 'Full Highlight'},
+        {key: 'ROOT_TOUCH_UP', value: 'Root Touch Up'},
+        {key: 'FULL_COLOR', value: 'Full Color'},
+        {key: 'EXTENSION_CONSULTATION', value: 'Extension Consultation'},
+        {key: 'EXTENSION_INSTALLATION', value: 'Extension Installation'},
+        {key: 'EXTENSION_MOVE_UP', value: 'Extension Move-Up'},
+        {key: 'MAKEUP', value: 'Make-Up'},
+        {key: 'SPECIAL_OCCASION_HAIRSTYLE', value: 'Special Occasion Hairstyle'},
+        {key: 'PERM', value: 'Perm'},
+        {key: 'DEEP_CONDITIONING_TREATMENT', value: 'Deep Conditioning Treatment'},
+        {key: 'BLOW_DRY_AND_STYLE', value: 'Blow Dry and Style'},
+        {key: 'WAXING', value: 'Waxing'}
     ];
 
     const contactPref = [
         {key: ' Phone number ', value: ' Phone Number'},
         {key: ' email ', value: ' Email '}
     ];
-
-    const database = axios.create({
-        baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
-        //baseURL: 'http://10.0.0.192:3000'
-        //baseURL: 'http://10.0.0.199:3000',
-        //baseURL: 'http://10.0.0.14:3000', // Cameron's IP address for testing
-        //baseURL: 'http://192.168.1.150:3000', //Chris pc local
-        //baseURL: 'http://10.0.0.112:3000',
-    })
-
-    //demo data for postNewUser function until Firebase authentication is set up
-    /*const e_mail = 'joeshmoe@anywhere.com';
-    const phone_number = '5555555555';
-    const pass_word = 'JoesPassword';
-    const admin_priv = 0; //no admin privileges
-    const first_name = 'Joe';
-    const middle_name = 'Sh';
-    const last_name = 'Moe';
-    const preferred_way_of_contact = 'email';
-    const approval_status = 1; //not sure what 1 represents - Chris*/
 
     //posts new user to the database, assumes user is verified by firebase
     const postNewUser = async () => {
@@ -211,7 +169,6 @@ export default function SignUp({ navigation, route }) { // added route for page 
                     preferredWayOfContact: preferred_way_of_contact*/
                     userID: userID,
                     firstName: firstName,
-                    middleName: middleName, //form info?
                     lastName: lastName,
                     preferredWayOfContact:contactSelected.join(", "), //form info?
                 }),
@@ -230,9 +187,19 @@ export default function SignUp({ navigation, route }) { // added route for page 
             };
             //post to NewClients
             await functionGetRetry(funcObj);
+            
+            //this changes the format of the hairstyle selected array and puts the new values in their own array 
+            //The new dbFormattedServices is the array that the function below will be pulling from so that way the DB
+            //will have the newly formatted services ("Mens Haircut" => "MENS_HAIRCUT" in the db)
+            let dbFormattedServices: string[] = [];
+            hairStyleSelected.forEach(service => {
+                let tempserv = hairOptions.find(key => key.value === service);
+                dbFormattedServices.push(tempserv.key);
+            });
 
             //post to ServicesWanted
-            const servicePromises = hairStyleSelected.map(async (service) => {
+            //changed hairStyleSelected to the dbFormattedServices array instead
+            const servicePromises = dbFormattedServices.map(async (service) => {
                 try {
                     let funcObj:funcObj = {
                         entireFunction: () => database.post('/servicesWantedPost', {
@@ -265,25 +232,6 @@ export default function SignUp({ navigation, route }) { // added route for page 
             alert("No password was entered. Please enter in a password.")
         }
         else {
-            /*
-            IMPORTANT
-
-            We are going to talk with Melissa about using emails instead of Phone numbers for authentication
-            For some reason the phone number verification doesn't want to work and we've been trying but have only had
-            success with the email verification. We may implement this at a later date.
-            */
-            //if(phoneNumber != "")
-            //{
-            //not able to get the phone number verification to work. 
-            /*window.RecaptchaVerifier = new RecaptchaVerifier(auth, 'sign-in-button', {
-                'size': 'invisible',
-                'callback': (response) => {
-                // reCAPTCHA solved, allow signInWithPhoneNumber.
-                }
-            });*/
-            //}
-            //else
-            //{
             createUserWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
                     const user = userCredential.user;
@@ -332,13 +280,6 @@ export default function SignUp({ navigation, route }) { // added route for page 
                                 onChangeText={newFirstName}
                                 onTextInput={() => checkfirstNameValid()}
                                 placeholder="First Name"
-                            />
-                            <TextInput
-                                style={styles.textField}
-                                value={middleName}
-                                onChangeText={newMiddleName}
-                                onTextInput={() => checkmiddleNameValid()}
-                                placeholder="Middle Name"
                             />
                             <TextInput
                                 style={styles.textField}
@@ -395,7 +336,7 @@ export default function SignUp({ navigation, route }) { // added route for page 
                                 }}
                                 badgeStyles={styles.badgeStyle}
 
-                                maxHeight={1500}
+                                maxHeight={500}
                                 save='value'
                                 search={false}
                                 label="Preferred Services"
@@ -442,25 +383,15 @@ export default function SignUp({ navigation, route }) { // added route for page 
     );
 }
 
-//a bunch of checks to see if the text fields are being filled correctly.
-
-//{ firstNameValid && <Text> firstName is valid</Text> /*debugging*/ } 
-//{ lastNameValid && <Text> lastName is valid</Text> /*debugging*/ } 
-//{ emailValid && <Text> email is valid</Text> /*debugging*/ } 
-//{ phoneNumberValid && <Text> phone is valid</Text> /*debugging*/ } 
-//{ passwordValid && <Text> password is valid</Text> /*debugging*/ } 
-//{confirmPasswordValid && <Text>confirm password is valid</Text> /*debugging*/ }
-//{phoneNumber.length != 0 && <Text> phoneNumber length is: {phoneNumber.length} </Text>}
-//{selected.length != 0 && <Text> service/services selected </Text>}
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'white'
+        backgroundColor: 'white' 
     },
     body: {
         justifyContent: 'center',
-        padding: 10
+        padding: 10,
+        paddingBottom: 300
     },
     linearGradientStyle: {
         borderTopLeftRadius: 50,

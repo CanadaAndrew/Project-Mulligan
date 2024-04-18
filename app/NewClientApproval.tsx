@@ -1,23 +1,13 @@
 import { StyleSheet, Text, View, ScrollView, FlatList, TouchableOpacity, Dimensions, SafeAreaView, useWindowDimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, {useEffect} from 'react';
-import axios from 'axios';
+import database from './axiosConfig'; // Import axios from the axiosConfig.js file
 import Constants from 'expo-constants';
-import {funcObj, functionGetRetry} from './Enums/Enums'
+import {funcObj, functionGetRetry, notify, SERVICES} from './Enums/Enums'
+import { RootSiblingParent } from 'react-native-root-siblings'
 
 export default function NewClientApproval() {
-
-    const windowDimensions = Dimensions.get('window')
-
-    //server connection
-    const database = axios.create({
-        baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
-        //baseURL: 'http://192.168.1.150:3000', //Chris pc local
-        //baseURL: 'http://10.0.0.192:3000'
-        //baseURL: 'http://10.0.0.112:3000',
-    });
-
-
+    const {width, height} = useWindowDimensions();
     const [first, setFirst] = React.useState(0);
 
     interface Client {
@@ -28,64 +18,65 @@ export default function NewClientApproval() {
         ID: string;
     }
 
-    //dummy data for testing
-    /*const dummyClients: Client[] = [
-        {
-            name: 'John Doe',
-            email: 'john@doe.com',
-            phoneNumber: '123-456-7890',
-            service: 'Haircut'
-        },
-        {
-            name: 'Jane Doe',
-            email: 'jane@doe.com',
-            phoneNumber: '123-456-7890',
-            service: 'Nails'
-        }
-    ];*/
     const [newClient, setNewClient] = React.useState([]); //set to dummyClients for testing
     //let defaultClient: Client[] = [];
     //const [newClient, setNewClient] = React.useState(defaultClient);
     useEffect(() => {
         updateClient();
     }, [])
-     //old code replaced with useEffect Hook ^^^
-    /*firstUpdate();
-    async function firstUpdate() {
-        if (first === 0) {
-            setFirst(1);
-            //let name = await getName(5);
-            //updateClient(1, name); //Note that currently using ID 1 until the use of UserID transfer comes in
-            updateClient(5);
-        }
-    }*/
 
-    function updateClient() {
-        let data;
-        let funcObj:funcObj = {
-            entireFunction: () => database.get('/customQuery', {
-                params: {
-                    query: 'SELECT ServicesWanted.ServiceName, NewClientView.FirstName, NewClientView.MiddleName, NewClientView.LastName, NewClientView.Email, NewClientView.PhoneNumber, NewClientView.ApprovalStatus, NewClientView.UserID FROM ServicesWanted INNER JOIN NewClientView ON ServicesWanted.UserID = NewClientView.UserID WHERE ApprovalStatus = 1;'
-                }
-            }),
-            type: 'get'
-        };
-        functionGetRetry(funcObj)
-        .then((ret) => data = ret.data)
-        .then(() => { updateClientDisplay(data) })
-        .catch(() => { alert("error"); });
+    // function updateClient() {
+    //     let data;
+    //     let funcObj:funcObj = {
+    //         entireFunction: () => database.get('/customQuery', {
+    //             params: {
+    //                 query: 'SELECT ServicesWanted.ServiceName, NewClientView.FirstName, NewClientView.LastName, NewClientView.Email, NewClientView.PhoneNumber, NewClientView.ApprovalStatus, NewClientView.UserID FROM ServicesWanted INNER JOIN NewClientView ON ServicesWanted.UserID = NewClientView.UserID WHERE ApprovalStatus = 1;'
+    //             }
+    //         }),
+    //         type: 'get'
+    //     };
+    //     functionGetRetry(funcObj)
+    //     .then((ret) => data = ret.data)
+    //     .then(() => { updateClientDisplay(data) })
+    //     .catch((error) => { notify(error); });
+    // }
+
+    async function updateClient() {
+        try {
+            const funcObj: funcObj = {
+                entireFunction: () => database.get('/getNewClientInfo', {
+                    params: {
+
+                    }
+                }),
+                type: 'get'
+            };
+            const data = await functionGetRetry(funcObj);
+            console.log(data);
+            updateClientDisplay(data.data);
+        } catch (error) {
+
+        }
     }
 
     function updateClientDisplay(data) {
-        alert("Here is the data: " + JSON.stringify(data));
+        console.log(data);
         let clientList: Client[] = [];
         let i = 0;
         data.forEach((client) => {
+
+            let serviceArr = client.ServiceName.split(",");
+            let clientServices: string[] = [];
+            serviceArr.forEach(serviceEl => {
+                let temp = serviceEl.trim();
+                clientServices.push(SERVICES[temp]['service']);
+            });
+
             let newClient: Client = {
-                name: getFullName(client.FirstName, client.MiddleName, client.LastName),
+                name: getFullName(client.FirstName, client.LastName),
                 email: client.Email,
                 phoneNumber: client.PhoneNumber,
-                service: client.ServiceName,
+                service: clientServices.join(", ").toString(),
                 ID: client.UserID
             }
             clientList[i] = newClient;
@@ -95,19 +86,15 @@ export default function NewClientApproval() {
         //alert("Upcoming List: " + JSON.stringify(appointmentList));
     }
 
-    function getFullName(firstName, middleName, lastName) {
+    function getFullName(firstName, lastName) {
         //alert("The name is: " + JSON.stringify(name.data[0].FirstName));
-        if (middleName == null) {
-            return firstName + " " + lastName
-        } else {
-            return firstName + " " + middleName + " " + lastName
-        }
+        return firstName + " " + lastName
     }
 
     //result when admin declines a new client
     const handleDeclineClient = async (client) => {
         console.log(client.name + " Declined"); //for testing purposes
-        alert(`${client.name} is Declined`);
+        notify(`${client.name} is Declined`);
         const updatedClients = newClient.filter((person) => person.name !== client.name);  //remove declined client from list
         setNewClient(updatedClients);
     }
@@ -122,26 +109,27 @@ export default function NewClientApproval() {
             type: 'put'
         };
         functionGetRetry(funcObj)
-        alert(`${client.name} has been accepted`);
+        notify(`${client.name} has been accepted`);
         const updatedClients = newClient.filter((person) => person.name !== client.name);
         setNewClient(updatedClients);
     }
 
     return (
+        <RootSiblingParent>
         <SafeAreaView>
             <ScrollView>
                 <LinearGradient
                     locations={[0.7, 1]}
                     colors={['#DDA0DD', 'white']}
                     //style={{ width: windowDimensions.width, height: windowDimensions.height - 85 }}
-                    style={{ width: useWindowDimensions().width, height: useWindowDimensions().height - 85 }}
+                    style={{ width: width, height: height - 85 }}
                 >
                     <View style={styles.container}>
                         <FlatList
                             data={newClient}
                             horizontal={true}
                             renderItem={({ item }) => (
-                                <View style={[styles.clientBox, styles.boxShadowIOS, styles.boxShadowAndroid]}>
+                                <View style={[{width: width, height: height}, styles.boxShadowIOS, styles.boxShadowAndroid]}>
                                     <View style={styles.nameContainer}>
                                         <View style={styles.nameButton}>
                                             <Text style={styles.nameText}>{item.name}</Text>
@@ -182,6 +170,7 @@ export default function NewClientApproval() {
                 </LinearGradient>
             </ScrollView>
         </SafeAreaView>
+        </RootSiblingParent>
     );
 }
 
@@ -204,16 +193,6 @@ const styles = StyleSheet.create({
     // shadow for objects Android
     boxShadowAndroid: {
         elevation: 10
-    },
-    // every box per client
-    clientBox: {
-        width: useWindowDimensions().width,
-        height: useWindowDimensions().height,
-        //margin: 20,
-        //borderRadius: 20,
-        //alignItems: 'center',
-        //paddingVertical: 15,
-        //paddingHorizontal: 3,
     },
     // white information block
     infoContainer: {

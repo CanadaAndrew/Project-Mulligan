@@ -1,11 +1,12 @@
 import { StyleSheet, Text, View, TextInput, ImageBackground, } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import React, { useState } from 'react';
-import axios from 'axios';
+import database from './axiosConfig'; // Import axios from the axiosConfig.js file
 import firebase from './Firebase';
 import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
-import {funcObj, functionGetRetry} from './Enums/Enums'
+import {funcObj, functionGetRetry, notify} from './Enums/Enums';
+import { RootSiblingParent } from 'react-native-root-siblings';
 
 //Declaring Window as a global variable to be accessed
 declare global {
@@ -18,13 +19,6 @@ export default function ForgotLogin({ navigation }) {
 
     const auth = getAuth(firebase);
     auth.languageCode = 'en';
-
-    const database = axios.create({
-        baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
-        //baseURL: 'http://10.0.0.192:3000', //Andrew pc local
-        //baseURL: 'http://192.168.1.150:3000', //Chris pc local
-        //baseURL: 'http://10.0.0.133:3000',
-    })
 
     const [rawNum, setNum] = useState('');
     // error msg if wrong login info is put in
@@ -48,7 +42,7 @@ export default function ForgotLogin({ navigation }) {
                 }
                 loginErrorMsg('Password reset email send if phone number was valid. Please check your inbox.');
             })
-            .catch((err) => alert(err));
+            .catch((err) => notify(err));
         }
         else if (rawNum.includes("@")) {
             email = rawNum;
@@ -81,7 +75,9 @@ export default function ForgotLogin({ navigation }) {
     }
 
     return (
+        <RootSiblingParent>
         <View style={styles.container}>
+            <ScrollView>
             {/*added logo image*/}
             <ImageBackground
                 style={styles.logo}
@@ -122,14 +118,16 @@ export default function ForgotLogin({ navigation }) {
 
 
             </LinearGradient>
+            </ScrollView>
         </View>
-
+        </RootSiblingParent>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        borderRadius: 90
+        borderRadius: 90,
+        paddingBottom: 0
     },
     // title styling 
     objectTitle: {
@@ -148,7 +146,7 @@ const styles = StyleSheet.create({
     },
     // background under logo image
     background: {
-        paddingBottom: 275,
+        paddingBottom: 400,
         alignItems: 'center',
     },
     // logo image

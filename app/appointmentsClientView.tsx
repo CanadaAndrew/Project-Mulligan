@@ -1,17 +1,16 @@
 import { StyleSheet, Text, View, ScrollView, FlatList, Dimensions, useWindowDimensions} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
-import axios from 'axios';
+import database from './axiosConfig'; // Import axios from the axiosConfig.js file
 import Constants from 'expo-constants';
-import { UTCtoPST, UTCtoPSTString, funcObj, functionGetRetry } from './Enums/Enums';
-export default function appointmentsClientView(){
+import {UTCtoPSTString, funcObj, functionGetRetry, notify} from './Enums/Enums';
+import {RootSiblingParent} from 'react-native-root-siblings'
+import { SERVICES } from './Enums/Enums'
+export default function AppointmentsClientView({route}){
 
-    //server connection
-    const database = axios.create({
-        baseURL: 'http://hair-done-wright530.azurewebsites.net', //Azure server
-        //baseURL: 'http://192.168.1.150:3000', //Chris pc local
-        //baseURL: 'http://10.0.0.192:3000'
-    });
+    const { userData } = route.params;
+
+
 
     const windowDimensions = Dimensions.get('window')
     interface Appointment {
@@ -30,12 +29,12 @@ export default function appointmentsClientView(){
     async function firstUpdate(){
         if(first === 0 ){
             setFirst(1);
-            let date = UTCtoPST(new Date);
+            let date = new Date();
             let dateString = UTCtoPSTString(date); //NOTE THAT THE DATE IS CURRENTLY OFF, NEED TO FIX IN ANOTHER SPRINT //UTCtoPSTString should fix this -Tai
             let name;
-            name = await getName(1);
-            updateUpcomingAppointments(dateString.split("T")[0], 1, name); //Note that currently using ID 1 until the use of UserID transfer comes in
-            updatePastAppointments(dateString.split("T")[0], 1, name);
+            name = await getName(userData.userID);
+            updateUpcomingAppointments(dateString.split("T")[0], userData.userID, name); //Note that currently using ID 1 until the use of UserID transfer comes in
+            updatePastAppointments(dateString.split("T")[0], userData.userID, name);
         }
     }
     //Updates the upcoming appointments given a date.
@@ -45,19 +44,15 @@ export default function appointmentsClientView(){
             entireFunction: () => database.get('/queryUpcomingAppointmentsByUserIDAndDate', {
                 params: {
                     date : date,
-                    userID: userID //temp value, will be changed
+                    userID: userID 
                 }
             }),
             type:'get'
         };
-        funcObj.entireFunction()
-        .then((ret) => data = ret.data)
-        .then(() => {updateUpcomingAppointmentsDisplay(data, name)})
-        .catch(() => {functionGetRetry(funcObj)
+        functionGetRetry(funcObj)
             .then((ret) => data = ret.data)
             .then(() => {updateUpcomingAppointmentsDisplay(data, name)})
-            .catch((error) => alert(error))
-        });
+            .catch((error) => notify(error))
     }
 
     function updatePastAppointments(date, userID, name){
@@ -66,19 +61,15 @@ export default function appointmentsClientView(){
             entireFunction: () => database.get('/queryPastAppointmentsByUserIDAndDate', {
                 params: {
                     date : date,
-                    userID: userID //temp value, will be changed
+                    userID: userID 
                 }
             }),
             type:'get'
         };
-        funcObj.entireFunction()
-        .then((ret) => data = ret.data)
-        .then(() => {updatePastAppointmentsDisplay(data, name)})
-        .catch(() => {functionGetRetry(funcObj)
+            functionGetRetry(funcObj)
             .then((ret) => data = ret.data)
             .then(() => {updatePastAppointmentsDisplay(data, name)})
-            .catch((error) => alert(error))
-        });
+            .catch((error) => notify(error));
     }
 
     function updateUpcomingAppointmentsDisplay(data, name){
@@ -90,9 +81,17 @@ export default function appointmentsClientView(){
             let dateTimeArray = appointment.AppointmentDate.split("T");
             let newDate = dateTimeArray[0];
             let newTime = dateTimeArray[1].split("Z")[0];
+
+            let serviceArr = appointment.TypeOfAppointment.split(",");
+            let clientServices: string[] = [];
+            serviceArr.forEach(serviceEl => {
+                let temp = serviceEl.trim();
+                clientServices.push(SERVICES[temp]['service']);
+            });
+
             let newAppointment : Appointment = {
                 name: name,
-                service: appointment.TypeOfAppointment,
+                service: clientServices.join(", ").toString(),
                 date: newDate + ", " + newTime,
                 stylist: 'Melissa Wright',
                 realDate: newDate
@@ -112,9 +111,17 @@ export default function appointmentsClientView(){
             let dateTimeArray = appointment.AppointmentDate.split("T");
             let newDate = dateTimeArray[0];
             let newTime = dateTimeArray[1].split("Z")[0];
+
+            let serviceArr = appointment.TypeOfAppointment.split(",");
+            let clientServices: string[] = [];
+            serviceArr.forEach(serviceEl => {
+                let temp = serviceEl.trim();
+                clientServices.push(SERVICES[temp]['service']);
+            });
+
             let newAppointment : Appointment = {
                 name: name,
-                service: appointment.TypeOfAppointment,
+                service: clientServices.join(", ").toString(),
                 date: newDate + ", " + newTime,
                 stylist: 'Melissa Wright',
                 realDate: newDate
@@ -124,7 +131,6 @@ export default function appointmentsClientView(){
         }
         )
         setPastClientAppointments(appointmentList);
-        //Test: alert("Past list: " + JSON.stringify(appointmentList));
     }
     async function getName(userID){
         let funcObj:funcObj = {
@@ -137,23 +143,18 @@ export default function appointmentsClientView(){
         };
         let name
         try{
-            name = await funcObj.entireFunction()
-        }catch{
-            try{
-                name = await functionGetRetry(funcObj)
-            }catch(error){
-                alert(error)
-                return 'NA'
-            }
+            name = await functionGetRetry(funcObj)
+        }catch(error){
+            notify(error)
+            return 'NA'
         }
-        if(name.data[0].MiddleName == null){
-            return name.data[0].FirstName + " " + name.data[0].LastName;
-        }else{
-            return name.data[0].FirstName + " " + name.data[0].MiddleName + " " + name.data[0].LastName
-        }
+        return name.data[0].FirstName + " " + name.data[0].LastName;
     }
 
     return(
+        <RootSiblingParent>
+
+        
         <ScrollView>
             <View style = {styles.container}>
                 <LinearGradient
@@ -220,6 +221,7 @@ export default function appointmentsClientView(){
 
             </View>
         </ScrollView>
+        </RootSiblingParent>
 
     );
 }

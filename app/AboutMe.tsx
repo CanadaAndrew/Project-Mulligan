@@ -16,29 +16,24 @@ export default function AboutMe() {
 
 
 <LinearGradient locations={[0.7, 1]} colors={['#DDA0DD', 'white']} style={styles.container}>
+<ScrollView>
    
-<View style={styles.header}>
-<Text style={styles.headerText}>About Me</Text>
+<View >
+ 
 </View>
-
-     {/*  <View style={styles.backButton}> //obsolete?
-                        <Pressable
-                            style={({ pressed }) => [{ backgroundColor: pressed ? '#D8BFD8' : '#C154C1' }, styles.backButtonText]}
-                        >
-                            {({ pressed }) => (
-                                <Link href="/">
-                                    <Text style={styles.backButtonText}>Back</Text>
-                                </Link>
-                            )}
-                        </Pressable>
-                    </View>*/} 
 
                    
                     <Image style = {styles.logo} source={require('./images/Melissa.jpg')} />
-                    <Text style={{textAlign: 'center', color: 'black', fontSize: 18}}>Bio</Text>
-                    <Text style={{color: 'black', fontSize: 16}}>{"\n"}{aboutMeText}</Text>
+                    <View>
+                        <Text>{'\n'}</Text>
+                    </View>
+                    <Text style={{textAlign: 'center', color: 'white', fontSize: 24, fontWeight: 'bold'}}>Bio</Text>
+                    <View>
+                        <Text>{'\n'}</Text>
+                    </View>
+                    <Text style={{color: 'white', fontSize: 18, textAlign: 'center', fontWeight: 'bold'}}>{"\n"}{aboutMeText}</Text>
 
-
+                    </ScrollView>
                     </LinearGradient>
 </>  
 )}

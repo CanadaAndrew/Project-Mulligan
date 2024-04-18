@@ -1,3 +1,7 @@
+//For each query/function, a REST API needs to be created, a way for the frontend of our program to call methods to our backend.
+//app.get means the front end will GET stuff from the backend
+//app.post means the front end will POST stuff to the backend(read up on the Axion api for more information.)
+
 const sql = require('mssql')
 const express = require('express')
 const cors = require('cors');
@@ -78,8 +82,8 @@ async function connectAndQuery() {
         let i = 0;
         // ouput row contents from default record set
         resultSet.recordset.forEach(client => {
-            console.log("%s\t%s", client.PhoneNumberEmail, client.FirstName, client.MiddleName, client.LastName, client.PreferredWayOfContact);
-            ret[i] = client.PhoneNumberEmail + ' ' + client.FirstName + ' ' + client.MiddleName + ' ' + client.LastName + ' ' +client.PreferredWayOfContact +'\n' ;
+            console.log("%s\t%s", client.PhoneNumberEmail, client.FirstName, client.LastName, client.PreferredWayOfContact);
+            ret[i] = client.PhoneNumberEmail + ' ' + client.FirstName + ' ' + client.LastName + ' ' +client.PreferredWayOfContact +'\n' ;
             console.log(ret[i]);
             i += 1;
         });
@@ -129,6 +133,8 @@ function sortingResults(resultSet){
     return ret;
 }
 
+app.get('/queryUsers', (req, res) => queryUsers().then((ret) => res.send(ret)).catch(() => console.log('error')))
+
 /**
  * The general querying for tables are all the same, so I'll comment this one 
  * @returns Array of Objects created from the querry
@@ -152,6 +158,8 @@ async function queryUsers(){
     }
 }
 
+app.get('/queryClients', (req, res) => queryClients().then((ret) => res.send(ret)).catch(() => console.log('error')))
+
 async function queryClients(){
     try {
         var poolConnection = await connect();
@@ -165,6 +173,8 @@ async function queryClients(){
         throw err;
     }
 }
+
+app.get('/queryAdmins', (req, res) => queryAdmins().then((ret) => res.send(ret)).catch(() => console.log('error')))
 
 async function queryAdmins(){
     try {
@@ -180,6 +190,8 @@ async function queryAdmins(){
     }
 }
 
+app.get('/queryCurrentClient', (req, res) => queryCurrentClients().then((ret) => res.send(ret)).catch(() => console.log('error')))
+
 async function queryCurrentClients(){
     try {
         var poolConnection = await connect();
@@ -194,6 +206,7 @@ async function queryCurrentClients(){
     }
 }
 
+app.get('/queryNewClient', (req, res) => queryNewClients().then((ret) => res.send(ret)).catch(() => console.log('error')))
 
 async function queryNewClients(){
     try {
@@ -209,6 +222,8 @@ async function queryNewClients(){
     }
 }
 
+app.get('/queryServicesWanted', (req, res) => queryServicesWanted().then((ret) => res.send(ret)).catch(() => console.log('error')))
+
 async function queryServicesWanted(){
     try {
         var poolConnection = await connect();
@@ -222,6 +237,8 @@ async function queryServicesWanted(){
         throw err;
     }
 }
+
+app.get('/queryAppointments', (req, res) => queryAppointments().then((ret) => res.send(ret)).catch(() => console.log('error')))
 
 async function queryAppointments(){
     try {
@@ -237,6 +254,20 @@ async function queryAppointments(){
     }
 }
 
+/**
+ * This breaks down the params, getting the string and storing it before calling the query method.
+ */
+app.get('/customQuery', (req, res) => {
+    const query = req.query.query;
+    console.log(query);
+    customQuery(query)
+    .then((ret) => res.send(ret))
+    .catch(() => err => {
+        console.error('Error querying user:', err.message);
+        res.status(500).json({ error: 'Internal server error' });
+    })
+})
+
 //Custom Query is the same as the general queries except that a custom queryString is given.
 async function customQuery(queryString){
     try {
@@ -250,13 +281,30 @@ async function customQuery(queryString){
     }
 }
 
+//Formats the date and time before sending it to the method to update the appointments.
+//In the future might just format this in the front end and then send it over, might be a lot easier.
+app.put('/confirmAppointment', (req, res) => {
+    //Gets the date, time, and userID through parameters.
+    let date = req.query.date;
+    let time = req.query.time;
+    let userID = req.query.userID;
+    let type = req.query.type
+
+    updateAppointment(date, time, userID, type)
+    .then(res.send("Booked."))
+    .catch(err => {
+        console.error('Error updating appointments:', err.message);
+        res.status(500).send('Internal Server Error');
+    });
+})
+
 //Takes the formatted date, time, and userID and updates the appointment so it is taken.
 async function updateAppointment(date, time, userID, type){
     try {
         var poolConnection = await connect();//
         let query = 'UPDATE Appointments SET VacancyStatus = 1, UserID = \''+ userID + '\', TypeOfAppointment = \''+ type + '\' WHERE AppointmentDate = '+'\''+date+' '+time+'\'';
-        await poolConnection.request().query(query);
         console.log(query);
+        await poolConnection.request().query(query);
         //await poolConnection.request().query('SELECT * FROM Appointments');
         poolConnection.close();
     } catch (err) {
@@ -266,12 +314,26 @@ async function updateAppointment(date, time, userID, type){
     
 }
 
+app.patch('/updateCurrentClientsAddress', async (req, res) => {
+    try {
+        const { userID, street, addressLine2, city, stateAbbreviation, zip } = req.body;
+        if (!userID) {
+            throw new Error('Invalid request body. Missing "userID"');
+        }
+        await currentClientsAddressUpdate(userID, street, addressLine2, city, stateAbbreviation, zip);
+        res.status(204).send(); // 204 means success with no content
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
 //updates CurrentClients table with street, city, state, and zip
-async function currentClientsAddressUpdate(userID, street, city, stateAbbreviation, zip) {
+async function currentClientsAddressUpdate(userID, street, addressLine2, city, stateAbbreviation, zip) {
     try {
         const poolConnection = await connect();
         const query = `UPDATE CurrentClients
-            SET Street = '${street}', City = '${city}', StateAbbreviation = '${stateAbbreviation}', Zip = '${zip}'
+            SET Street = '${street}', AddressLine2 = '${addressLine2}', City = '${city}', StateAbbreviation = '${stateAbbreviation}', Zip = '${zip}'
             WHERE UserID = ${userID};`;
         await poolConnection.request().query(query);
         poolConnection.close();
@@ -279,6 +341,21 @@ async function currentClientsAddressUpdate(userID, street, city, stateAbbreviati
         console.error(err.message);
     }
 };
+
+app.patch('/updateUsersEmail', async (req, res) => {
+    try {
+        const { userID, email } = req.body;
+        if (!userID) {
+            throw new Error('Invalid request body. Missing "userID"');
+        }
+        await usersEmailUpdate(userID, email);
+        res.status(204).send(); // 204 means success with no content
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    };
+});
+
 
 //updates Users table with email and phone number
 async function usersEmailUpdate(userID, email) {
@@ -294,6 +371,21 @@ async function usersEmailUpdate(userID, email) {
     }
 };
 
+app.patch('/updateUsersPhone', async (req, res) => {
+    try {
+        const { userID, phoneNumber } = req.body;
+        if (!userID) {
+            throw new Error('Invalid request body. Missing "userID"');
+        }
+        await usersPhoneUpdate(userID, phoneNumber);
+        res.status(204).send(); // 204 means success with no content
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    };
+});
+
+
 //updates Users table with phone number
 async function usersPhoneUpdate(userID, phoneNumber) {
     try {
@@ -307,6 +399,20 @@ async function usersPhoneUpdate(userID, phoneNumber) {
         console.error(err.message);
     }
 };
+
+app.patch('/updateCurrentClientsNotes', async (req, res) => {
+    try {
+        const { userID, clientNotes } = req.body;
+        if (!userID) {
+            throw new Error('Invalid request body. Missing "userID"');
+        }
+        await currentClientsNotesUpdate(userID, clientNotes);
+        res.status(204).send(); // 204 means success with no content
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
 
 //updates CurrentClients table with client notes
 async function currentClientsNotesUpdate(userID, clientNotes) {
@@ -322,6 +428,21 @@ async function currentClientsNotesUpdate(userID, clientNotes) {
     }
 };
 
+app.delete('/deleteServicesWanted', async (req, res) => {
+    try {
+        const { userID, serviceName } = req.body;
+        console.log('userID: ' + userID + ', serviceName: ' + serviceName);
+        if (!userID) {
+            throw new Error('Invalid request body. Missing "userID"');
+        }
+        await servicesWantedDelete(userID, serviceName);
+        res.status(204).send(); // 204 means success with no content
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
 //updates ServicesWanted table with service name
 async function servicesWantedDelete(userID, serviceName) {
     try {
@@ -335,6 +456,23 @@ async function servicesWantedDelete(userID, serviceName) {
         console.error(err.message);
     }
 };
+
+app.post('/newUserPost', async (req, res) => {
+    try {
+        const { email, phoneNumber, adminPriv } = req.body;
+        if (!email || !phoneNumber || adminPriv === undefined || adminPriv === null) {
+            throw new Error('Invalid request body. Missing "email", "phoneNumber", or "adminPriv".');
+        }
+
+        //create new user
+        const newUser = await newUserPost(email, phoneNumber, adminPriv);
+        //send userID in response
+        res.status(201).json({ userID: newUser.userID, message: 'User created successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
 
 //adds new user to database
 async function newUserPost(email, phoneNumber, adminPriv) {
@@ -356,13 +494,31 @@ async function newUserPost(email, phoneNumber, adminPriv) {
     }
 }
 
+app.post('/newClientPost', async (req, res) => {
+    try {
+        const { userID, firstName, lastName, preferredWayOfContact } = req.body;
+        console.log(userID)
+        console.log(firstName)
+        console.log(lastName)
+        console.log(preferredWayOfContact)
+        if (!userID || !firstName || !lastName || !preferredWayOfContact) {
+            throw new Error('Invalid request body. Missing "userID", "firstName", "lastName", or "preferredWayOfContact".');
+        }
+        await newClientPost(userID, firstName, lastName, preferredWayOfContact);
+        res.status(201).send('Client created successfully');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
 //adds client to database
-async function newClientPost(userID, firstName, middleName, lastName, preferredWayOfContact) {
+async function newClientPost(userID, firstName, lastName, preferredWayOfContact) {
     try {
         const poolConnection = await connect();
         const query = 
-            `INSERT INTO Clients (UserID, FirstName, MiddleName, LastName, PreferredWayOfContact)
-            VALUES (${userID}, '${firstName}', '${middleName}', '${lastName}', '${preferredWayOfContact}');`;
+            `INSERT INTO Clients (UserID, FirstName, LastName, PreferredWayOfContact)
+            VALUES (${userID}, '${firstName}', '${lastName}', '${preferredWayOfContact}');`;
             console.log(query);
         await poolConnection.request().query(query);
         poolConnection.close();
@@ -371,6 +527,20 @@ async function newClientPost(userID, firstName, middleName, lastName, preferredW
         throw err; // rethrow error so it can be caught in calling code
     }
 }
+
+app.post('/new_newClientPost', async (req, res) => {
+    try {
+        const { userID, approvalStatus } = req.body;
+        if (!userID || approvalStatus === undefined || approvalStatus === null) {
+            throw new Error('Invalid request body. Missing "userID" or "approvalStatus".');
+        }
+        await new_newClientPost(userID, approvalStatus);
+        res.status(201).send('New client created successfully');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
 
 //adds new client to database
 async function new_newClientPost(userID, approvalStatus) {
@@ -387,6 +557,20 @@ async function new_newClientPost(userID, approvalStatus) {
         throw err; // rethrow error so it can be caught in calling code
     }
 }
+
+app.post('/servicesWantedPost', async (req, res) => {
+    try {
+        const { userID, serviceName } = req.body;
+        if (!userID || !serviceName) {
+            throw new Error('Invalid request body. Missing "userID" or "serviceName".');
+        }
+        await servicesWantedPost(userID, serviceName);
+        res.status(201).send('Service wanted created successfully');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
 
 //adds services wanted to database
 async function servicesWantedPost(userID, serviceName) {
@@ -405,6 +589,25 @@ async function servicesWantedPost(userID, serviceName) {
     }
 }
 
+app.get('/appointmentQuery', async (req, res) => {
+    try {
+        const { startDate, endDate, vacancyStatus } = req.query;
+        if (!startDate) {
+            throw new Error('Invalid request. Missing "startTime"');
+        }
+        if (!endDate) {
+            throw new Error('Invalid request. Missing "endTime"');
+        }
+        if (!vacancyStatus) {
+            throw new Error('Invalid request. Missing "vacancyStatus"');
+        }
+        const result = await appointmentQuery(startDate, endDate, vacancyStatus);
+        res.send(result);
+    } catch {
+        res.status(400).send('Bad Request');
+    }
+});
+
 async function appointmentQuery(startDate, endDate, vacancyStatus){
     try {
         const poolConnection = await connect();
@@ -420,6 +623,23 @@ async function appointmentQuery(startDate, endDate, vacancyStatus){
         throw err; // rethrow error so it can be caught in calling code
     }
 }
+
+app.post('/addAvailability', async (req, res) => {
+    try {
+        const { addDateTimeString, vacancyStatus } = req.body;
+        if (!addDateTimeString) {
+            throw new Error('Invalid request body. Missing "addDateTimeString".');
+        }
+        if (vacancyStatus === undefined || vacancyStatus === null) {
+            throw new Error('Invalid request body. Missing "vacancyStatus".');
+        }
+        await addAvailability(addDateTimeString, vacancyStatus);
+        res.status(204).send(); // 204 means success with no content
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
 
 //adds an admin availability date/time to the database
 async function addAvailability(addDateTimeString, vacancyStatus) {
@@ -437,8 +657,77 @@ async function addAvailability(addDateTimeString, vacancyStatus) {
     }
 }
 
+app.post('/currentClientPost', async (req, res) => {
+    try {
+        const { userID, street, addressLine2, city, state, zip } = req.body;
+        if (!userID) {
+            throw new Error('Invalid request body. Missing "userID"');
+        }
+        if (!street) {
+            throw new Error('Invalid request body. Missing "street"');
+        }
+        if (!addressLine2) {
+            throw new Error('Invalid request body. Missing "addressLine2"');
+        }
+        if (!city) {
+            throw new Error('Invalid request body. Missing "city"');
+        }
+        if (!state) {
+            throw new Error('Invalid request body. Missing "state"');
+        }
+        if (!zip) {
+            throw new Error('Invalid request body. Missing "zip"');
+        }
+        await currentClientPost(userID, street, addressLine2, city, state, zip);
+        res.status(204).send(); // 204 means success with no content
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
 //add client to CurrentClients
-async function currentClientPost(userID, street, city, state, zip) {
+async function currentClientPost(userID, street, addressLine2, city, state, zip) {
+    try {
+        const poolConnection = await connect();
+        const query = `INSERT INTO CurrentClients (UserID, Street, AddressLine2, City, StateAbbreviation, Zip)
+            VALUES (${userID}, '${street}', '${addressLine2}', '${city}', '${state}', '${zip}');`;
+        await poolConnection.request().query(query);
+        poolConnection.close();
+    } catch (err) {
+        console.error(err.message);
+        throw err; // rethrow error so it can be caught in calling code
+    }
+};
+
+app.post('/currentClientPostNo2', async (req, res) => {
+    try {
+        const { userID, street, city, state, zip } = req.body;
+        if (!userID) {
+            throw new Error('Invalid request body. Missing "userID"');
+        }
+        if (!street) {
+            throw new Error('Invalid request body. Missing "street"');
+        }
+        if (!city) {
+            throw new Error('Invalid request body. Missing "city"');
+        }
+        if (!state) {
+            throw new Error('Invalid request body. Missing "state"');
+        }
+        if (!zip) {
+            throw new Error('Invalid request body. Missing "zip"');
+        }
+        await currentClientPostNo2(userID, street, city, state, zip);
+        res.status(204).send(); // 204 means success with no content
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+//add client to CurrentClients with no addressLine2
+async function currentClientPostNo2(userID, street, city, state, zip) {
     try {
         const poolConnection = await connect();
         const query = `INSERT INTO CurrentClients (UserID, Street, City, StateAbbreviation, Zip)
@@ -449,7 +738,22 @@ async function currentClientPost(userID, street, city, state, zip) {
         console.error(err.message);
         throw err; // rethrow error so it can be caught in calling code
     }
-}
+};
+
+
+app.delete('/removeAvailability', async (req, res) => {
+    try {
+        const { removeDateTimeString } = req.body;
+        if (!removeDateTimeString) {
+            throw new Error('Invalid request body. Missing "removeDateTimeString".');
+        }
+        await removeAvailability(removeDateTimeString);
+        res.status(204).send(); // 204 means success with no content
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
 
 //remove availability time slot
 async function removeAvailability(removeDateTimeString){
@@ -465,6 +769,21 @@ async function removeAvailability(removeDateTimeString){
         throw err; //rethrow error so it can be caught in calling code
     } 
 }
+
+app.post('/appointmentPost', async (req, res) => {
+    console.log('received request body: ');
+    try {
+        const { queryString, values } = req.body;
+        if (!queryString || !values) {
+            throw new Error('Invalid request body. Missing "queryString" or "values".');
+        }
+        const result = await appointmentPost(queryString, values);
+        res.send(result);
+    } catch (error) {
+        console.error(error.response.data);
+        res.status(400).send('Bad Request');
+    }
+});
 
 async function appointmentPost(queryString, values){
     try {
@@ -482,20 +801,42 @@ async function appointmentPost(queryString, values){
     }
 }
 
-/*async function pastAppointmentsQuery(){
+app.get('/clientHistoryAppointmentsQuery', async (req, res) => {
     try {
-        const poolConnection = await connect();
-        const query = 'SELECT * FROM Appointments';
-        const resultSet = await poolConnection
-            .request()
-            .query(query);
-        poolConnection.close();
-        return sortingResults(resultSet);
-    } catch (err) {
-        console.error(err.message);
-        throw err; //rethrow error so that frontend can catch it
+        const startDate = req.query.startDate;
+        const endDate = req.query.endDate;
+        if (!startDate) {
+            throw new Error('Invalid request. Missing "startDate"');
+        }
+        if (!endDate) {
+            throw new Error('Invalid request. Missing "endDate"');
+        }
+    //const result = await someAppointmentsQuery(startDate, endDate)
+    const result = await clientHistoryAppointmentsQuery(startDate, endDate);
+    res.send(result);   
+    } catch {
+        res.status(400).send('Bad Request');
     }
-}*/
+});
+
+app.get('/selectAppointmentsByTime', async (req, res) => {
+    try {
+        const beginDay = req.query.beginDay;
+        const endDay = req.query.endDay;
+        console.log('Begin Day: ', beginDay);
+        console.log("endDay: ", endDay);
+        if (!beginDay) {
+            throw new Error('Invalid requestt. Missing "beginDay"');
+        }
+        if (!endDay) {
+            throw new Error('Invalid request. Missing "endDay"');
+        }
+    const result = await selectAppointmentsByTime(beginDay, endDay);
+    res.send(result);
+    } catch {
+        res.status(400).send('Bad Request');
+    }
+});
 
 //async function upcomingAppointmentsQuery(startDate, endDate){   
 async function clientHistoryAppointmentsQuery(startDate, endDate){
@@ -515,11 +856,33 @@ async function clientHistoryAppointmentsQuery(startDate, endDate){
     }
 }
 
+app.get('/queryCurrentUserFromEmail', async (req, res) => {
+    try {
+        const email = req.query.email;
+        if (!email) {
+            throw new Error('Invalid request. Missing "email"');
+        }
+    const result = await queryCurrentUserFromEmail(email);
+    res.send(result);
+    } catch {
+        res.status(400).send('Bad Request');
+    }
+});
+
+app.get('/getNewClientInfo', async (req, res) => {
+    try {
+        const result = await getNewClientInfo();
+        res.send(result);
+    } catch {
+        res.status(400).send('Bad Request');
+    }
+});
+
 async function queryCurrentUserFromEmail(email) {
 
     try {
         const poolConnection = await connect();
-        const query = `SELECT UserID FROM CurrentClientView WHERE Email = '${email}';`;
+        const query = `SELECT * FROM CurrentClientView WHERE Email = '${email}';`;
         const resultSet = await poolConnection
             .request()
             .query(query);
@@ -531,6 +894,113 @@ async function queryCurrentUserFromEmail(email) {
     }
 
 }
+
+async function getNewClientInfo() {
+    try {
+        const poolConnection = await connect();
+        const query = 'SELECT ServicesWanted.ServiceName, NewClientView.FirstName, NewClientView.LastName, NewClientView.Email, NewClientView.PhoneNumber, NewClientView.ApprovalStatus, NewClientView.UserID FROM ServicesWanted INNER JOIN NewClientView ON ServicesWanted.UserID = NewClientView.UserID WHERE ApprovalStatus = 1;';
+        const resultSet = await poolConnection
+            .request()
+            .query(query);
+        poolConnection.close();
+        return sortingResults(resultSet);
+    } catch (err) {
+        console.error(err.message);
+        throw err;
+    }
+}
+
+async function selectAppointmentsByTime(beginDay, endDay) {
+
+    try {
+        const poolConnection = await connect();
+        const query = `SELECT * FROM Appointments WHERE AppointmentDate >= '${beginDay}' AND AppointmentDate <= '${endDay}' AND VacancyStatus = 0;`;
+        console.log(query);
+        const resultSet = await poolConnection
+            .request()
+            .query(query);
+        poolConnection.close();
+        return sortingResults(resultSet);
+    } catch (err) {
+        console.error(err.message);
+        throw err;
+    }
+
+}
+
+
+async function queryUsersFromEmail(email) {
+    try {
+        const poolConnection = await connect();
+        const query = `SELECT * FROM Users WHERE Email = '${email}';`;
+        const resultSet = await poolConnection
+            .request()
+            .query(query);
+        poolConnection.close();
+        return sortingResults(resultSet);
+    } catch (err) {
+        console.error(err.message);
+        throw err;
+    }
+}
+
+async function queryNewUserFromUserID(userId) {
+
+    try {
+
+        const poolConnection = await connect();
+        const query = `SELECT UserID, ApprovalStatus FROM NewClientView WHERE UserID = '${userId}';`;
+        const resultSet = await poolConnection
+            .request()
+            .query(query);
+        poolConnection.close();
+        return sortingResults(resultSet);
+    } catch (err) {
+        console.error(err.message);
+        throw err;
+    }
+
+}
+
+app.get('/queryNewUserFromUserID', async (req, res) => {
+    try {
+        const userId = req.query.email;
+        if (!userId) {
+            throw new Error('Invalid request. Missing "userId"');
+        }
+    const result = await queryNewUserFromUserID(userId);
+    res.send(result);
+    } catch {
+        res.status(400).send('Bad Request');
+    }
+});
+
+app.get('/queryUsersFromEmail', async (req, res) => {
+    try {
+        const email = req.query.email;
+        if (!email) {
+            throw new Error('Invalid request. Missing "email"');
+        }
+    const result = await queryUsersFromEmail(email);
+    res.send(result);
+    } catch {
+        res.status(400).send('Bad Request');
+    }
+});
+
+
+app.get('/queryNewUserFromEmail', async (req, res) => {
+    try {
+        const email = req.query.email;
+        if (!email) {
+            throw new Error('Invalid request. Missing "email"');
+        }
+    const result = await queryNewUserFromEmail(email);
+    res.send(result);
+    } catch {
+        res.status(400).send('Bad Request');
+    }
+});
 
 async function queryNewUserFromEmail(email) {
 
@@ -548,6 +1018,19 @@ async function queryNewUserFromEmail(email) {
     }
 
 }
+
+app.get('/allPastAppointmentsQuery', async (req, res) => {
+    try {
+        const todaysDate = req.query.todaysDate;
+        if (!todaysDate) {
+            throw new Error('Invalid request. Missing "todaysDate"');
+        }
+        const result = await allPastAppointmentsQuery(todaysDate);
+        res.send(result);
+    } catch {
+        res.status(400).send('Bad Request');
+    }
+});
 
 //gets all past appointments
 async function allPastAppointmentsQuery(todaysDate){
@@ -567,6 +1050,19 @@ async function allPastAppointmentsQuery(todaysDate){
     }
 }
 
+app.get('/allUpcomingAppointmentsQuery', async (req, res) => {
+    try {
+        const todaysDate = req.query.todaysDate;
+        if (!todaysDate) {
+            throw new Error('Invalid request. Missing "todaysDate"');
+        }
+        const result = await allUpcomingAppointmentsQuery(todaysDate);
+        res.send(result);
+    } catch {
+        res.status(400).send('Bad Request');
+    }
+});
+
 //gets all upcoming appointments
 async function allUpcomingAppointmentsQuery(todaysDate){
     try {
@@ -584,6 +1080,20 @@ async function allUpcomingAppointmentsQuery(todaysDate){
         throw err; //rethrow error so that frontend can catch it
     }
 }
+
+app.delete('/customDelete', async (req, res) => { // Provide explicit types for the 'req' and 'res' parameters
+    try {
+        const { queryString } = req.body;
+        if (!queryString) {
+            throw new Error('Invalid request body. Missing "queryString".');
+        }
+        await customDelete(queryString);
+        res.status(204).send(); // 204 means success with no content
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
 
 async function customDelete(queryString) {
     try {
@@ -623,6 +1133,22 @@ async function checkEmailExists(email) {
 
 }
 
+app.get('/getUserIDByEmail', (req, res) => {
+    const email = req.query.email;
+    getUserIDByEmail(email)
+        .then(UserID => {
+            if (UserID !== null) {
+                res.json({ UserID });
+            } else {
+                res.status(404).json({ error: 'User not found' });
+            }
+        })
+        .catch(err => {
+            console.error('Error querying user:', err.message);
+            res.status(500).json({ error: 'Internal server error' });
+        });
+});
+
 async function getUserIDByEmail(email) {
 
     try {
@@ -648,6 +1174,28 @@ async function getUserIDByEmail(email) {
 
 }
 
+app.get('/queryAppointmentByDaySelectedAndVacancy', async (req, res) =>{
+    try
+    {
+        const beginDay = req.query.beginDay;
+        const endDay = req.query.endDay;
+        if(!beginDay)
+        {
+            throw new Error("Invalid request. Missing 'beginDay'")
+        }
+        if(!endDay)
+        {
+            throw new Error("Invalid request. Missing 'endDay'")
+        }
+        const result = await QueryAppointmentByDaySelectedAndVacancy(beginDay, endDay);
+        res.send(result);
+    }
+    catch
+    {
+        res.status(400).send('Bad Request');
+    }
+});
+
 async function QueryAppointmentByDaySelectedAndVacancy(beginDay, endDay)
 {
     try
@@ -664,6 +1212,24 @@ async function QueryAppointmentByDaySelectedAndVacancy(beginDay, endDay)
         throw err;
     }
 }
+
+app.put('/updateClientApproval', async (req, res) =>{
+    try
+    {
+        const userID = req.query.userID;
+        if(!userID)
+        {
+            throw new Error("Invalid request. Missing 'UserID'")
+        }
+        const result = await UpdateClientApproval(userID);
+        res.send(result);
+    }
+    catch
+    {
+        res.status(400).send('Bad Request');
+    }
+    
+});
 
 async function UpdateClientApproval(userID)
 {
@@ -682,6 +1248,23 @@ async function UpdateClientApproval(userID)
     }
 }
 
+app.get('/queryClientViewWithID', async (req, res) => {
+    try
+    {
+        const userID = req.query.UserID;
+        if(!userID)
+        {
+            throw new Error("Invalid request. Missing 'UserID'")
+        }
+        const result = await QueryClientViewWithID(userID);
+        res.send(result);
+    }
+    catch
+    {
+        res.status(400).send('Bad Request');
+    }
+});
+
 async function QueryClientViewWithID(userID)
 {
     try
@@ -698,6 +1281,23 @@ async function QueryClientViewWithID(userID)
         throw err;
     }
 }
+
+app.get('/queryCurrentClientViewWithID', async (req, res) => {
+    try
+    {
+        const userID = req.query.UserID;
+        if(!userID)
+        {
+            throw new Error("Invalid request. Missing 'UserID'")
+        }
+        const result = await QueryCurrentClientViewWithID(userID);
+        res.send(result);
+    }
+    catch
+    {
+        res.status(400).send('Bad Request');
+    }
+});
 
 async function QueryCurrentClientViewWithID(userID)
 {
@@ -716,6 +1316,23 @@ async function QueryCurrentClientViewWithID(userID)
     }
 }
 
+app.get('/queryServicesWantedWithID', async (req, res) => {
+    try
+    {
+        const userID = req.query.UserID;
+        if(!userID)
+        {
+            throw new Error("Invalid request. Missing 'UserID'")
+        }
+        const result = await QueryServicesWantedWithID(userID);
+        res.send(result);
+    }
+    catch
+    {
+        res.status(400).send('Bad Request');
+    }
+});
+
 async function QueryServicesWantedWithID(userID){
     try
     {
@@ -732,48 +1349,6 @@ async function QueryServicesWantedWithID(userID){
     }
 }
 
-//For each query/function, a REST API needs to be created, a way for the frontend of our program to call methods to our backend.
-//app.get means the front end will GET stuff from the backend
-//app.post means the front end will POST stuff to the backend(read up on the Axion api for more information.)
-app.get('/queryUsers', (req, res) => queryUsers().then((ret) => res.send(ret)).catch(() => console.log('error')))
-app.get('/queryAdmins', (req, res) => queryAdmins().then((ret) => res.send(ret)).catch(() => console.log('error')))
-app.get('/queryClients', (req, res) => queryClients().then((ret) => res.send(ret)).catch(() => console.log('error')))
-app.get('/queryCurrentClient', (req, res) => queryCurrentClients().then((ret) => res.send(ret)).catch(() => console.log('error')))
-app.get('/queryNewClient', (req, res) => queryNewClients().then((ret) => res.send(ret)).catch(() => console.log('error')))
-app.get('/queryServicesWanted', (req, res) => queryServicesWanted().then((ret) => res.send(ret)).catch(() => console.log('error')))
-app.get('/queryNewClient', (req, res) => queryNewClients().then((ret) => res.send(ret)).catch(() => console.log('error')))
-app.get('/queryAppointments', (req, res) => queryAppointments().then((ret) => res.send(ret)).catch(() => console.log('error')))
-
-/**
- * This breaks down the params, getting the string and storing it before calling the query method.
- */
-app.get('/customQuery', (req, res) => {
-    const query = req.query.query;
-    console.log(query);
-    customQuery(query)
-    .then((ret) => res.send(ret))
-    .catch(() => err => {
-        console.error('Error querying user:', err.message);
-        res.status(500).json({ error: 'Internal server error' });
-    })
-})
-
-app.get('/getUserIDByEmail', (req, res) => {
-    const email = req.query.email;
-    getUserIDByEmail(email)
-        .then(UserID => {
-            if (UserID !== null) {
-                res.json({ UserID });
-            } else {
-                res.status(404).json({ error: 'User not found' });
-            }
-        })
-        .catch(err => {
-            console.error('Error querying user:', err.message);
-            res.status(500).json({ error: 'Internal server error' });
-        });
-});
-
 
 /**
  * This breaks down the params, getting the string and storing it before calling the query method.
@@ -782,383 +1357,9 @@ app.get('/queryUpcomingAppointments', (req, res) => {
     const date = req.query.queryDate;
     console.log(date);
     let queryString = "SELECT * FROM Appointments WHERE AppointmentDate >= '" + date + "' AND VacancyStatus = 1";
-    console.log(queryString);
     customQuery(queryString)
     .then((ret) => res.send(ret))
     .catch(() => res.status(500).json({ error: 'Internal server error' }));
-})
-
-
-app.get('/clientHistoryAppointmentsQuery', async (req, res) => {
-    try {
-        const startDate = req.query.startDate;
-        const endDate = req.query.endDate;
-        if (!startDate) {
-            throw new Error('Invalid request. Missing "startDate"');
-        }
-        if (!endDate) {
-            throw new Error('Invalid request. Missing "endDate"');
-        }
-    //const result = await someAppointmentsQuery(startDate, endDate)
-    const result = await clientHistoryAppointmentsQuery(startDate, endDate);
-    res.send(result);   
-    } catch {
-        res.status(400).send('Bad Request');
-    }
-});
-
-app.get('/queryCurrentUserFromEmail', async (req, res) => {
-    try {
-        const email = req.query.email;
-        if (!email) {
-            throw new Error('Invalid request. Missing "email"');
-        }
-    const result = await queryCurrentUserFromEmail(email);
-    res.send(result);
-    } catch {
-        res.status(400).send('Bad Request');
-    }
-});
-
-app.get('/queryNewUserFromEmail', async (req, res) => {
-    try {
-        const email = req.query.email;
-        if (!email) {
-            throw new Error('Invalid request. Missing "email"');
-        }
-    const result = await queryNewUserFromEmail(email);
-    res.send(result);
-    } catch {
-        res.status(400).send('Bad Request');
-    }
-});
-
-app.get('/allPastAppointmentsQuery', async (req, res) => {
-    try {
-        const todaysDate = req.query.todaysDate;
-        if (!todaysDate) {
-            throw new Error('Invalid request. Missing "todaysDate"');
-        }
-        const result = await allPastAppointmentsQuery(todaysDate);
-        res.send(result);
-    } catch {
-        res.status(400).send('Bad Request');
-    }
-});
-
-app.get('/allUpcomingAppointmentsQuery', async (req, res) => {
-    try {
-        const todaysDate = req.query.todaysDate;
-        if (!todaysDate) {
-            throw new Error('Invalid request. Missing "todaysDate"');
-        }
-        const result = await allUpcomingAppointmentsQuery(todaysDate);
-        res.send(result);
-    } catch {
-        res.status(400).send('Bad Request');
-    }
-});
-
-app.post('/appointmentPost', async (req, res) => {
-    console.log('received request body: ');
-    try {
-        const { queryString, values } = req.body;
-        if (!queryString || !values) {
-            throw new Error('Invalid request body. Missing "queryString" or "values".');
-        }
-        const result = await appointmentPost(queryString, values);
-        res.send(result);
-    } catch (error) {
-        console.error(error.response.data);
-        res.status(400).send('Bad Request');
-    }
-});
-
-app.get('/appointmentQuery', async (req, res) => {
-    try {
-        const { startDate, endDate, vacancyStatus } = req.query;
-        if (!startDate) {
-            throw new Error('Invalid request. Missing "startTime"');
-        }
-        if (!endDate) {
-            throw new Error('Invalid request. Missing "endTime"');
-        }
-        if (!vacancyStatus) {
-            throw new Error('Invalid request. Missing "vacancyStatus"');
-        }
-        const result = await appointmentQuery(startDate, endDate, vacancyStatus);
-        res.send(result);
-    } catch {
-        res.status(400).send('Bad Request');
-    }
-});
-
-app.post('/addAvailability', async (req, res) => {
-    try {
-        const { addDateTimeString, vacancyStatus } = req.body;
-        if (!addDateTimeString) {
-            throw new Error('Invalid request body. Missing "addDateTimeString".');
-        }
-        if (vacancyStatus === undefined || vacancyStatus === null) {
-            throw new Error('Invalid request body. Missing "vacancyStatus".');
-        }
-        await addAvailability(addDateTimeString, vacancyStatus);
-        res.status(204).send(); // 204 means success with no content
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
-//app.patch('/updateCurrentClientViewContactInfo', async (req, res) => {
-app.patch('/updateCurrentClientsAddress', async (req, res) => {
-    try {
-        const { userID, street, city, stateAbbreviation, zip } = req.body;
-        if (!userID) {
-            throw new Error('Invalid request body. Missing "userID"');
-        }
-        await currentClientsAddressUpdate(userID, street, city, stateAbbreviation, zip);
-        res.status(204).send(); // 204 means success with no content
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
-app.patch('/updateUsersEmail', async (req, res) => {
-    try {
-        const { userID, email } = req.body;
-        if (!userID) {
-            throw new Error('Invalid request body. Missing "userID"');
-        }
-        await usersEmailUpdate(userID, email);
-        res.status(204).send(); // 204 means success with no content
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-    };
-});
-
-app.patch('/updateUsersPhone', async (req, res) => {
-    try {
-        const { userID, phoneNumber } = req.body;
-        if (!userID) {
-            throw new Error('Invalid request body. Missing "userID"');
-        }
-        await usersPhoneUpdate(userID, phoneNumber);
-        res.status(204).send(); // 204 means success with no content
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-    };
-})
-
-;
-
-app.patch('/updateCurrentClientsNotes', async (req, res) => {
-    try {
-        const { userID, clientNotes } = req.body;
-        if (!userID) {
-            throw new Error('Invalid request body. Missing "userID"');
-        }
-        await currentClientsNotesUpdate(userID, clientNotes);
-        res.status(204).send(); // 204 means success with no content
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
-app.delete('/deleteServicesWanted', async (req, res) => {
-    try {
-        const { userID, serviceName } = req.body;
-        console.log('userID: ' + userID + ', serviceName: ' + serviceName);
-        if (!userID) {
-            throw new Error('Invalid request body. Missing "userID"');
-        }
-        await servicesWantedDelete(userID, serviceName);
-        res.status(204).send(); // 204 means success with no content
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
-app.post('/newUserPost', async (req, res) => {
-    try {
-        const { email, phoneNumber, adminPriv } = req.body;
-        if (!email || !phoneNumber || adminPriv === undefined || adminPriv === null) {
-            throw new Error('Invalid request body. Missing "email", "phoneNumber", or "adminPriv".');
-        }
-
-        //create new user
-        const newUser = await newUserPost(email, phoneNumber, adminPriv);
-        //send userID in response
-        res.status(201).json({ userID: newUser.userID, message: 'User created successfully' });
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
-app.post('/newClientPost', async (req, res) => {
-    try {
-        const { userID, firstName, middleName, lastName, preferredWayOfContact } = req.body;
-        console.log(userID)
-        console.log(firstName)
-        console.log(middleName)
-        console.log(lastName)
-        console.log(preferredWayOfContact)
-        if (!userID || !firstName || !middleName || !lastName || !preferredWayOfContact) {
-            throw new Error('Invalid request body. Missing "userID", "firstName", "middleName", "lastName", or "preferredWayOfContact".');
-        }
-        await newClientPost(userID, firstName, middleName, lastName, preferredWayOfContact);
-        res.status(201).send('Client created successfully');
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
-app.post('/new_newClientPost', async (req, res) => {
-    try {
-        const { userID, approvalStatus } = req.body;
-        if (!userID || approvalStatus === undefined || approvalStatus === null) {
-            throw new Error('Invalid request body. Missing "userID" or "approvalStatus".');
-        }
-        await new_newClientPost(userID, approvalStatus);
-        res.status(201).send('New client created successfully');
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
-app.post('/servicesWantedPost', async (req, res) => {
-    try {
-        const { userID, serviceName } = req.body;
-        if (!userID || !serviceName) {
-            throw new Error('Invalid request body. Missing "userID" or "serviceName".');
-        }
-        await servicesWantedPost(userID, serviceName);
-        res.status(201).send('Service wanted created successfully');
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
-app.post('/currentClientPost', async (req, res) => {
-    try {
-        const { userID, street, city, state, zip } = req.body;
-        if (!userID) {
-            throw new Error('Invalid request body. Missing "userID"');
-        }
-        if (!street) {
-            throw new Error('Invalid request body. Missing "street"');
-        }
-        if (!city) {
-            throw new Error('Invalid request body. Missing "city"');
-        }
-        if (!state) {
-            throw new Error('Invalid request body. Missing "state"');
-        }
-        if (!zip) {
-            throw new Error('Invalid request body. Missing "zip"');
-        }
-        await currentClientPost(userID, street, city, state, zip);
-        res.status(204).send(); // 204 means success with no content
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
-app.delete('/removeAvailability', async (req, res) => {
-    try {
-        const { removeDateTimeString } = req.body;
-        if (!removeDateTimeString) {
-            throw new Error('Invalid request body. Missing "removeDateTimeString".');
-        }
-        await removeAvailability(removeDateTimeString);
-        res.status(204).send(); // 204 means success with no content
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-    }
-})
-
-app.delete('/customDelete', async (req, res) => { // Provide explicit types for the 'req' and 'res' parameters
-    try {
-        const { queryString } = req.body;
-        if (!queryString) {
-            throw new Error('Invalid request body. Missing "queryString".');
-        }
-        await customDelete(queryString);
-        res.status(204).send(); // 204 means success with no content
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-    }
-});
-//Formats the date and time before sending it to the method to update the appointments.
-//In the future might just format this in the front end and then send it over, might be a lot easier.
-app.put('/confirmAppointment', (req, res) => {
-    //Gets the date, time, and userID through parameters.
-    let date = req.query.date;
-    let time = req.query.time;
-    let userID = req.query.userID;
-    let type = req.query.type
-    /*
-    if(date && time){
-        //Deals with am/pm, turning it into military time. Want to do this with Enums if can get export working.
-        if(time.includes('pm')){
-            time = time.split('pm');
-            time = time[0].split(':');
-            if(parseInt(time[0]) === 12){
-                time = time[0]+':'+time[1]+':00';
-            }else{
-                time = (parseInt(time[0])+12)+':'+time[1]+':00';
-            }
-        }else{
-            time = time.split('am');
-            if(parseInt(time[0]) === 12){
-                time = '00:'+time[0]+':00';
-            }else{
-                time = time[0]+':00';
-            }
-        }
-        //Detects month and get's the number form, currently enums are copy/pasted in, want to switch to import if it can work.
-        let month;
-        for(month in monthsWritten){
-            if(date.includes(month)){
-                break;
-            }
-        }
-        month = monthsNum[month];
-        //Uses RE pattern matching, would rather do enums if it works, temporary solution.
-        let day = date.match(/[0-9][0-9]th|[0-9]?[0-9]st|[0-9]?[0-9]nd|[0-9]?[0-9]rd/)
-        day = parseInt(day);
-        if(day.length < 2){
-            day = '0'+day;
-        }
-        let year = date.match(/[0-9][0-9][0-9][0-9]/);
-
-        //Formats date and sends it to the backend function.
-        date = year+'-'+month+'-'+day;
-        console.log(date);
-        updateAppointment(date, time, userID).catch((err) => console.log(err));
-    }else{
-        console.log('date:' + date);
-        console.log('time:' + time);
-    }
-    */
-    updateAppointment(date, time, userID, type)
-    .then(res.send("ok"))
-    .catch(err => {
-        console.error('Error updating appointments:', err.message);
-        res.status(500).send('Internal Server Error');
-    });
 })
 
 app.get('/findEmailByPhoneNumber', (req, res) =>{
@@ -1207,7 +1408,7 @@ app.get('/findCurrentClientByID', (req, res) =>{
 
 app.get('/findCurrentClientFullNameByID', (req, res) =>{
     const queryId = req.query.queryId;
-    const query = "SELECT FirstName, MiddleName, LastName FROM CurrentClientView WHERE UserID = " + queryId + ";";
+    const query = "SELECT FirstName, LastName FROM CurrentClientView WHERE UserID = " + queryId + ";";
     console.log(query);
     customQuery(query)
     .then((ret) => res.send(ret))
@@ -1272,106 +1473,6 @@ app.get('/queryAllAppointmentsByUserID', (req, res) =>{
         console.error('Error querying all appointments:', err.message);
         res.status(500).send('Internal Server Error');
     })
-})
-
-
-/*app.get('/queryAdminPermissionsByUserID', (req, res) =>{
-    const userID = req.query.userID;
-    const query = "SELECT AdminPriv FROM Users WHERE UserID = " + userID +";";
-    customQuery(query)
-    .then((ret) => res.send(ret))
-    .catch(res.send("error"));
-})*/
-
-app.get('/queryAppointmentByDaySelectedAndVacancy', async (req, res) =>{
-    try
-    {
-        const beginDay = req.query.beginDay;
-        const endDay = req.query.endDay;
-        if(!beginDay)
-        {
-            throw new Error("Invalid request. Missing 'beginDay'")
-        }
-        if(!endDay)
-        {
-            throw new Error("Invalid request. Missing 'endDay'")
-        }
-        const result = await QueryAppointmentByDaySelectedAndVacancy(beginDay, endDay);
-        res.send(result);
-    }
-    catch
-    {
-        res.status(400).send('Bad Request');
-    }
-});
-
-app.put('/updateClientApproval', async (req, res) =>{
-    try
-    {
-        const userID = req.query.userID;
-        if(!userID)
-        {
-            throw new Error("Invalid request. Missing 'UserID'")
-        }
-        const result = await UpdateClientApproval(userID);
-        res.send(result);
-    }
-    catch
-    {
-        res.status(400).send('Bad Request');
-    }
-    
-});
-
-app.get('/queryClientViewWithID', async (req, res) => {
-    try
-    {
-        const userID = req.query.UserID;
-        if(!userID)
-        {
-            throw new Error("Invalid request. Missing 'UserID'")
-        }
-        const result = await QueryClientViewWithID(userID);
-        res.send(result);
-    }
-    catch
-    {
-        res.status(400).send('Bad Request');
-    }
-});
-
-app.get('/queryCurrentClientViewWithID', async (req, res) => {
-    try
-    {
-        const userID = req.query.UserID;
-        if(!userID)
-        {
-            throw new Error("Invalid request. Missing 'UserID'")
-        }
-        const result = await QueryCurrentClientViewWithID(userID);
-        res.send(result);
-    }
-    catch
-    {
-        res.status(400).send('Bad Request');
-    }
-});
-
-app.get('/queryServicesWantedWithID', async (req, res) => {
-    try
-    {
-        const userID = req.query.UserID;
-        if(!userID)
-        {
-            throw new Error("Invalid request. Missing 'UserID'")
-        }
-        const result = await QueryServicesWantedWithID(userID);
-        res.send(result);
-    }
-    catch
-    {
-        res.status(400).send('Bad Request');
-    }
 });
 
 //This opens the server, printing to console 'up' when it is up.
