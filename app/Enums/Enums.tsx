@@ -111,7 +111,7 @@ function UTCtoPST(date: Date)
 {
     //get the date and convert it to PST
     //returns the date in PST format
-    return new Date(moment(date).tz('America/Los_Angeles').format('YYYY-MM-DDTHH:mm:ss.SSS'));
+    return new Date(moment(date).tz('America/Los_Angeles').format());
 }
 
 function UTCtoPSTString(date: Date)

@@ -3,7 +3,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
 import database from './axiosConfig'; // Import axios from the axiosConfig.js file
 import Constants from 'expo-constants';
-import { UTCtoPST, UTCtoPSTString, funcObj, functionGetRetry, notify} from './Enums/Enums';
+import {UTCtoPSTString, funcObj, functionGetRetry, notify} from './Enums/Enums';
 import {RootSiblingParent} from 'react-native-root-siblings'
 import { SERVICES } from './Enums/Enums'
 export default function AppointmentsClientView({route}){
@@ -29,7 +29,7 @@ export default function AppointmentsClientView({route}){
     async function firstUpdate(){
         if(first === 0 ){
             setFirst(1);
-            let date = UTCtoPST(new Date);
+            let date = new Date();
             let dateString = UTCtoPSTString(date); //NOTE THAT THE DATE IS CURRENTLY OFF, NEED TO FIX IN ANOTHER SPRINT //UTCtoPSTString should fix this -Tai
             let name;
             name = await getName(userData.userID);

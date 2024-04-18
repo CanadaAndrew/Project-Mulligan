@@ -8,7 +8,7 @@ import moment from 'moment-timezone';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import { text } from 'express';
 import Constants from 'expo-constants';
-import { UTCtoPST, UTCtoPSTString, funcObj, functionGetRetry, notify} from './Enums/Enums';
+import { UTCtoPSTString, funcObj, functionGetRetry, notify} from './Enums/Enums';
 import { RootSiblingParent } from 'react-native-root-siblings'
 import { SERVICES } from './Enums/Enums'
 

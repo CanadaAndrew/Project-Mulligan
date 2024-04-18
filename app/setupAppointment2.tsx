@@ -100,6 +100,7 @@ export default function SetupAppointment2({route}) { // added route for page nav
         displayDateTimes();
         calculateHours();
         formatServices()
+        formatDates()
     }, []);
 
     const [hours, setHours] = React.useState(0);
@@ -129,6 +130,23 @@ export default function SetupAppointment2({route}) { // added route for page nav
             }
         })
         setServices(services.join(', '));
+    }
+
+    const [formattedDates, setFormattedDates] = React.useState('');
+    const [formattedDatesList, setFormattedDatesList] = React.useState([]);
+    function formatDates(){
+        let i = 0
+        try{
+            dummyDates.forEach((date) => {
+                let newDate = UTCtoPST(date);
+                dates[i] = newDate.toDateString();
+                i++;
+            })
+        }catch(e){
+            notify('Error converting Dates');
+        }
+        setFormattedDatesList(dates);
+        setFormattedDates(dates.join(', '));
     }
 
     const handleAppointmentPress = (time, date, index) => {
@@ -195,28 +213,15 @@ export default function SetupAppointment2({route}) { // added route for page nav
                             </View>
                             <View style={styles.appointmentServicesSelected}>
                                 <Text style={styles.appointmentText}>Services Selected:</Text>
-                                <FlatList
-                                    data={services}
-                                    renderItem={({ item }) => (
-                                        <Text style={styles.appointmentText}>
-                                            {item}
-                                        </Text>
-                                    )}
-                                    horizontal={true}
-                                />
+                                <Text style={styles.appointmentText}>{services}</Text>
                             </View>
                             <View style={styles.appointmentDateChosen}>
                                 <Text style={styles.appointmentText}>Dates Chosen:</Text>
-                                <Text style={styles.appointmentText}>{dateData}</Text>
-                                <FlatList
-                                    data={dates}
-                                    renderItem={({ item }) => (
-                                        <Text style={styles.appointmentText}>
-                                            {item}
-                                        </Text>
-                                    )}
-                                    horizontal={true}
-                                />
+                                <Text style={styles.appointmentText}>{formattedDates}</Text>
+                            </View>
+                            <View style={styles.appointmentDateChosen}>
+                                <Text style={styles.appointmentText}>Approximate appointment duration:</Text>
+                                <Text style={styles.appointmentText}>{hours} hours</Text>
                             </View>
                         </View>
                         <View style={styles.availableContainer}>
@@ -225,7 +230,7 @@ export default function SetupAppointment2({route}) { // added route for page nav
                             </View>
                             <View>
                                 <FlatList
-                                    data={dummyDates}
+                                    data={formattedDatesList}
                                     keyExtractor={(item, index) => index.toString()}
                                     renderItem={({ item, index }) => (
                                         <View style={styles.availableViewInFlatList}>

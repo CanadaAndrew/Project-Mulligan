@@ -11,7 +11,7 @@ import database from './axiosConfig'; // Import axios from the axiosConfig.js fi
 import { displayHours } from './Enums/Enums';
 import { validateLocaleAndSetLanguage } from 'typescript';
 import Constants from 'expo-constants';
-import { UTCtoPST, UTCtoPSTString, funcObj, functionGetRetry, notify} from './Enums/Enums';
+import { UTCtoPSTString, funcObj, functionGetRetry, notify} from './Enums/Enums';
 import { RootSiblingParent } from 'react-native-root-siblings'
 //add route as a param to the function of every page that requires data from the const established in HomeScreen
 //You can also make another const here and transfer data as well here up to you
