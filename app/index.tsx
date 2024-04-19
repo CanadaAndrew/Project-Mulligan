@@ -4,7 +4,6 @@ import React from 'react';
 import { Link } from 'expo-router';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import ClientAp from './ClientAp';
 import SetUpAppoint1 from './setUpAppoint1';
 import ModifyAv from './ModifyAv';
 import SetupAppointment2 from './setupAppointment2';
@@ -48,11 +47,6 @@ export default function index() {
             title: "Set Appointment"
            }}
          />
-         <Stack.Screen name = "ClientAp" component={ClientAp}
-           options = {{
-            title: "Client Appointments"
-           }}
-         />
          <Stack.Screen name = "ModifyAv" component={ModifyAv}
            options = {{
             title: "Modify Availability"
@@ -86,7 +80,7 @@ export default function index() {
          />
          <Stack.Screen name = "ClientHistory" component={ClientHistory} 
           options = {{
-            title: "Client History"
+            title: "Client Appointments"
           }}
          />
          <Stack.Screen name = "AboutMe" component={AboutMe}

@@ -39,13 +39,6 @@ function filterButtons(){
       >  
       <Text style = {styles.homeButtonText}>Modify Calendar</Text>
     </TouchableOpacity>
-    //Views Existing Client Appointments
-    var clientApButton = <TouchableOpacity
-      style = {styles.homeButton}
-      onPress = {() => navigation.navigate("ClientAp", {userData})}
-      >  
-      <Text style = {styles.homeButtonText}>Existing Appointments</Text>
-    </TouchableOpacity>
     //Views Client Info and Edit
     var clientInfoButton = <TouchableOpacity
       style = {styles.homeButton}
@@ -58,7 +51,7 @@ function filterButtons(){
       style = {styles.homeButton}
       onPress = {() => navigation.navigate("ClientHistory", {userData})}
       >  
-      <Text style = {styles.homeButtonText}>Client History</Text>
+      <Text style = {styles.homeButtonText}>Client Appointments</Text>
     </TouchableOpacity>
     //Views Client Search screen
     var ModifyClientInfoSearch = <TouchableOpacity
@@ -103,7 +96,6 @@ function filterButtons(){
     //  <Text style = {styles.homeButtonText}>FAQ</Text>
     //</TouchableOpacity>
     buttons.push(modifyAvButton);
-    buttons.push(clientApButton);
     buttons.push(clientInfoButton);
     buttons.push(clientHistoryButton);
     buttons.push(newClientApprovalButton);
