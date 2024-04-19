@@ -38,33 +38,24 @@ export default function Login({ route, navigation }) {
     }
 
     const onClickLogin = async () => {
-
-        //console.log(email);
-
-        signInWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                // Signed in
-                loginErrorMsg('Login successful!');
-                // Has no effect as far as I can tell, but good to leave it in the code anyway just in case
-                const user = userCredential.user;
-            })
-            .catch((error) => {
-                loginErrorMsg('Your email and password \n do not match. Please try again.');
-                console.log(error.message, error.code);
-            });
-
-        //Since the previously declared user only exists in the scope of its function,
-        //redeclare the variable and set the auth to the current user
-        const user = auth.currentUser;
-        if (user !== null) {
-            console.log(email);
-            await checkEmailExists(email);
-            console.log('Right Before Navigation');
-            navigation.navigate("HomeScreen", { userData });
-        } else {
-            //Once branches are merged change this to route to the signup page
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            loginErrorMsg('Login successful!');
+            const user = auth.currentUser;
+            if (user !== null) {
+                console.log(email);
+                await checkEmailExists(email);
+                console.log('Right Before Navigation');
+                navigation.navigate("HomeScreen", { userData });
+            } else {
+                // Handle the case where user is null
+            }
+        } catch (error) {
+            loginErrorMsg('Your email and password \n do not match. Please try again.');
+            console.log(error.message, error.code);
         }
     }
+    
 
     // to show and hide password
     const [showPassword, setShowPassword] = useState(true);
