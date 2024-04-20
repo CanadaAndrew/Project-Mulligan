@@ -40,3 +40,6 @@ yarn-error.*
 package-lock.json
 *.json
 package.json
+
+# server info files
+config.js
