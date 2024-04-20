@@ -1,6 +1,12 @@
 {
-    "scheme": "url",
-    "plugins": [
-      "expo-router"
-    ]
+  "scheme": "url",
+  "plugins": [
+    "expo-router"
+  ],
+  "android": {
+    "package": "com.anonymous.projectmullet"
+  },
+  "ios": {
+    "bundleIdentifier": "com.anon.projectmullet"
+  }
 }
