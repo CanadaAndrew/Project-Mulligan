@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Pressable, FlatList, Button } from 'react-native';
+import { StyleSheet, Text, View, Pressable, FlatList, Button, Modal, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState, } from 'react';
 import { Link } from 'expo-router';
@@ -80,6 +80,10 @@ export default function ClientHistory() {
     const [selectedAppointment, setSelectedAppointment] = useState(null);
     const [selectedClientID, setSelectedClientID] = useState(null);
     const [searchName, setSearchName] = useState('');
+    const [oldAppointmentNotes, setOldAppointmentNotes] = useState('');
+    const [newAppointmentNotes, setNewAppointmentNotes] = useState('');
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [editingNotes, setEditingNotes] = useState(false);
 
     //get today's date and convert it to PST
     const today = new Date();
@@ -421,6 +425,25 @@ export default function ClientHistory() {
         ));
     };
 
+    //called when a tile is pressed
+    const handleTilePress = (item) => {
+        setSelectedAppointment(item);
+        setSelectedClientID(item.UserID);
+        setOldAppointmentNotes(item.AppointmentNotes);
+        setNewAppointmentNotes(item.AppointmentNotes);
+        setIsModalVisible(true);
+    };
+
+    //called when save notes button is pressed
+    const handleSaveNotes = () => {
+        console.log('save');
+    };
+
+    //called when delete appointment button is pressed
+    const handleDeleteAppointment = () => {
+        console.log('delete');
+    };
+
     useEffect(() => {
         console.log('pastClientAppointments: ', pastClientAppointments); //for debugging
         console.log('upcomingClientAppointments: ', upcomingClientAppointments); //for debugging
@@ -462,38 +485,40 @@ export default function ClientHistory() {
                         data={upcomingClientAppointments}
                         horizontal={true}
                         renderItem={({ item }) => (
-                            <View style={[styles.appointBox, styles.boxShadowIOS, styles.boxShadowAndroid]}>
-                                <View style={styles.textAlignment}>
-                                    <Text style={[styles.appointText, styles.clientContainer]}>
-                                        <Text style={styles.clientLabel}>Customer:  </Text>
-                                        <Text style={styles.clientInfo}> {item.FirstName + ' ' + item.LastName}</Text>
-                                    </Text>
+                            <Pressable onPress={() => handleTilePress(item)}>
+                                <View style={[styles.appointBox, styles.boxShadowIOS, styles.boxShadowAndroid]}>
+                                    <View style={styles.textAlignment}>
+                                        <Text style={[styles.appointText, styles.clientContainer]}>
+                                            <Text style={styles.clientLabel}>Customer:  </Text>
+                                            <Text style={styles.clientInfo}> {item.FirstName + ' ' + item.LastName}</Text>
+                                        </Text>
+                                    </View>
+                                    <View style={styles.textAlignment}>
+                                        <Text style={[styles.appointText, styles.clientContainer]}>
+                                            <Text style={styles.clientLabel}>Service:  </Text>
+                                            <Text style={styles.clientInfo}>{item.TypeOfAppointment}</Text>
+                                        </Text>
+                                    </View>
+                                    <View style={styles.textAlignment}>
+                                        <Text style={[styles.appointText, styles.clientContainer]}>
+                                            <Text style={styles.clientLabel}>Date:  </Text>
+                                            <Text style={styles.clientInfo}>{item.AppointmentDate.substring(0, 10)}</Text>
+                                        </Text>
+                                    </View>
+                                    <View style={styles.textAlignment}>
+                                        <Text style={[styles.appointText, styles.clientContainer]}>
+                                            <Text style={styles.clientLabel}>Time:  </Text>
+                                            <Text style={styles.clientInfo}>{item.AppointmentDate.substring(11, 16)}</Text>
+                                        </Text>
+                                    </View>
+                                    <View style={styles.textAlignment}>
+                                        <Text style={[styles.appointText, styles.clientContainer]}>
+                                            <Text style={styles.clientLabel}>Appointment Notes:  </Text>
+                                            <Text style={styles.clientInfo}>{item.AppointmentNotes}</Text>
+                                        </Text>
+                                    </View>
                                 </View>
-                                <View style={styles.textAlignment}>
-                                    <Text style={[styles.appointText, styles.clientContainer]}>
-                                        <Text style={styles.clientLabel}>Service:  </Text>
-                                        <Text style={styles.clientInfo}>{item.TypeOfAppointment}</Text>
-                                    </Text>
-                                </View>
-                                <View style={styles.textAlignment}>
-                                    <Text style={[styles.appointText, styles.clientContainer]}>
-                                        <Text style={styles.clientLabel}>Date:  </Text>
-                                        <Text style={styles.clientInfo}>{item.AppointmentDate.substring(0, 10)}</Text>
-                                    </Text>
-                                </View>
-                                <View style = {styles.textAlignment}>
-                                    <Text style = {[styles.appointText, styles.clientContainer]}>
-                                        <Text style={styles.clientLabel}>Time:  </Text>
-                                        <Text style={styles.clientInfo}>{item.AppointmentDate.substring(11, 16)}</Text>
-                                    </Text>
-                                </View>
-                                <View style={styles.textAlignment}>
-                                    <Text style={[styles.appointText, styles.clientContainer]}>
-                                        <Text style={styles.clientLabel}>Appointment Notes:  </Text>
-                                        <Text style={styles.clientInfo}>{item.AppointmentNotes}</Text>
-                                    </Text>
-                                </View>
-                            </View>
+                            </Pressable>
                         )}
                     />
 
@@ -538,44 +563,78 @@ export default function ClientHistory() {
                         data={pastClientAppointments}
                         horizontal={true}
                         renderItem={({ item }) => (
-                            <View style={[styles.appointBox, styles.boxShadowIOS, styles.boxShadowAndroid]}>
-                                <View style={styles.textAlignment}>
-                                    <Text style={[styles.appointText, styles.clientContainer]}>
-                                        <Text style={styles.clientLabel}>Customer:  </Text>
-                                        <Text style={styles.clientInfo}> {item.FirstName + ' ' + item.LastName}</Text>
-                                    </Text>
+                            <Pressable onPress={() => handleTilePress(item)}>
+                                <View style={[styles.appointBox, styles.boxShadowIOS, styles.boxShadowAndroid]}>
+                                    <View style={styles.textAlignment}>
+                                        <Text style={[styles.appointText, styles.clientContainer]}>
+                                            <Text style={styles.clientLabel}>Customer:  </Text>
+                                            <Text style={styles.clientInfo}> {item.FirstName + ' ' + item.LastName}</Text>
+                                        </Text>
+                                    </View>
+                                    <View style={styles.textAlignment}>
+                                        <Text style={[styles.appointText, styles.clientContainer]}>
+                                            <Text style={styles.clientLabel}>Service:  </Text>
+                                            <Text style={styles.clientInfo}>{item.TypeOfAppointment}</Text>
+                                        </Text>
+                                    </View>
+                                    <View style={styles.textAlignment}>
+                                        <Text style={[styles.appointText, styles.clientContainer]}>
+                                            <Text style={styles.clientLabel}>Date:  </Text>
+                                            <Text style={styles.clientInfo}>{item.AppointmentDate.substring(0, 10)}</Text>
+                                        </Text>
+                                    </View>
+                                    <View style={styles.textAlignment}>
+                                        <Text style={[styles.appointText, styles.clientContainer]}>
+                                            <Text style={styles.clientLabel}>Time:  </Text>
+                                            <Text style={styles.clientInfo}>{item.AppointmentDate.substring(11, 16)}</Text>
+                                        </Text>
+                                    </View>
+                                    <View style={styles.textAlignment}>
+                                        <Text style={[styles.appointText, styles.clientContainer]}>
+                                            <Text style={styles.clientLabel}>Appointment Notes:  </Text>
+                                            <Text style={styles.clientInfo}>{item.AppointmentNotes}</Text>
+                                        </Text>
+                                    </View>
                                 </View>
-                                <View style={styles.textAlignment}>
-                                    <Text style={[styles.appointText, styles.clientContainer]}>
-                                        <Text style={styles.clientLabel}>Service:  </Text>
-                                        <Text style={styles.clientInfo}>{item.TypeOfAppointment}</Text>
-                                    </Text>
-                                </View>
-                                <View style={styles.textAlignment}>
-                                    <Text style={[styles.appointText, styles.clientContainer]}>
-                                        <Text style={styles.clientLabel}>Date:  </Text>
-                                        <Text style={styles.clientInfo}>{item.AppointmentDate.substring(0, 10)}</Text>
-                                    </Text>
-                                </View>
-                                <View style={styles.textAlignment}>
-                                    <Text style={[styles.appointText, styles.clientContainer]}>
-                                        <Text style={styles.clientLabel}>Time:  </Text>
-                                        <Text style={styles.clientInfo}>{item.AppointmentDate.substring(11, 16)}</Text>
-                                    </Text>
-                                </View>
-                                <View style={styles.textAlignment}>
-                                    <Text style={[styles.appointText, styles.clientContainer]}>
-                                        <Text style={styles.clientLabel}>Appointment Notes:  </Text>
-                                        <Text style={styles.clientInfo}>{item.AppointmentNotes}</Text>
-                                    </Text>
-                                </View>
-                            </View>
+                            </Pressable>
                         )}
                     />
-                  
                 </View>
             </LinearGradient>
             </ScrollView>
+
+            {/*Modal for appointment notes*/}
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={isModalVisible}
+                onRequestClose={() => setIsModalVisible(false)}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.headerTitle}>Change Appointment</Text>
+                             <TextInput
+                                value={newAppointmentNotes}
+                                onChangeText={setNewAppointmentNotes}
+                                placeholder={newAppointmentNotes}
+                                multiline={true}
+                                style={styles.modalNotes}
+                        />
+                        <View style={styles.modalButtonContainer}>
+                            <TouchableOpacity style={styles.modalButton} onPress={handleSaveNotes}>
+                                <Text style={styles.modalButtonText}>Save Notes</Text>
+                            </TouchableOpacity>
+                            <View style={styles.modalSpacer} />
+                            <TouchableOpacity style={styles.modalButton} onPress={handleDeleteAppointment}>
+                                <Text style={styles.modalButtonText}>Delete Appointment</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <TouchableOpacity style={styles.modalButton} onPress={() => setIsModalVisible(false)}>
+                            <Text style={styles.modalButtonText}>Close</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
         </>
         </RootSiblingParent>
     );
@@ -645,6 +704,62 @@ const styles = StyleSheet.create({
     textAlignment: {
         flexDirection: 'row',
         justifyContent: 'space-between'
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        //backgroundColor: 'rgba(211, 211, 250,0.979)',
+    },
+    modalTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'white',
+        marginBottom: 20,
+        paddingBottom: 20,
+    },
+    modalContent: {    
+        //flex: 0.5,
+        //justifyContent: "flex-start",
+        alignItems: "center",
+        backgroundColor: "rgba(211, 211, 250,0.979)",
+        //marginTop: 140,
+        //marginLeft: 10,
+        //marginRight: 10,
+        //marginBottom: -280,
+        borderRadius: 36,
+        elevation: 8,
+        shadowOpacity: 0.55,
+        shadowOffset: { width: 2, height: 2 },
+        shadowRadius: 6,
+        padding: 20,
+        width: '90%',
+    },
+    modalButton: {
+        backgroundColor: '#BE42B2',
+        borderRadius: 20,
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        elevation: 2,
+    },
+    modalButtonText: {
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 16,
+        textAlign: 'center',
+    },
+    modalNotes: {
+        margintop: 10,
+        marginBottom: 10,
+        padding: 10,
+    },
+    modalButtonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 10,
+    },
+    modalSpacer: {
+        width: 20,
     },
     backButton: {
         width: 100,
