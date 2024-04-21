@@ -842,7 +842,7 @@ app.get('/selectAppointmentsByTime', async (req, res) => {
 async function clientHistoryAppointmentsQuery(startDate, endDate){
     try {
         const poolConnection = await connect();
-        const query = `SELECT FirstName, LastName, AppointmentDate, TypeOfAppointment 
+        const query = `SELECT FirstName, LastName, AppointmentDate, TypeOfAppointment, Clients.UserID, AppointmentNotes 
             FROM Appointments JOIN Clients ON Appointments.UserID = Clients.UserID 
             WHERE AppointmentDate BETWEEN '${startDate}' AND '${endDate}'`;
         const resultSet = await poolConnection
