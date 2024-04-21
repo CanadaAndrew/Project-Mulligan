@@ -11,15 +11,20 @@ import Constants from 'expo-constants';
 import { UTCtoPSTString, funcObj, functionGetRetry, notify} from './Enums/Enums';
 import { RootSiblingParent } from 'react-native-root-siblings'
 import { SERVICES } from './Enums/Enums'
+import { Dimensions } from 'react-native';
+
+const screenWidth = Dimensions.get('window').width;
 
 export default function ClientHistory() {
 
     interface Appointment {
+        userID: number;
         name: string;
         service: string;
         date: string;
         stylist: string;
         realDate: Date;
+        appointmentNotes: string;
     }
     /*I have genuinely no idea why this function is needed*/
     const handleDatesSelected = (selectedDates: string[]) => { };
@@ -28,32 +33,40 @@ export default function ClientHistory() {
     //new list that makes it work better with filtering and acts more like actual data from the database
     let clientAppointments: Appointment[] = [
         {
+            userID: 1,
             name: "Will Smith",
             service: "Men's Haircut",
             date: "10/27/23, Fri, 1:00pm",
             stylist: 'Melissa Wright',
-            realDate: new Date("2023-10-27")
+            realDate: new Date("2023-10-27"),
+            appointmentNotes: "Will needs a haircut"
         },
         {
+            userID: 2,
             name: "Bob Smith",
             service: "Men's Haircut",
             date: "11/27/23, Mon, 2:00pm",
             stylist: 'Melissa Wright',
-            realDate: (new Date("2023-11-27"))
+            realDate: (new Date("2023-11-27")),
+            appointmentNotes: "Bob needs a haircut"
         },
         {
+            userID: 3,
             name: "Jane Doe",
             service: "Women's Haircut",
             date: "11/18/23, Fri, 3:00pm",
             stylist: 'Melissa Wright',
-            realDate: new Date("2023-11-18")
+            realDate: new Date("2023-11-18"),
+            appointmentNotes: "Jane needs a haircut"
         },
         {
+            userID: 4,
             name: "Melinda Jackson",
             service: "Hair Extensions",
             date: "11/15/23, Sat, 2:00pm",
             stylist: 'Melissa Wright',
-            realDate: new Date("2023-11-15")
+            realDate: new Date("2023-11-15"),
+            appointmentNotes: "Melinda needs hair extensions"
         }
     ]
     //setting the times like i did in the dummy data makes it a UTC date which will always be 1 day behind PST so i add one to the day
@@ -64,7 +77,8 @@ export default function ClientHistory() {
     let filteredAps: Appointment[] = [];
     const [upcomingClientAppointments, setUpcomingClientAppointments] = useState([]);
     const [pastClientAppointments, setPastClientAppointments] = useState([]);
-
+    const [selectedAppointment, setSelectedAppointment] = useState(null);
+    const [selectedClientID, setSelectedClientID] = useState(null);
     const [searchName, setSearchName] = useState('');
 
     //get today's date and convert it to PST
@@ -101,6 +115,8 @@ export default function ClientHistory() {
 
                 let appointmentArray = response.data;
                 appointmentArray.forEach( (appointment) => {
+                    let userID = appointment.UserID;
+                    console.log('userID: ', userID); //for debugging
                     let serviceArr = appointment.TypeOfAppointment.split(",");
                     let clientServices: string[] = [];
                     serviceArr.forEach((serviceEl) => {
@@ -108,6 +124,8 @@ export default function ClientHistory() {
                         clientServices.push(SERVICES[temp]['service'])
                     });
                     appointment.TypeOfAppointment = clientServices.join(", ").toString()
+                    let appointmentNotes = appointment.AppointmentNotes;
+                    console.log('appointmentNotes: ', appointmentNotes); //for debugging
                 });
 
                 setPastClientAppointments(appointmentArray);
@@ -136,6 +154,8 @@ export default function ClientHistory() {
 
                 let appointmentArray = response.data;
                 appointmentArray.forEach( (appointment) => {
+                    let userID = appointment.UserID;
+                    console.log('userID: ', userID); //for debugging
                     let serviceArr = appointment.TypeOfAppointment.split(",");
                     let clientServices: string[] = [];
                     serviceArr.forEach((serviceEl) => {
@@ -143,6 +163,8 @@ export default function ClientHistory() {
                         clientServices.push(SERVICES[temp]['service'])
                     });
                     appointment.TypeOfAppointment = clientServices.join(", ").toString()
+                    let appointmentNotes = appointment.AppointmentNotes;
+                    console.log('appointmentNotes: ', appointmentNotes); //for debugging
                 });
 
                 setUpcomingClientAppointments(appointmentArray);
@@ -175,6 +197,8 @@ export default function ClientHistory() {
                 
                 let appointmentArray = response.data;
                 appointmentArray.forEach( (appointment) => {
+                    let userID = appointment.UserID;
+                    console.log('userID: ', userID); //for debugging
                     let serviceArr = appointment.TypeOfAppointment.split(",");
                     let clientServices: string[] = [];
                     serviceArr.forEach((serviceEl) => {
@@ -182,6 +206,8 @@ export default function ClientHistory() {
                         clientServices.push(SERVICES[temp]['service'])
                     });
                     appointment.TypeOfAppointment = clientServices.join(", ").toString()
+                    let appointmentNotes = appointment.AppointmentNotes;
+                    console.log('appointmentNotes: ', appointmentNotes); //for debugging
                 });
 
                 setPastClientAppointments(appointmentArray);
@@ -220,6 +246,8 @@ export default function ClientHistory() {
 
                 let appointmentArray = response.data;
                 appointmentArray.forEach( (appointment) => {
+                    let userID = appointment.UserID;
+                    console.log('userID: ', userID); //for debugging
                     let serviceArr = appointment.TypeOfAppointment.split(",");
                     let clientServices: string[] = [];
                     serviceArr.forEach((serviceEl) => {
@@ -227,6 +255,8 @@ export default function ClientHistory() {
                         clientServices.push(SERVICES[temp]['service'])
                     });
                     appointment.TypeOfAppointment = clientServices.join(", ").toString()
+                    let appointmentNotes = appointment.AppointmentNotes;
+                    console.log('appointmentNotes: ', appointmentNotes); //for debugging
                 });
 
                 setPastClientAppointments(appointmentArray);
@@ -254,6 +284,8 @@ export default function ClientHistory() {
 
                 let appointmentArray = response.data;
                 appointmentArray.forEach( (appointment) => {
+                    let userID = appointment.UserID;
+                    console.log('userID: ', userID); //for debugging
                     let serviceArr = appointment.TypeOfAppointment.split(",");
                     let clientServices: string[] = [];
                     serviceArr.forEach((serviceEl) => {
@@ -261,6 +293,8 @@ export default function ClientHistory() {
                         clientServices.push(SERVICES[temp]['service'])
                     });
                     appointment.TypeOfAppointment = clientServices.join(", ").toString()
+                    let appointmentNotes = appointment.AppointmentNotes;
+                    console.log('appointmentNotes: ', appointmentNotes); //for debugging
                 });
 
                 setUpcomingClientAppointments(appointmentArray);
@@ -299,6 +333,8 @@ export default function ClientHistory() {
 
                 let appointmentArray = response.data;
                 appointmentArray.forEach( (appointment) => {
+                    let userID = appointment.UserID;
+                    console.log('userID: ', userID); //for debugging
                     let serviceArr = appointment.TypeOfAppointment.split(",");
                     let clientServices: string[] = [];
                     serviceArr.forEach((serviceEl) => {
@@ -306,6 +342,8 @@ export default function ClientHistory() {
                         clientServices.push(SERVICES[temp]['service'])
                     });
                     appointment.TypeOfAppointment = clientServices.join(", ").toString()
+                    let appointmentNotes = appointment.AppointmentNotes;
+                    console.log('appointmentNotes: ', appointmentNotes); //for debugging
                 });
                 
                 setPastClientAppointments(appointmentArray);
@@ -333,6 +371,8 @@ export default function ClientHistory() {
 
                 let appointmentArray = response.data;
                 appointmentArray.forEach( (appointment) => {
+                    let userID = appointment.UserID;
+                    console.log('userID: ', userID); //for debugging
                     let serviceArr = appointment.TypeOfAppointment.split(",");
                     let clientServices: string[] = [];
                     serviceArr.forEach((serviceEl) => {
@@ -340,6 +380,8 @@ export default function ClientHistory() {
                         clientServices.push(SERVICES[temp]['service'])
                     });
                     appointment.TypeOfAppointment = clientServices.join(", ").toString();
+                    let appointmentNotes = appointment.AppointmentNotes;
+                    console.log('appointmentNotes: ', appointmentNotes); //for debugging
                 });
 
                 setUpcomingClientAppointments(appointmentArray);
@@ -422,20 +464,34 @@ export default function ClientHistory() {
                         renderItem={({ item }) => (
                             <View style={[styles.appointBox, styles.boxShadowIOS, styles.boxShadowAndroid]}>
                                 <View style={styles.textAlignment}>
-                                    <Text style={styles.appointText}>Customer:</Text>
-                                    <Text style={styles.appointText}> {item.FirstName + ' ' + item.LastName}</Text>
+                                    <Text style={[styles.appointText, styles.clientContainer]}>
+                                        <Text style={styles.clientLabel}>Customer:  </Text>
+                                        <Text style={styles.clientInfo}> {item.FirstName + ' ' + item.LastName}</Text>
+                                    </Text>
                                 </View>
                                 <View style={styles.textAlignment}>
-                                    <Text style={styles.appointText}>Service:</Text>
-                                    <Text style={styles.appointText}>{item.TypeOfAppointment}</Text>
+                                    <Text style={[styles.appointText, styles.clientContainer]}>
+                                        <Text style={styles.clientLabel}>Service:  </Text>
+                                        <Text style={styles.clientInfo}>{item.TypeOfAppointment}</Text>
+                                    </Text>
                                 </View>
                                 <View style={styles.textAlignment}>
-                                    <Text style={styles.appointText}>Date:</Text>
-                                    <Text style={styles.appointText}>{item.AppointmentDate.substring(0, 10)}</Text>
+                                    <Text style={[styles.appointText, styles.clientContainer]}>
+                                        <Text style={styles.clientLabel}>Date:  </Text>
+                                        <Text style={styles.clientInfo}>{item.AppointmentDate.substring(0, 10)}</Text>
+                                    </Text>
                                 </View>
                                 <View style = {styles.textAlignment}>
-                                    <Text style={styles.appointText}>Time:</Text>
-                                    <Text style={styles.appointText}>{item.AppointmentDate.substring(11, 16)}</Text>
+                                    <Text style = {[styles.appointText, styles.clientContainer]}>
+                                        <Text style={styles.clientLabel}>Time:  </Text>
+                                        <Text style={styles.clientInfo}>{item.AppointmentDate.substring(11, 16)}</Text>
+                                    </Text>
+                                </View>
+                                <View style={styles.textAlignment}>
+                                    <Text style={[styles.appointText, styles.clientContainer]}>
+                                        <Text style={styles.clientLabel}>Appointment Notes:  </Text>
+                                        <Text style={styles.clientInfo}>{item.AppointmentNotes}</Text>
+                                    </Text>
                                 </View>
                             </View>
                         )}
@@ -484,20 +540,34 @@ export default function ClientHistory() {
                         renderItem={({ item }) => (
                             <View style={[styles.appointBox, styles.boxShadowIOS, styles.boxShadowAndroid]}>
                                 <View style={styles.textAlignment}>
-                                    <Text style={styles.appointText}>Customer:</Text>
-                                    <Text style={styles.appointText}> {item.FirstName + ' ' + item.LastName}</Text>
+                                    <Text style={[styles.appointText, styles.clientContainer]}>
+                                        <Text style={styles.clientLabel}>Customer:  </Text>
+                                        <Text style={styles.clientInfo}> {item.FirstName + ' ' + item.LastName}</Text>
+                                    </Text>
                                 </View>
                                 <View style={styles.textAlignment}>
-                                    <Text style={styles.appointText}>Service:</Text>
-                                    <Text style={styles.appointText}>{item.TypeOfAppointment}</Text>
+                                    <Text style={[styles.appointText, styles.clientContainer]}>
+                                        <Text style={styles.clientLabel}>Service:  </Text>
+                                        <Text style={styles.clientInfo}>{item.TypeOfAppointment}</Text>
+                                    </Text>
                                 </View>
                                 <View style={styles.textAlignment}>
-                                    <Text style={styles.appointText}>Date:</Text>
-                                    <Text style={styles.appointText}>{item.AppointmentDate.substring(0, 10)}</Text>
+                                    <Text style={[styles.appointText, styles.clientContainer]}>
+                                        <Text style={styles.clientLabel}>Date:  </Text>
+                                        <Text style={styles.clientInfo}>{item.AppointmentDate.substring(0, 10)}</Text>
+                                    </Text>
                                 </View>
                                 <View style={styles.textAlignment}>
-                                    <Text style={styles.appointText}>Time:</Text>
-                                    <Text style={styles.appointText}>{item.AppointmentDate.substring(11, 16)}</Text>
+                                    <Text style={[styles.appointText, styles.clientContainer]}>
+                                        <Text style={styles.clientLabel}>Time:  </Text>
+                                        <Text style={styles.clientInfo}>{item.AppointmentDate.substring(11, 16)}</Text>
+                                    </Text>
+                                </View>
+                                <View style={styles.textAlignment}>
+                                    <Text style={[styles.appointText, styles.clientContainer]}>
+                                        <Text style={styles.clientLabel}>Appointment Notes:  </Text>
+                                        <Text style={styles.clientInfo}>{item.AppointmentNotes}</Text>
+                                    </Text>
                                 </View>
                             </View>
                         )}
@@ -533,18 +603,29 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         margin: 10,
         borderRadius: 20,
-        //alignItems: 'center',
         paddingVertical: 15,
-        paddingHorizontal: 3
-
+        paddingHorizontal: 20,
+        width: screenWidth * .95,
+        flexDirection: 'column',
     },
     // appointment text information 
     appointText: {
         color: 'black',
         fontWeight: 'bold',
         fontSize: 20,
-        paddingHorizontal: 10
-        ///textAlign: 'center'
+    },
+    clientContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    clientLabel: {
+        marginRight: 10,
+        color: '#b469ac',
+    },
+    clientInfo: {
+        flex: 1,
+        marginLeft: 10,
     },
     // shadow for objects IOS
     boxShadowIOS: {
