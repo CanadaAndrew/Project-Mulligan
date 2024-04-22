@@ -113,7 +113,7 @@ async function connect(){
     }
 }
 
-connect();
+//connect();
 
 /**
  * This takes in a result from the queried database, makes them into objects, and puts them in an array to create an array of those objects.
