@@ -113,7 +113,7 @@ async function connect(){
     }
 }
 
-connect();
+//connect();
 
 /**
  * This takes in a result from the queried database, makes them into objects, and puts them in an array to create an array of those objects.
@@ -423,6 +423,62 @@ async function currentClientsNotesUpdate(userID, clientNotes) {
         const query = `UPDATE CurrentClients
             SET ClientNotes = '${clientNotes}'
             WHERE UserID = ${userID};`;
+        await poolConnection.request().query(query);
+        poolConnection.close();
+    } catch (err) {
+        console.error(err.message);
+    }
+};
+
+app.patch('/updateAppointmentNotes', async (req, res) => {
+    try {
+        const { userID, appointmentDate, appointmentNotes } = req.body;
+        if (!userID) {
+            throw new Error('Invalid request body. Missing "userID"');
+        }
+        await appointmentNotesUpdate(userID, appointmentDate, appointmentNotes);
+        res.status(204).send(); // 204 means success with no content
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+//updates Appointments table with appointment notes
+async function appointmentNotesUpdate(userID, appointmentDate, appointmentNotes) {
+    try {
+        const poolConnection = await connect();
+        const query = `UPDATE Appointments
+            SET AppointmentNotes = '${appointmentNotes}'
+            WHERE UserID = ${userID} AND AppointmentDate = '${appointmentDate}';`;
+        await poolConnection.request().query(query);
+        poolConnection.close();
+    } catch (err) {
+        console.error(err.message);
+    }
+};
+
+app.patch('/removeClientAppointment', async (req, res) => {
+    try {
+        const { appointmentDate, typeOfAppointment, vacancyStatus, appointmentNotes, userID } = req.body;
+        if (!appointmentDate) {
+            throw new Error('Invalid request body. Missing "apppointmentDate"');
+        }
+        await removeClientAppointment(appointmentDate, typeOfAppointment, vacancyStatus, appointmentNotes, userID);
+        res.status(204).send(); // 204 means success with no content
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+//removes client appointment by setting values to original
+async function removeClientAppointment(appointmentDate, typeOfAppointment, vacancyStatus, appointmentNotes, userID) {
+    try {
+        const poolConnection = await connect();
+        const query = `UPDATE Appointments
+            SET UserID = ${userID}, TypeOfAppointment = ${typeOfAppointment}, VacancyStatus = ${vacancyStatus}, AppointmentNotes = ${appointmentNotes}
+            WHERE AppointmentDate = '${appointmentDate}';`;
         await poolConnection.request().query(query);
         poolConnection.close();
     } catch (err) {
