@@ -83,7 +83,9 @@ export default function ClientHistory() {
     const [oldAppointmentNotes, setOldAppointmentNotes] = useState('');
     const [newAppointmentNotes, setNewAppointmentNotes] = useState('');
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
     const [editingNotes, setEditingNotes] = useState(false);
+    const [selectedDate, setSelectedDate] = useState(null);
 
     //get today's date and convert it to PST
     const today = new Date();
@@ -120,7 +122,9 @@ export default function ClientHistory() {
                 let appointmentArray = response.data;
                 appointmentArray.forEach( (appointment) => {
                     let userID = appointment.UserID;
-                    console.log('userID: ', userID); //for debugging
+                    //console.log('userID: ', userID); //for debugging
+                    let appointmentDate = appointment.AppointmentDate;
+                    //console.log('appointmentDate: ', appointmentDate); //for debugging
                     let serviceArr = appointment.TypeOfAppointment.split(",");
                     let clientServices: string[] = [];
                     serviceArr.forEach((serviceEl) => {
@@ -129,7 +133,7 @@ export default function ClientHistory() {
                     });
                     appointment.TypeOfAppointment = clientServices.join(", ").toString()
                     let appointmentNotes = appointment.AppointmentNotes;
-                    console.log('appointmentNotes: ', appointmentNotes); //for debugging
+                    //console.log('appointmentNotes: ', appointmentNotes); //for debugging
                 });
 
                 setPastClientAppointments(appointmentArray);
@@ -159,7 +163,9 @@ export default function ClientHistory() {
                 let appointmentArray = response.data;
                 appointmentArray.forEach( (appointment) => {
                     let userID = appointment.UserID;
-                    console.log('userID: ', userID); //for debugging
+                    //console.log('userID: ', userID); //for debugging
+                    let appointmentDate = appointment.AppointmentDate;
+                    //console.log('appointmentDate: ', appointmentDate); //for debugging
                     let serviceArr = appointment.TypeOfAppointment.split(",");
                     let clientServices: string[] = [];
                     serviceArr.forEach((serviceEl) => {
@@ -168,7 +174,7 @@ export default function ClientHistory() {
                     });
                     appointment.TypeOfAppointment = clientServices.join(", ").toString()
                     let appointmentNotes = appointment.AppointmentNotes;
-                    console.log('appointmentNotes: ', appointmentNotes); //for debugging
+                    //console.log('appointmentNotes: ', appointmentNotes); //for debugging
                 });
 
                 setUpcomingClientAppointments(appointmentArray);
@@ -202,7 +208,9 @@ export default function ClientHistory() {
                 let appointmentArray = response.data;
                 appointmentArray.forEach( (appointment) => {
                     let userID = appointment.UserID;
-                    console.log('userID: ', userID); //for debugging
+                    //console.log('userID: ', userID); //for debugging
+                    let appointmentDate = appointment.AppointmentDate;
+                    //console.log('appointmentDate: ', appointmentDate); //for debugging
                     let serviceArr = appointment.TypeOfAppointment.split(",");
                     let clientServices: string[] = [];
                     serviceArr.forEach((serviceEl) => {
@@ -211,7 +219,7 @@ export default function ClientHistory() {
                     });
                     appointment.TypeOfAppointment = clientServices.join(", ").toString()
                     let appointmentNotes = appointment.AppointmentNotes;
-                    console.log('appointmentNotes: ', appointmentNotes); //for debugging
+                    //console.log('appointmentNotes: ', appointmentNotes); //for debugging
                 });
 
                 setPastClientAppointments(appointmentArray);
@@ -251,7 +259,9 @@ export default function ClientHistory() {
                 let appointmentArray = response.data;
                 appointmentArray.forEach( (appointment) => {
                     let userID = appointment.UserID;
-                    console.log('userID: ', userID); //for debugging
+                    //console.log('userID: ', userID); //for debugging
+                    let appointmentDate = appointment.AppointmentDate;
+                    //console.log('appointmentDate: ', appointmentDate); //for debugging
                     let serviceArr = appointment.TypeOfAppointment.split(",");
                     let clientServices: string[] = [];
                     serviceArr.forEach((serviceEl) => {
@@ -260,7 +270,7 @@ export default function ClientHistory() {
                     });
                     appointment.TypeOfAppointment = clientServices.join(", ").toString()
                     let appointmentNotes = appointment.AppointmentNotes;
-                    console.log('appointmentNotes: ', appointmentNotes); //for debugging
+                    //console.log('appointmentNotes: ', appointmentNotes); //for debugging
                 });
 
                 setPastClientAppointments(appointmentArray);
@@ -289,7 +299,9 @@ export default function ClientHistory() {
                 let appointmentArray = response.data;
                 appointmentArray.forEach( (appointment) => {
                     let userID = appointment.UserID;
-                    console.log('userID: ', userID); //for debugging
+                    //console.log('userID: ', userID); //for debugging
+                    let appointmentDate = appointment.AppointmentDate;
+                    //console.log('appointmentDate: ', appointmentDate); //for debugging
                     let serviceArr = appointment.TypeOfAppointment.split(",");
                     let clientServices: string[] = [];
                     serviceArr.forEach((serviceEl) => {
@@ -298,7 +310,7 @@ export default function ClientHistory() {
                     });
                     appointment.TypeOfAppointment = clientServices.join(", ").toString()
                     let appointmentNotes = appointment.AppointmentNotes;
-                    console.log('appointmentNotes: ', appointmentNotes); //for debugging
+                    //console.log('appointmentNotes: ', appointmentNotes); //for debugging
                 });
 
                 setUpcomingClientAppointments(appointmentArray);
@@ -338,7 +350,9 @@ export default function ClientHistory() {
                 let appointmentArray = response.data;
                 appointmentArray.forEach( (appointment) => {
                     let userID = appointment.UserID;
-                    console.log('userID: ', userID); //for debugging
+                    //console.log('userID: ', userID); //for debugging
+                    let appointmentDate = appointment.AppointmentDate;
+                    //console.log('appointmentDate: ', appointmentDate); //for debugging
                     let serviceArr = appointment.TypeOfAppointment.split(",");
                     let clientServices: string[] = [];
                     serviceArr.forEach((serviceEl) => {
@@ -347,7 +361,7 @@ export default function ClientHistory() {
                     });
                     appointment.TypeOfAppointment = clientServices.join(", ").toString()
                     let appointmentNotes = appointment.AppointmentNotes;
-                    console.log('appointmentNotes: ', appointmentNotes); //for debugging
+                    //console.log('appointmentNotes: ', appointmentNotes); //for debugging
                 });
                 
                 setPastClientAppointments(appointmentArray);
@@ -376,7 +390,9 @@ export default function ClientHistory() {
                 let appointmentArray = response.data;
                 appointmentArray.forEach( (appointment) => {
                     let userID = appointment.UserID;
-                    console.log('userID: ', userID); //for debugging
+                    //console.log('userID: ', userID); //for debugging
+                    let appointmentDate = appointment.AppointmentDate;
+                    //console.log('appointmentDate: ', appointmentDate); //for debugging
                     let serviceArr = appointment.TypeOfAppointment.split(",");
                     let clientServices: string[] = [];
                     serviceArr.forEach((serviceEl) => {
@@ -385,7 +401,7 @@ export default function ClientHistory() {
                     });
                     appointment.TypeOfAppointment = clientServices.join(", ").toString();
                     let appointmentNotes = appointment.AppointmentNotes;
-                    console.log('appointmentNotes: ', appointmentNotes); //for debugging
+                    //console.log('appointmentNotes: ', appointmentNotes); //for debugging
                 });
 
                 setUpcomingClientAppointments(appointmentArray);
@@ -397,8 +413,8 @@ export default function ClientHistory() {
 
     const handleNameSearch = async () => {
 
-        console.log(pastClientAppointments);
-        console.log(searchName);
+        //console.log(pastClientAppointments);
+        //console.log(searchName);
 
         try {
 
@@ -408,9 +424,9 @@ export default function ClientHistory() {
             });
 
             setPastClientAppointments(filteredAppointments);
-            console.log("Filtered Appointments");
-            console.log(pastClientAppointments);
-            console.log(filteredAppointments);
+            //console.log("Filtered Appointments");
+            //console.log(pastClientAppointments);
+            //console.log(filteredAppointments);
 
         } catch (error) {
             console.error("Error filtering past appointments by name", error);
@@ -431,22 +447,86 @@ export default function ClientHistory() {
         setSelectedClientID(item.UserID);
         setOldAppointmentNotes(item.AppointmentNotes);
         setNewAppointmentNotes(item.AppointmentNotes);
+        setSelectedDate(item.AppointmentDate);
         setIsModalVisible(true);
     };
 
     //called when save notes button is pressed
     const handleSaveNotes = () => {
-        console.log('save');
+        console.log('saving notes'); //for debugging
+        const userID = selectedClientID;
+        const appointmentDate = selectedDate;
+        const newNotes = newAppointmentNotes;
+        const oldNotes = oldAppointmentNotes;
+        if (newNotes !== oldNotes) {
+            try {
+                let funcObj:funcObj = {
+                    entireFunction: () => database.patch('/updateAppointmentNotes', {
+                        userID: userID,
+                        appointmentDate: appointmentDate,
+                        appointmentNotes: newNotes
+                    }),
+                    type: 'patch'
+                };
+                functionGetRetry(funcObj);
+                notify('Appointment notes updated');
+                setIsModalVisible(false);
+                setOldAppointmentNotes(newNotes);
+                if (upcomingClientAppointments.includes(selectedAppointment)) {
+                    const index = upcomingClientAppointments.indexOf(selectedAppointment);
+                    upcomingClientAppointments[index].AppointmentNotes = newNotes;
+                    setUpcomingClientAppointments(upcomingClientAppointments);
+                } else if (pastClientAppointments.includes(selectedAppointment)) {
+                    const index = pastClientAppointments.indexOf(selectedAppointment);
+                    pastClientAppointments[index].AppointmentNotes = newNotes;
+                    setPastClientAppointments(pastClientAppointments);
+                }
+            } catch (error) {
+                console.error('Error updating appointment notes: ', error);
+                notify('Error updating appointment notes: ' + error);
+            }
+        } else {
+            notify('No changes made to appointment notes');
+        }
     };
 
-    //called when delete appointment button is pressed
+    //called when delete appointment button is confirmed yes
     const handleDeleteAppointment = () => {
-        console.log('delete');
+        console.log('delete'); //for debugging
+        const appointmentDate = selectedDate;
+        try {
+            let funcObj:funcObj = { //removes client appointment by reseting it to open appointment
+                entireFunction: () => database.patch('/removeClientAppointment', {
+                        appointmentDate: appointmentDate,
+                        typeOfAppointment: null,
+                        vacancyStatus: 0,
+                        appointmentNotes: null,
+                        userID: null
+                }),
+                type: 'patch'
+            };
+            functionGetRetry(funcObj);
+            notify('Appointment deleted');
+            setIsModalVisible(false);
+            if (upcomingClientAppointments.includes(selectedAppointment)) {
+                const index = upcomingClientAppointments.indexOf(selectedAppointment);
+                upcomingClientAppointments.splice(index, 1);
+                setUpcomingClientAppointments(upcomingClientAppointments);
+            } else if (pastClientAppointments.includes(selectedAppointment)) {
+                const index = pastClientAppointments.indexOf(selectedAppointment);
+                pastClientAppointments.splice(index, 1);
+                setPastClientAppointments(pastClientAppointments);
+            }
+            setSelectedAppointment(null);
+        } catch (error) {
+            console.error('Error deleting appointment: ', error);
+            notify('Error deleting appointment: ' + error);
+        }
     };
 
     useEffect(() => {
-        console.log('pastClientAppointments: ', pastClientAppointments); //for debugging
-        console.log('upcomingClientAppointments: ', upcomingClientAppointments); //for debugging
+        //console.log('pastClientAppointments: ', pastClientAppointments); //for debugging
+        //console.log('upcomingClientAppointments: ', upcomingClientAppointments); //for debugging
     }, [pastClientAppointments, upcomingClientAppointments]);
 
     return (
@@ -625,13 +705,35 @@ export default function ClientHistory() {
                                 <Text style={styles.modalButtonText}>Save Notes</Text>
                             </TouchableOpacity>
                             <View style={styles.modalSpacer} />
-                            <TouchableOpacity style={styles.modalButton} onPress={handleDeleteAppointment}>
+                            <TouchableOpacity style={styles.modalButton} onPress={() => {setIsModalVisible(false); setIsDeleteModalVisible(true);}}>
                                 <Text style={styles.modalButtonText}>Delete Appointment</Text>
                             </TouchableOpacity>
                         </View>
                         <TouchableOpacity style={styles.modalButton} onPress={() => setIsModalVisible(false)}>
                             <Text style={styles.modalButtonText}>Close</Text>
                         </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
+            {/*Modal for deleting appointment*/}
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={isDeleteModalVisible}
+                onRequestClose={() => setIsDeleteModalVisible(false)}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalTitle}>Are you sure you want to delete this appointment? This cannot be undone.</Text>
+                        <View style={styles.modalButtonContainer}>
+                            <TouchableOpacity style={styles.modalButton} onPress={() => {handleDeleteAppointment(); setIsDeleteModalVisible(false);}}>
+                                <Text style={styles.modalButtonText}>Yes</Text>
+                            </TouchableOpacity>
+                            <View style={styles.modalSpacer} />
+                            <TouchableOpacity style={styles.modalButton} onPress={() => setIsDeleteModalVisible(false)}>
+                                <Text style={styles.modalButtonText}>No</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </View>
             </Modal>
@@ -709,7 +811,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        //backgroundColor: 'rgba(211, 211, 250,0.979)',
     },
     modalTitle: {
         fontSize: 20,
@@ -719,14 +820,8 @@ const styles = StyleSheet.create({
         paddingBottom: 20,
     },
     modalContent: {    
-        //flex: 0.5,
-        //justifyContent: "flex-start",
         alignItems: "center",
         backgroundColor: "rgba(211, 211, 250,0.979)",
-        //marginTop: 140,
-        //marginLeft: 10,
-        //marginRight: 10,
-        //marginBottom: -280,
         borderRadius: 36,
         elevation: 8,
         shadowOpacity: 0.55,
@@ -749,7 +844,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     modalNotes: {
-        margintop: 10,
+        marginTop: 10,
         marginBottom: 10,
         padding: 10,
     },
