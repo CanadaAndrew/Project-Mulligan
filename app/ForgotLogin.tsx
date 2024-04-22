@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TextInput, ImageBackground, } from 'react-native';
+import { StyleSheet, Text, View, TextInput, ImageBackground, Dimensions, useWindowDimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import React, { useState } from 'react';
@@ -86,9 +86,9 @@ export default function ForgotLogin({ navigation }) {
             </ImageBackground>
 
             <LinearGradient
-              locations = {[0.7, 1]}
-              colors = {['#DDA0DD', 'white']}
-              style = {styles.background}
+                locations = {[0.7, 1]}
+                colors = {['#DDA0DD', 'white']}
+                style={[styles.background, { paddingBottom: useWindowDimensions().height - 600 }]}
              >
 
                 <Text style={styles.objectTitle}>Forgot Password?</Text>
@@ -107,7 +107,7 @@ export default function ForgotLogin({ navigation }) {
 
 
                 {/*button to submit request limited functionality*/}
-                <View>
+                <View style = {styles.submitButtonContainer}>
                     <TouchableOpacity
                         style={styles.submitButton}
                         onPress={onClickLogin}
@@ -127,7 +127,8 @@ export default function ForgotLogin({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         borderRadius: 90,
-        paddingBottom: 0
+        flex: 1,
+        paddingBottom: 0,
     },
     // title styling 
     objectTitle: {
@@ -146,13 +147,13 @@ const styles = StyleSheet.create({
     },
     // background under logo image
     background: {
-        paddingBottom: 400,
+        //paddingBottom: 400,
         alignItems: 'center',
     },
     // logo image
     logo: {
-        width: 440,
-        height: 275,
+        height: 200,
+        alignItems: 'center'
     },
     // shadow for objects IOS
     boxShadowIOS: {
@@ -169,11 +170,14 @@ const styles = StyleSheet.create({
         elevation: 10
     },
     // Submit button style
+    submitButtonContainer: {
+        width: '90%',
+    },
     submitButton: {
-        width: 350, //
+        //width: '90%', //
         height: 50, //
         paddingTop: 15,
-        margin: 25,
+        //margin: 25,
         shadowColor: 'black',
         shadowOffset: {
             width: 4,
@@ -197,7 +201,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         padding: 8,
         margin: 25,
-        width: 350,
+        width: '90%',
         height: 50,
         backgroundColor: 'lightgrey',
         borderRadius: 10,

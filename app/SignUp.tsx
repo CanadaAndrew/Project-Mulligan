@@ -10,7 +10,7 @@ import {
     Pressable,
     FlatList,
     Image,
-    TextInput
+    TextInput, Dimensions, useWindowDimensions
 } from 'react-native';
 import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-list';
 import { Link } from 'expo-router';
@@ -391,7 +391,7 @@ const styles = StyleSheet.create({
     body: {
         justifyContent: 'center',
         padding: 10,
-        paddingBottom: 300
+        //paddingBottom: 300
     },
     linearGradientStyle: {
         borderTopLeftRadius: 50,

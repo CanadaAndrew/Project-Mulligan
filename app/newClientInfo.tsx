@@ -1,17 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
-import {
-    StatusBar,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-    ScrollView,
-    Pressable,
-    FlatList,
-    Image,
-    TextInput,
-    Keyboard,
+import {StatusBar, StyleSheet, Text, TouchableOpacity, View, ScrollView, Pressable, FlatList, Image, TextInput, Keyboard, Dimensions, useWindowDimensions
 } from 'react-native';
 import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-list';
 import { Link } from 'expo-router';
@@ -279,7 +268,7 @@ const styles = StyleSheet.create({
     },
     container2: {
         flex: 1,
-        paddingBottom: 400
+        //paddingBottom: 400
     },
     // title of page
     headerTitle: {

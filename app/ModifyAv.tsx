@@ -1,7 +1,8 @@
 import React, { useEffect, useState, } from 'react';
 import {LinearGradient} from 'expo-linear-gradient';
 import { StatusBar, StyleSheet, Text, TouchableOpacity, View, Pressable,
-    FlatList, ScrollView, Modal } from 'react-native';
+    FlatList, ScrollView, Modal, Dimensions, useWindowDimensions, 
+    SectionList} from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { Link } from 'expo-router';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -364,6 +365,27 @@ export default function ModifyAv() {
         setButtonColors(updatedColors);
     }, [listOfTimes, appointmentTimes, bookedAppointmentTimes]);
 
+    const printTimes = () => {
+        var result = [];
+        for (let i = 0; i < listOfTimes.length; i++) {
+            result.push(
+                <View style={styles.timeRow} key = {i} >
+                    <View style={styles.timeCell}>
+                        <TouchableOpacity
+                            style={[styles.timeButton, { backgroundColor: 'white' }]}
+                            onPress={() => handleAppointmentPress(listOfTimes[i])}
+                        >
+                            <Text style={[styles.buttonText, { color: buttonColors[i] }]}>
+                                {listOfTimes[i]}
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            )
+        }
+        return result
+    }
+
     return (
         <RootSiblingParent>
         <>
@@ -378,7 +400,8 @@ export default function ModifyAv() {
                         <Text style={styles.dateText}>{displayedDate}</Text>
                     </View>
                     <View style = {styles.listView}>
-                    <FlatList
+                        <Text>{printTimes()}</Text>
+                    {/*<FlatList
                         data={listOfTimes}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({ item, index }) => (
@@ -395,7 +418,7 @@ export default function ModifyAv() {
                         )}
                         numColumns={3}
                         contentContainerStyle={styles.timeContainer}
-                    />
+                    />*/}
                     </View>
                     <View style={styles.bottomButtonContainer}>
                         <View style={styles.bottomButton}>
@@ -501,7 +524,7 @@ export default function ModifyAv() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingBottom: 75
+        paddingBottom: 10
         //backgroundColor: '#DDA0DD'
     },
     // header
@@ -574,7 +597,7 @@ const styles = StyleSheet.create({
     timeCell: {
         //width: 80,
         paddingRight: 10,
-        width: '30%',             //Adjust width to 20% for five buttons per row
+        width: '50%',             //Adjust width to 20% for five buttons per row
         justifyContent: 'center', //center content vertically
         alignItems: 'center',     //center content horizontally
         marginBottom: 10,         //add marginBottom for spacing
@@ -583,7 +606,7 @@ const styles = StyleSheet.create({
     // bottom three buttons
     bottomButtonContainer: {
         //backgroundColor: 'lightgreen',
-        height: 50,
+        height: 55,
         paddingTop: 10,
         alignItems: 'center',
         justifyContent: 'space-evenly'
@@ -639,9 +662,11 @@ const styles = StyleSheet.create({
         elevation: 15, 
     },
     listView: {
+        width: '100%',
         height: 250,
         paddingTop: 10,
         paddingBottom: 20,
         paddingLeft: 10,
+        alignItems: 'center'
     }
 });

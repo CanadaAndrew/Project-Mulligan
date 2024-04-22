@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TextInput, Pressable, Image, ImageBackground, ScrollView, Button, Touchable } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Pressable, Image, ImageBackground, ScrollView, Button, Touchable, Dimensions, useWindowDimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 //import { MaterialCommunityIcons as Icon} from "@expo/vector-icons";
@@ -8,6 +8,8 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import database from './axiosConfig'; // Import axios from the axiosConfig.js file
 import { funcObj, functionGetRetry } from './Enums/Enums'
 import {RootSiblingParent} from "react-native-root-siblings"
+
+const windowDimensions = Dimensions.get('window')
 export default function Login({ route, navigation }) {
 
     //test@fakemail.com
@@ -169,7 +171,7 @@ export default function Login({ route, navigation }) {
       <RootSiblingParent>
         <ScrollView>
             <View style={styles.container}>
-
+                
                 {/*added logo image*/}
                 <ImageBackground
                     style={styles.logo}
@@ -178,9 +180,9 @@ export default function Login({ route, navigation }) {
                 </ImageBackground>
 
                 <LinearGradient
-                    locations={[0.7, 1]}
+                    locations={[0.8, 1]}
                     colors={['#DDA0DD', 'white']}
-                    style={styles.background}
+                    style={[styles.background, {paddingBottom: useWindowDimensions().height - 730}]}
                 >
 
 
@@ -188,17 +190,18 @@ export default function Login({ route, navigation }) {
                     <Text style={styles.errorTitle}>{loginError}</Text>
                     <Text style={styles.objectTitle}>Login</Text>
 
-                    {/*user input for email or phone# partly functional //setEmail*/}
-                    <TextInput
-                        placeholder=' Email or Phone '
-                        placeholderTextColor={'gray'}
-                        keyboardType='default'
-                        style={styles.inputBox}
-                        value={email}
-                        onChangeText={setPhoneNumFormat}
-                    />
+                    
 
-                    <View>
+                    <View style = {styles.inputContainer}>
+                        {/*user input for email or phone# partly functional //setEmail*/}
+                        <TextInput
+                            placeholder=' Email or Phone '
+                            placeholderTextColor={'gray'}
+                            keyboardType='default'
+                            style={styles.inputBox}
+                            value={email}
+                            onChangeText={setPhoneNumFormat}
+                        />
                         {/*user input for password partly functional*/}
                         <TextInput
                             placeholder=' Password '
@@ -260,7 +263,8 @@ export default function Login({ route, navigation }) {
 const styles = StyleSheet.create({
     container: {
         borderRadius: 90,
-        paddingBottom: 0
+        paddingBottom: 0,
+        //justifyContent: 'center',
     },
     // title styling 
     objectTitle: {
@@ -278,13 +282,15 @@ const styles = StyleSheet.create({
     },
     // background under logo image
     background: {
-        paddingBottom: 300,
+        //paddingBottom: 50,
+        //paddingBottom: 100,
+        //height: '100%',
         alignItems: 'center',
     },
     // logo image
     logo: {
-        width: 440,
-        height: 275,
+        height: 200,
+        alignItems: 'center'
     },
     // shadow for objects IOS
     boxShadowIOS: {
@@ -328,8 +334,9 @@ const styles = StyleSheet.create({
     inputBox: {
         fontSize: 18,
         padding: 8,
-        margin: 25,
-        width: 350,
+        //margin: 25,
+        margin: 15,
+        width: '90%',
         height: 50,
         backgroundColor: 'lightgrey',
         borderRadius: 10,
@@ -341,6 +348,10 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.5,
         shadowRadius: 3,
         flexDirection: "row"
+    },
+    inputContainer: {
+        alignItems: 'center',
+        width: '100%'
     },
     // show button style
     showButton: {

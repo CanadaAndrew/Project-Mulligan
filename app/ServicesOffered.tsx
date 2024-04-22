@@ -8,6 +8,8 @@ import {
     View,
     Pressable,
     FlatList,
+    Dimensions,
+    useWindowDimensions
 } from 'react-native';
 import { Link } from 'expo-router';
 import database from './axiosConfig'; // Import axios from the axiosConfig.js file
@@ -25,7 +27,7 @@ export default function ServicesOffered() {
     return (
         <>
             <StatusBar backgroundColor={'black'} />
-            <LinearGradient locations={[0.7, 1]} colors={['#DDA0DD', 'white']} style={styles.container}>
+            <LinearGradient locations={[0.9, 1]} colors={['#DDA0DD', 'white']} style={styles.container}>
                 <View style={styles.container}>
                     <FlatList
                         data={services}
@@ -54,7 +56,8 @@ export default function ServicesOffered() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        //backgroundColor: '#DDA0DD'
+        //backgroundColor: '#DDA0DD',
+        paddingBottom: 10
     },
     // header
     header: {

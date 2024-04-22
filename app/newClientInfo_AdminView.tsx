@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView, TextInput, ImageBackground,} from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TextInput, ImageBackground, Dimensions, useWindowDimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import React, {useState, useEffect} from 'react';
@@ -448,7 +448,7 @@ const styles = StyleSheet.create({
     },
     // background under logo image
     background: {
-        paddingBottom: 250,
+        paddingBottom: 50,
         alignItems: 'center',
     },
     // shadow for objects IOS
@@ -499,7 +499,7 @@ const styles = StyleSheet.create({
     },
     // Submit button style
     titleBox: {
-        width: 350, //
+        width: '90%', //
         height: 100, //
         paddingTop: 30,
         backgroundColor: '#942989',

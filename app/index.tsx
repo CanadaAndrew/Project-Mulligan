@@ -30,11 +30,11 @@ export default function index() {
      <Stack.Navigator
         initialRouteName='Login'
         screenOptions={{
-        headerTintColor:'white',
-        headerBackTitle: 'Back',
-        headerStyle: {
-            backgroundColor: '#942989'
-        }
+            headerTintColor:'white',
+            headerBackTitle: 'Back',
+            headerStyle: {
+                backgroundColor: '#942989'
+            }
         }}
      >
          <Stack.Screen name = "SetUpAppoint1" component={SetUpAppoint1}

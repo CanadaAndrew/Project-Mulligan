@@ -9,7 +9,7 @@ import {
     Pressable,
     FlatList,
     Image,
-    ScrollView
+    ScrollView, Dimensions, useWindowDimensions
 } from 'react-native';
 import { Link } from 'expo-router';
 import database from './axiosConfig'; // Import axios from the axiosConfig.js file
@@ -190,6 +190,39 @@ export default function SetupAppointment2({route}) { // added route for page nav
         //notify("Current Times: " + JSON.stringify(currentTime) + "CurrentDate: " + selectedDate + "Index: " + index);
     };
 
+    const printTimes = (index) => {
+        var result = [];
+        if(alteredListOfTimes[index] != null && alteredListOfTimes[index].length > 0){
+            for (let i = 0; i < alteredListOfTimes[index].length; i++) {
+                result.push(
+                    <View style={styles.availableTimeRow} key={i} >
+                        <View style={styles.availableTimeCell}>
+                            <TouchableOpacity
+                                style={[styles.availableTimeCellButton, { backgroundColor: 'white' }]}
+                                onPress={() => handleAppointmentPress(alteredListOfTimes[index][i], dummyDates[i], i)}
+                            >
+                                <Text style={[styles.availableTimeCellText, { color: !(selectedTime.length === 0) && selectedTime.includes(alteredListOfTimes[index][i]) && selectedDate === dummyDates[i] ? 'green' : 'black' }]}>{alteredListOfTimes[index][i]}</Text>
+                            </TouchableOpacity>
+                        </View>
+
+                        {/*{alteredListOfTimes[i].map((item, j) =>
+                        <View style={styles.availableTimeCell} key={j}>
+                            <TouchableOpacity
+                                style={[styles.availableTimeCellButton, { backgroundColor: 'white' }]}
+                                onPress={() => handleAppointmentPress(item, dummyDates[i], i)}
+                            >
+                                <Text style={[styles.availableTimeCellText, { color: !(selectedTime.length === 0) && selectedTime.includes(item) && selectedDate === dummyDates[i] ? 'green' : 'black' }]}>{item}</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}*/}
+                    </View>
+                )
+            }
+        }
+        
+        return result
+    }
+
 
     return (
         <RootSiblingParent>
@@ -229,7 +262,18 @@ export default function SetupAppointment2({route}) { // added route for page nav
                                 <Text style={styles.appointmentText}>Available Times:</Text>
                             </View>
                             <View>
-                                <FlatList
+                                {formattedDatesList.map((item, i) =>
+                                    <View key={i}>
+                                        <View style={styles.availableDateContainer}>
+                                            <Text style={styles.availableDateText}>{item}</Text>
+                                        </View>
+                                        <View style = {styles.availableTimeContainer}>
+                                            <Text>{printTimes(i)}</Text>
+                                        </View>
+                                    </View>
+                                )}
+                                
+                                {/*<FlatList
                                     data={formattedDatesList}
                                     keyExtractor={(item, index) => index.toString()}
                                     renderItem={({ item, index }) => (
@@ -260,7 +304,7 @@ export default function SetupAppointment2({route}) { // added route for page nav
                                         </View>
                                     )}
                                     contentContainerStyle={styles.availableIterable}
-                                />
+                                />*/}
                             </View>
                             <View style={styles.availableLegendContainer}>
                                 <Text style={styles.availableLegendText}>{legendWords[0]}</Text>
@@ -340,7 +384,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'white',
-        paddingBottom: 400
+        //paddingBottom: 400
     },
     body: {
     },
@@ -442,6 +486,7 @@ const styles = StyleSheet.create({
     },
     availableDateContainer: {
         paddingLeft: 12,
+        width: '100%'
     },
     availableDateText: {
         fontSize: 17,
@@ -450,15 +495,21 @@ const styles = StyleSheet.create({
     },
     availableTimeContainer: {
         alignItems: 'center',
-        paddingLeft: 5,
-        paddingRight: 5,
+        width: '100%',
+        //paddingLeft: 5,
+        //paddingRight: 5,
+    },
+    availableTimeRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
     },
     availableTimeCell: {
-        width: 80,             //Adjust width to 25% for four buttons per row
+        width: '25%',             //Adjust width to 25% for four buttons per row
         justifyContent: 'center', //center content vertically
         alignItems: 'center',     //center content horizontally
         paddingTop: 5,
         paddingBottom: 5,
+        paddingHorizontal: 5
     },
     availableTimeCellButton: {
         padding: 5,

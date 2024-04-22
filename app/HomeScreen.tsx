@@ -1,5 +1,5 @@
 
-import { StyleSheet, Text, View, Pressable, Image, ImageBackground, ScrollView, Button, Touchable, FlatList} from 'react-native';
+import { StyleSheet, Text, View, Pressable, Image, ImageBackground, ScrollView, Button, Touchable, FlatList, Dimensions, useWindowDimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect } from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -201,47 +201,37 @@ function filterButtons(){
   useEffect(()=>{
     filterButtons();
   }, [])
-  return(
-            <View style = {styles.container}>
-              <ScrollView>
-            {/*added logo image*/}
-             <ImageBackground
-              style = {styles.logo}
-              source={require('./images/Hair_Done_Wright_LOGO.png')}
-             >
-             </ImageBackground>
+    return(
+        <View style = {styles.container}>
+            <ScrollView>
+                {/*added logo image*/}
+                <ImageBackground
+                    style = {styles.logo}
+                    source={require('./images/Hair_Done_Wright_LOGO.png')}>
+                </ImageBackground>
+                <LinearGradient
+                    locations = {[0.7, 1]}
+                    colors = {['#DDA0DD', 'white']}
+                    style = {styles.background}>
 
-             <LinearGradient
-              locations = {[0.7, 1]}
-              colors = {['#DDA0DD', 'white']}
-              style = {styles.background}
-             >
-              <View style = {styles.background}>
-
-                {/*add title for homepage*/}
-                <Text style = {styles.objectTitle}> Home </Text>
-
-                {/*
-                This flatlist displays each of the buttons when the page is loaded depending on the role of the user
-                as determined above.
-                */}
-                <View style = {styles.listView}>
-                <FlatList
-                  data = {buttonDisplay}
-                  renderItem={({item}) => (
-                    <View>
-                      {item}
+                    <View style = {styles.background}>
+                        {/*add title for homepage*/}
+                        <Text style = {styles.objectTitle}> Home </Text>
+                        {/*This flatlist displays each of the buttons when the page is loaded depending on the role of the user as determined above.*/}
+                        <View style = {styles.listView}>
+                            {buttonDisplay.map((item, i) => <View key = {i}>{item}</View>)}
+                            {/*<FlatList
+                                data = {buttonDisplay}
+                                renderItem={({item}) => (
+                                    <View>{item}</View>
+                                )}
+                                contentContainerStyle = {{flexGrow: 1}}
+                            />*/}
+                        </View>
                     </View>
-                  )}
-                  contentContainerStyle = {{flexGrow: 1}}
-                />
-                </View>
-
-
-              </View>
-             </LinearGradient>
-             </ScrollView>
-            </View>
+                </LinearGradient>
+            </ScrollView>
+        </View>
     );
 }
 
@@ -267,8 +257,8 @@ const styles = StyleSheet.create({
     },
     // logo image
     logo: {
-        width: 435,
-        height: 250,
+        height: 200,
+        alignItems: 'center'
     },
     // shadow for objects IOS
     boxShadowIOS: {

@@ -138,17 +138,14 @@ export default function ModifyClientInfoSearch({navigation, route}) {
         
      ]
 
-     
     return (
         <RootSiblingParent>
         <SafeAreaView>
             <ScrollView> 
-            
             <LinearGradient
-                locations={[0.7, 1]}
+                locations={[0.8, 1]}
                 colors={['#DDA0DD', 'white']}
-                //style={{ width: windowDimensions.width, height: windowDimensions.height - 85 }}
-                style={{ width: useWindowDimensions().width, height: useWindowDimensions().height - 85 }}
+                style={{ width: windowDimensions.width}}
             >
                 <View style={styles.container}>
                     <View style={[styles.searchBarContainer, styles.boxShadowIOS, styles.boxShadowAndroid]}>
@@ -162,21 +159,39 @@ export default function ModifyClientInfoSearch({navigation, route}) {
                     </View>
 
                     <View style = {styles.dropdowncont}>
-                <SelectList
-                    setSelected = {(val) => setSelected(val)}
-                    data={dropdownList}
-                    boxStyles = {{backgroundColor:'white'}}
-                    dropdownStyles = {{backgroundColor:'white'}}
-                    save = 'value'
-                    search = {false}
-                    defaultOption = {{key: 'Ascending', value: 'Ascending'}}
-                    onSelect = {() => displayClientList(selected)  } //rebuild the list in ascending/descending order
-                    
-                />
-            </View>
+                        <SelectList
+                        setSelected = {(val) => setSelected(val)}
+                        data={dropdownList}
+                        boxStyles = {{backgroundColor:'white'}}
+                        dropdownStyles = {{backgroundColor:'white'}}
+                        save = 'value'
+                        search = {false}
+                        defaultOption = {{key: 'Ascending', value: 'Ascending'}}
+                        onSelect = {() => displayClientList(selected)  } //rebuild the list in ascending/descending order
+                    />
+                    </View>
 
                     <View>
-                        <FlatList
+                        {firstLetterArr.map((item, i) =>
+                            <View key={i}>
+                                <View style={styles.availableLetterContainer}>
+                                    <Text style={styles.availableLetterText}>{item}</Text>
+                                </View>
+                                <View>
+                                    {clientList2[i].map((item, j) =>
+                                        <View style={[styles.nameContainer, styles.boxShadowIOS, styles.boxShadowAndroid]} key={j}>
+                                            <TouchableOpacity
+                                                style={styles.nameButton}
+                                                onPress={() => handleNamePress(item)}
+                                            >
+                                                <Text style={styles.nameText}>{item}</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    )}
+                                </View>
+                            </View>
+                        )}
+                        {/*<FlatList
                             data={firstLetterArr}
                             keyExtractor={(item, index) => index.toString()}
                             renderItem={({ item, index }) => (
@@ -207,7 +222,7 @@ export default function ModifyClientInfoSearch({navigation, route}) {
                                 </View>
                             )}
                                 style={{height: useWindowDimensions().height*.78}}
-                        />
+                        />*/}
                     </View>
                 </View>
             </LinearGradient>
@@ -221,7 +236,7 @@ export default function ModifyClientInfoSearch({navigation, route}) {
 const styles = StyleSheet.create({
     container: {
         rowGap: 10,
-        paddingVertical: 30
+        paddingVertical: 30,
     },
     // shadow for objects IOS
     boxShadowIOS: {
@@ -259,12 +274,18 @@ const styles = StyleSheet.create({
         margin: 20,
         borderRadius: 20,
         rowGap: 10,
+        flexDirection: 'row',
+
     },
     nameButton: {
         padding: 10,
+        width: '100%',
+        //height: 100,
+        backgroundColor: '#C154C1',
+        borderRadius: 20
     },
     nameText: {
-        color: 'black',
+        color: 'white',
         fontWeight: 'bold',
         fontSize: 20,
         textAlign: 'center'

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Pressable, FlatList, Button } from 'react-native';
+import { StyleSheet, Text, View, Pressable, FlatList, Button, Dimensions, useWindowDimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState, } from 'react';
 import { Link } from 'expo-router';
@@ -391,7 +391,7 @@ export default function ClientHistory() {
             <LinearGradient
                 locations={[0.7, 1]}
                 colors={['#DDA0DD', 'white']}
-                style={styles.container}>
+                style={[styles.container, { height: useWindowDimensions().height }]}>
                 <View style={styles.container}>
 
                     {/*Upcoming Appointments*/}
@@ -513,7 +513,7 @@ export default function ClientHistory() {
 
 const styles = StyleSheet.create({
     container: {
-        paddingBottom: 300,
+        //paddingBottom: 300,
     },
     // title of page
     headerTitle: {
