@@ -406,7 +406,8 @@ export default function NewClientInfo_AdminView({ navigation, route}){
                 style={styles.editButton}
                 onPress={editingPreferences ? savePreferencesChanges : toggleEditPreferences}
                 >
-                <Text style={styles.editButtonText}>{editingPreferences ? 'Save' : 'Edit'}</Text>
+                    {/*Just copied the editing button from the first one above seems to work fine*/}
+                    <Text style={styles.editButtonText}>{editingPreferences ? 'Save' : 'Edit'}</Text>
                 </TouchableOpacity>
             </View>
 
