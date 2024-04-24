@@ -42,4 +42,4 @@ package-lock.json
 package.json
 
 # server info files
-config.js
+#config.js
