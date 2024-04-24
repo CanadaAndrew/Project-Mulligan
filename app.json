@@ -8,5 +8,15 @@
   },
   "ios": {
     "bundleIdentifier": "com.hairdonewright.projectmullet"
+  },
+  "expo": {
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "05acce6f-89dc-4f5e-b2a6-445939b6ce64"
+      }
+    }
   }
 }
