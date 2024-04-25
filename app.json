@@ -5,5 +5,18 @@
   ],
   "android": {
     "package": "com.hairdonewright530.projectmullet"
+  },
+  "expo": {
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "f7c8097b-ef33-4b7a-a53d-d4fdb1589bf3"
+      }
+    },
+    "android": {
+      "package": "com.stormhawk.projectmullet"
+    }
   }
 }
