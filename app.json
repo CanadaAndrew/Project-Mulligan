@@ -1,6 +1,9 @@
 {
-    "scheme": "url",
-    "plugins": [
-      "expo-router"
-    ]
+  "scheme": "url",
+  "plugins": [
+    "expo-router"
+  ],
+  "android": {
+    "package": "com.hairdonewright530.projectmullet"
+  }
 }

@@ -4,7 +4,6 @@ import { Link } from 'expo-router';
 import React from 'react';
 import MyCalendar from './MyCalendar';
 import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-list';
-import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useRef } from 'react';
 import { notify } from './Enums/Enums';

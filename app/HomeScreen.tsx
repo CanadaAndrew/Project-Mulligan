@@ -1,9 +1,9 @@
 
 import { StyleSheet, Text, View, Pressable, Image, ImageBackground, ScrollView, Button, Touchable, FlatList} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { router } from 'expo-router';
+import { router, useGlobalSearchParams, useLocalSearchParams } from 'expo-router';
 
 // button viewablility based on workflow in google drive green = new clients, blue = existing clients, and red = Admin with some 
 // overlap. comments have been added above each button for clarification.
@@ -13,10 +13,35 @@ export default function HomeScreen({route, navigation}){
     Creates a const of data to be sent to the other pages in the app
     You can add other consts or just add another variable to the existing userData const
   */
+    const {userId} = useGlobalSearchParams<{userId:string}>();
+    const {adminPriv} = useGlobalSearchParams<{adminPriv:string}>();
+    const {newClient} = useGlobalSearchParams<{newClient:string}>();
+    const {approved} = useGlobalSearchParams<{approved:string}>();
 
-    const { userData } = route.params;
+    const [userData, setUserData] = useState({
+      userId: userId,
+      adminPriv: adminPriv,
+      newClient: newClient,
+      approved: approved
+    })
+    useEffect(() => {
+      updateGlobalParams()
+    },[userId, adminPriv, newClient, approved])
+
+    function updateGlobalParams(){
+      const userData = {
+        userId: userId,
+        adminPriv: adminPriv,
+        newClient: newClient,
+        approved: approved
+      }
+      setUserData(userData);
+      alert(JSON.stringify(userData));
+    }
+
+    
     console.log('You are in the Home Screen Now!');
-    console.log('Proof', userData);
+    //alert('Proof' + JSON.stringify(userData));
      //The buttons array that stores all individual buttons on a page load/reload
   let buttons = [];
   let [buttonDisplay, setButtonDisplay] = React.useState([]);
@@ -31,7 +56,7 @@ export default function HomeScreen({route, navigation}){
 
 //This block constructs buttons that the Admin can see
 function filterButtons(){
-    if(userData.adminPriv == true)
+    if(userData.adminPriv == 'true')
   {
     //Modifies Calendar Availability
     var modifyAvButton = <TouchableOpacity
@@ -92,7 +117,7 @@ function filterButtons(){
     setButtonDisplay(buttons);
   }
   //This block constructs buttons that only old clients can see
-  else if(userData.newClient == false)
+  else if(userData.newClient == 'false')
   {
     //Takes you to the Set Up Appointment Page
     var scheduleAppointmentButton2 = <TouchableOpacity
@@ -137,7 +162,7 @@ function filterButtons(){
     setButtonDisplay(buttons);
   }
   //This block constructs buttons that the new clients can see
-  else if(userData.newClient == true)
+  else if(userData.newClient == 'true')
   {
     //Takes you to the services offerd page
     var servicesOfferedButton3 = <TouchableOpacity
@@ -171,7 +196,7 @@ function filterButtons(){
     buttons.push(servicesOfferedButton3);
     buttons.push(aboutMeButton3);
     //buttons.push(FAQButton3);
-    if(userData.approved == true)
+    if(userData.approved == 'true')
       buttons.push(newClientInfoButton);
     setButtonDisplay(buttons);
   }

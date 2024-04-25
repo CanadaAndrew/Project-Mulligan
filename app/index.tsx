@@ -27,7 +27,7 @@ export default function Login({ route, navigation }) {
         userID: undefined, // You can omit this line, it will default to undefined
         adminPriv: undefined, // You can omit this line, it will default to undefined
         newClient: undefined, // You can omit this line, it will default to undefined
-        approved: true
+        approved: undefined
     };
 
     const onClickSignUp = () => {
@@ -50,7 +50,7 @@ export default function Login({ route, navigation }) {
                 await checkEmailExists(email);
                 console.log('Right Before Navigation');
                 //navigation.navigate("HomeScreen", { userData });
-                router.push("HomeScreen");
+                router.push({pathname:"HomeScreen", params: {userId:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved}});
             } else {
                 // Handle the case where user is null
             }
