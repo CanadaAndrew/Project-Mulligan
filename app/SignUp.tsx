@@ -13,12 +13,12 @@ import {
     TextInput
 } from 'react-native';
 import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-list';
-import { Link } from 'expo-router';
 import database from './axiosConfig'; // Import axios from the axiosConfig.js file
 //firebase imports VVV
 import firebase from './Firebase.js'
 import { getAuth, createUserWithEmailAndPassword  } from "firebase/auth";
 import {funcObj, functionGetRetry} from './Enums/Enums'
+import { router } from 'expo-router';
 
 //made this available for all pages in the app
 export let hairStyleSelected: string[] = [];
@@ -251,14 +251,15 @@ export default function SignUp({ navigation, route }) { // added route for page 
         return 1;
     }
 
-    function handleSignUpPress() {
+    async function handleSignUpPress() {
         //registers the user with Firebase first then if the function returns 0 meaning a successful user creation
         //it will post the user to the database and route them back to the login page
-        let verify = newUserSignUp();
+        let verify = await newUserSignUp();
 
         if (verify == 0) {
-            postNewUser();
-            navigation.navigate("Login")
+            await postNewUser();
+            //navigation.navigate("Login")
+            router.replace("index");
         }
     }
     return (

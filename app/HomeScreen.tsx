@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Pressable, Image, ImageBackground, ScrollView, 
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect } from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { router } from 'expo-router';
 
 // button viewablility based on workflow in google drive green = new clients, blue = existing clients, and red = Admin with some 
 // overlap. comments have been added above each button for clarification.
@@ -49,7 +50,7 @@ function filterButtons(){
     //Views Client Search screen
     var ModifyClientInfoSearch = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("ModifyClientInfoSearch")}
+      onPress = {() => router.push("ModifyClientInfoSearch")}
       >  
       <Text style = {styles.homeButtonText}>Modify Client Search</Text>
     </TouchableOpacity>
@@ -60,24 +61,17 @@ function filterButtons(){
       >  
       <Text style = {styles.homeButtonText}>New Client approval</Text>
     </TouchableOpacity>
-    //Takes you to the Set Up Appiontment Page
-    var scheduleAppointmentButton = <TouchableOpacity
-      style = {styles.homeButton}
-      onPress = {() => navigation.navigate("SetUpAppoint1", {userData})}
-      >
-      <Text style = {styles.homeButtonText}>Schedule Appointments</Text>
-    </TouchableOpacity>
     //takes you to the Services Offered Page
     var servicesOfferedButton = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("ServicesOffered")}
+      onPress = {() => router.push("ServicesOffered")}
       >
       <Text style = {styles.homeButtonText}>Services Offered</Text>
     </TouchableOpacity>
     //Takes you to the About Me Page
     var aboutMeButton = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("AboutMe")}
+      onPress = {() => router.push("AboutMe")}
       >
       <Text style = {styles.homeButtonText}>About Me</Text>
     </TouchableOpacity>
@@ -92,7 +86,6 @@ function filterButtons(){
     buttons.push(clientHistoryButton);
     buttons.push(newClientApprovalButton);
     buttons.push(ModifyClientInfoSearch);
-    buttons.push(scheduleAppointmentButton);
     buttons.push(servicesOfferedButton);
     buttons.push(aboutMeButton);
     //buttons.push(FAQButton);
@@ -118,14 +111,14 @@ function filterButtons(){
     //Takes you to the Services offered page
     var servicesOfferedButton2 = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("ServicesOffered")}
+      onPress = {() => router.push("ServicesOffered")}
       >
       <Text style = {styles.homeButtonText}>Services Offered</Text>
     </TouchableOpacity>
     //Takes you to the About Me page
     var aboutMeButton2 = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("AboutMe")}
+      onPress = {() => router.push("AboutMe")}
       >
       <Text style = {styles.homeButtonText}>About Me</Text>
     </TouchableOpacity>
@@ -136,18 +129,11 @@ function filterButtons(){
     //  >
     //  <Text style = {styles.homeButtonText}>FAQ</Text>
     //</TouchableOpacity>
-    var newClientInfo2 = <TouchableOpacity
-      style = {styles.homeButton}
-      onPress={() => navigation.navigate('NewClientInfo', {userData})}
-      >
-      <Text style = {styles.backButtonText}>New Client Info</Text>
-      </TouchableOpacity>
     buttons.push(scheduleAppointmentButton2);
     buttons.push(yourAppointmentsButton);
     buttons.push(servicesOfferedButton2);
     buttons.push(aboutMeButton2);
     //buttons.push(FAQButton2);
-    buttons.push(newClientInfo2);
     setButtonDisplay(buttons);
   }
   //This block constructs buttons that the new clients can see
@@ -156,14 +142,14 @@ function filterButtons(){
     //Takes you to the services offerd page
     var servicesOfferedButton3 = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("ServicesOffered")}
+      onPress = {() => router.push("ServicesOffered")}
       >
       <Text style = {styles.homeButtonText}>Services Offered</Text>
     </TouchableOpacity>
     //Takes you to the About Me page
     var aboutMeButton3 = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("AboutMe")}
+      onPress = {() => router.push("AboutMe")}
       >
       <Text style = {styles.homeButtonText}>About Me</Text>
     </TouchableOpacity>

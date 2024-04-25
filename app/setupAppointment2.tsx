@@ -11,7 +11,7 @@ import {
     Image,
     ScrollView
 } from 'react-native';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import database from './axiosConfig'; // Import axios from the axiosConfig.js file
 import { SERVICES, militaryHours, displayHours, funcObj, functionGetRetry, notify} from './Enums/Enums';
 import Constants from 'expo-constants';
@@ -280,7 +280,7 @@ export default function SetupAppointment2({route}) { // added route for page nav
                                 },
                                 styles.confirmButton
                                 ]}
-                                onPress = {() => {
+                                onPress = {async () => {
                                     let startingTimeNum
                                     try{
                                         startingTimeNum = militaryHours[selectedTime[0]].split(':')[0];
@@ -317,7 +317,8 @@ export default function SetupAppointment2({route}) { // added route for page nav
                                             }),
                                             type: 'put'
                                         };
-                                        functionGetRetry(funcObj).then(()=>{notify('Your appointment has been booked!')}).catch((error) => notify('Error booking an appointment.'));
+                                        await functionGetRetry(funcObj).then(()=>{notify('Your appointment has been booked!')}).catch((error) => notify('Error booking an appointment.'));
+                                        router.push("HomeScreen");
                                     }
                                     }
                                 }

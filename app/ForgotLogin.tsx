@@ -7,6 +7,7 @@ import firebase from './Firebase';
 import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import {funcObj, functionGetRetry, notify} from './Enums/Enums';
 import { RootSiblingParent } from 'react-native-root-siblings';
+import { router } from 'expo-router';
 
 //Declaring Window as a global variable to be accessed
 declare global {
@@ -41,6 +42,7 @@ export default function ForgotLogin({ navigation }) {
                     await sendPasswordResetEmail(auth, email);
                 }
                 loginErrorMsg('Password reset email send if phone number was valid. Please check your inbox.');
+                router.replace("index"); 
             })
             .catch((err) => notify(err));
         }
@@ -48,8 +50,8 @@ export default function ForgotLogin({ navigation }) {
             email = rawNum;
             await sendPasswordResetEmail(auth, email);
             loginErrorMsg('Password reset email send if email was valid. Please check your inbox.');
-            // For now goes to HomeScreen cause LoginPage doesnt exist yet in this branch
-            navigation.navigate('HomeScreen');
+            //navigation.navigate('HomeScreen');
+            router.replace("index");
         }
         else {
             loginErrorMsg('Your email or phone number \n do not match any existing accounts \n please try again.');

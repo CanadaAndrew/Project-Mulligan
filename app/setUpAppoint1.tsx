@@ -10,8 +10,11 @@ import { useRef } from 'react';
 import { notify } from './Enums/Enums';
 import { RootSiblingParent } from 'react-native-root-siblings'
 
+
+
+export default function SetUpAppoint1({navigation, route}) { // add navigation to default function for data transfer between pages
 //made this available for all pages in the app
-export let hairStyleSelected: string[] = [];
+let hairStyleSelected: string[] = [];
 
 //Variable is interchangeable in terms of function with the calendar
 const calendarContainerRef = useRef(null);
@@ -25,9 +28,6 @@ const renderSelectedDates = () => {
       return null;
     }
 }
-
-export default function SetUpAppoint1({navigation, route}) { // add navigation to default function for data transfer between pages
-
     const { userData } = route.params;
     //{ route }, { navigation }
     //useState for drop down menu
