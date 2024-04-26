@@ -204,148 +204,163 @@ export default function SetupAppointment2() { // added route for page navigation
         //notify("Current Times: " + JSON.stringify(currentTime) + "CurrentDate: " + selectedDate + "Index: " + index);
     };
 
+    const showPageContent = () => {
+        let allParts = []
+        allParts.push(
+            <>
+                <StatusBar backgroundColor={'black'} />
+                    <View style={styles.container}>
+                        <View style={styles.header}>
+                            <View style={styles.backButton}>
+                            </View>
+                            <View style={styles.logoContainer}>
+                                <Image source={require('./images/logo.png')} style={styles.logo} />
+                            </View>
+                        </View>
+
+                        <LinearGradient locations={[0.8, 1]} colors={['#DDA0DD', 'white']} style={styles.linearGradientStyle}>
+                            <View style={styles.body}>
+                                <View style={styles.appointmentInfoContainer}>
+                                    <View style={styles.appointmentHeader}>
+                                        <Text style={styles.appointmentText}>Schedule an Appointment</Text>
+                                    </View>
+                                    <View style={styles.appointmentServicesSelected}>
+                                        <Text style={styles.appointmentText}>Services Selected:</Text>
+                                        <Text style={styles.appointmentText}>{services}</Text>
+                                    </View>
+                                    <View style={styles.appointmentDateChosen}>
+                                        <Text style={styles.appointmentText}>Dates Chosen:</Text>
+                                        <Text style={styles.appointmentText}>{formattedDates}</Text>
+                                    </View>
+                                    <View style={styles.appointmentDateChosen}>
+                                        <Text style={styles.appointmentText}>Approximate appointment duration:</Text>
+                                        <Text style={styles.appointmentText}>{hours} hours</Text>
+                                    </View>
+                                </View>
+                                <View style={styles.availableContainer}>
+                                    <View style={styles.availableTimesHeader}>
+                                        <Text style={styles.appointmentText}>Available Times:</Text>
+                                    </View>
+                                    <View>
+                                        <FlatList
+                                            data={formattedDatesList}
+                                            keyExtractor={(item, index) => index.toString()}
+                                            renderItem={({ item, index }) => (
+                                                <View style={styles.availableViewInFlatList}>
+                                                    <View style={styles.availableDateContainer}>
+                                                        <Text style={styles.availableDateText}>{item}</Text>
+                                                    </View>
+                                                    <View style={styles.availableTimeContainer}>
+                                                        <FlatList
+                                                            data={alteredListOfTimes[index]}
+                                                            keyExtractor={(item, index) => index.toString()}
+                                                            renderItem={({ item }) => (
+                                                                <View style={styles.availableTimeCell}>
+                                                                    <TouchableOpacity
+                                                                        style={[styles.availableTimeCellButton, { backgroundColor: 'white' }]}
+                                                                        onPress={() => handleAppointmentPress(item, dummyDates[index], index)}
+                                                                    >
+                                                                        <Text style={[styles.availableTimeCellText, { color: !(selectedTime.length === 0) && selectedTime.includes(item) && selectedDate === dummyDates[index] ? 'green' : 'black' }]}>
+                                                                            {item}
+                                                                        </Text>
+                                                                    </TouchableOpacity>
+                                                                </View>
+                                                            )}
+                                                            numColumns={4}
+                                                            contentContainerStyle={styles.availableTimeContainer}
+                                                        />
+                                                    </View>
+                                                </View>
+                                            )}
+                                            contentContainerStyle={styles.availableIterable}
+                                        />
+                                    </View>
+                                    <View style={styles.availableLegendContainer}>
+                                        <Text style={styles.availableLegendText}>{legendWords[0]}</Text>
+                                        <View style={styles.availableLegendDotCell}>
+                                            <Image source={require('./images/black_dot.png')} style={styles.availableLegendDot} />
+                                        </View>
+                                        <Text style={styles.availableLegendText}>{legendWords[1]}</Text>
+                                        <View style={styles.availableLegendDotCell}>
+                                            <Image source={require('./images/green_dot.png')} style={styles.availableLegendDot} />
+                                        </View>
+                                    </View>
+                                </View>
+                                <View style={styles.confirmButtonContainer}>
+                                    <Pressable
+                                        style={({ pressed }) => [{
+                                            backgroundColor: pressed ? '#D8BFD8' : '#C154C1'
+                                        },
+                                        styles.confirmButton
+                                        ]}
+                                        onPress={async () => {
+                                            let startingTimeNum
+                                            try {
+                                                startingTimeNum = militaryHours[selectedTime[0]].split(':')[0];
+                                            } catch (e) {
+                                                notify("Error: Invalid time/Date");
+                                                return;
+                                            }
+                                            for (let i = 1; i < hours; i++) {
+                                                let newTime;
+                                                newTime = parseInt(startingTimeNum) + i;
+                                                if (newTime < 10) {
+                                                    newTime = '0' + newTime;
+                                                }
+                                                if (!alteredListOfTimes[selectedIndex].includes(displayHours[newTime + ":00:00"]) || parseInt(startingTimeNum) + i > 23) {
+                                                    //alert(newTime);
+                                                    notify("Error, not enough available time");
+                                                    return;
+                                                }
+                                            }
+                                            for (let j = 0; j < hours; j++) {
+                                                let newTime;
+                                                newTime = parseInt(startingTimeNum) + j;
+                                                if (newTime < 10) {
+                                                    newTime = '0' + newTime;
+                                                }
+                                                const funcObj: funcObj = {
+                                                    entireFunction: () => database.put('/confirmAppointment', null, {
+                                                        params: {
+                                                            date: selectedDate,
+                                                            time: (newTime + ':00:00'),
+                                                            userID: userData.userID,
+                                                            type: hairStyleData
+                                                        }
+                                                    }),
+                                                    type: 'put'
+                                                };
+                                                await functionGetRetry(funcObj).then(() => { router.push({ pathname: "HomeScreen", params: { returnMessage: 'Your appointment has been booked!' } }) }).catch((error) => notify('Error booking an appointment: ' + error.toString()));
+                                            }
+                                        }
+                                        }
+                                    >
+                                        {({ pressed }) => (
+                                            <Text style={styles.confirmButtonText}>Confirm Appointment</Text>
+                                        )}
+                                    </Pressable>
+                                </View>
+                            </View>
+                        </LinearGradient>
+                    </View>
+            </>
+        )
+        return (
+            <FlatList
+                data={allParts}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item, index }) => (
+                    <View>{item}</View>
+                )}
+            />
+        )
+    }
+
+    useEffect(() => { showPageContent() }, []);
 
     return (
         <RootSiblingParent>
-        <>
-            <StatusBar backgroundColor={'black'} />
-            <ScrollView>
-            <View style={styles.container}>
-                <View style={styles.header}>
-                    <View style={styles.backButton}>
-                    </View>
-                    <View style={styles.logoContainer}>
-                        <Image source={require('./images/logo.png')} style={styles.logo} />
-                    </View>
-                </View>
-
-                <LinearGradient locations={[0.8, 1]} colors={['#DDA0DD', 'white']} style={styles.linearGradientStyle}>
-                    <View style={styles.body}>
-                        <View style={styles.appointmentInfoContainer}>
-                            <View style={styles.appointmentHeader}>
-                                <Text style={styles.appointmentText}>Schedule an Appointment</Text>
-                            </View>
-                            <View style={styles.appointmentServicesSelected}>
-                                <Text style={styles.appointmentText}>Services Selected:</Text>
-                                <Text style={styles.appointmentText}>{services}</Text>
-                            </View>
-                            <View style={styles.appointmentDateChosen}>
-                                <Text style={styles.appointmentText}>Dates Chosen:</Text>
-                                <Text style={styles.appointmentText}>{formattedDates}</Text>
-                            </View>
-                            <View style={styles.appointmentDateChosen}>
-                                <Text style={styles.appointmentText}>Approximate appointment duration:</Text>
-                                <Text style={styles.appointmentText}>{hours} hours</Text>
-                            </View>
-                        </View>
-                        <View style={styles.availableContainer}>
-                            <View style={styles.availableTimesHeader}>
-                                <Text style={styles.appointmentText}>Available Times:</Text>
-                            </View>
-                            <View>
-                                <FlatList
-                                    data={formattedDatesList}
-                                    keyExtractor={(item, index) => index.toString()}
-                                    renderItem={({ item, index }) => (
-                                        <View style={styles.availableViewInFlatList}>
-                                            <View style={styles.availableDateContainer}>
-                                                <Text style={styles.availableDateText}>{item}</Text>
-                                            </View>
-                                            <View style={styles.availableTimeContainer}>
-                                                <FlatList
-                                                    data={alteredListOfTimes[index]}
-                                                    keyExtractor={(item, index) => index.toString()}
-                                                    renderItem={({ item }) => (
-                                                        <View style={styles.availableTimeCell}>
-                                                            <TouchableOpacity
-                                                                style={[styles.availableTimeCellButton, { backgroundColor: 'white' }]}
-                                                                onPress={() => handleAppointmentPress(item, dummyDates[index], index)}
-                                                            >
-                                                                <Text style={[styles.availableTimeCellText, { color: !(selectedTime.length === 0) && selectedTime.includes(item) && selectedDate === dummyDates[index] ? 'green' : 'black' }]}>
-                                                                    {item}
-                                                                </Text>
-                                                            </TouchableOpacity>
-                                                        </View>
-                                                    )}
-                                                    numColumns={4}
-                                                    contentContainerStyle={styles.availableTimeContainer}
-                                                />
-                                            </View>
-                                        </View>
-                                    )}
-                                    contentContainerStyle={styles.availableIterable}
-                                />
-                            </View>
-                            <View style={styles.availableLegendContainer}>
-                                <Text style={styles.availableLegendText}>{legendWords[0]}</Text>
-                                <View style={styles.availableLegendDotCell}>
-                                    <Image source={require('./images/black_dot.png')} style={styles.availableLegendDot} />
-                                </View>
-                                <Text style={styles.availableLegendText}>{legendWords[1]}</Text>
-                                <View style={styles.availableLegendDotCell}>
-                                    <Image source={require('./images/green_dot.png')} style={styles.availableLegendDot} />
-                                </View>
-                            </View>
-                        </View>
-                        <View style={styles.confirmButtonContainer}>
-                            <Pressable
-                                style={({ pressed }) => [{
-                                    backgroundColor: pressed ? '#D8BFD8' : '#C154C1'
-                                },
-                                styles.confirmButton
-                                ]}
-                                onPress = {async () => {
-                                    let startingTimeNum
-                                    try{
-                                        startingTimeNum = militaryHours[selectedTime[0]].split(':')[0];
-                                    }catch(e){
-                                        notify("Error: Invalid time/Date");
-                                        return;
-                                    }
-                                    for(let i = 1; i < hours; i++){
-                                        let newTime;
-                                        newTime = parseInt(startingTimeNum) + i;
-                                        if(newTime < 10){
-                                            newTime = '0' + newTime;
-                                        }
-                                        if(!alteredListOfTimes[selectedIndex].includes(displayHours[newTime + ":00:00"]) || parseInt(startingTimeNum) + i > 23 ){
-                                            //alert(newTime);
-                                            notify("Error, not enough available time");
-                                            return;
-                                        }
-                                    }
-                                    for(let j = 0; j < hours; j++){
-                                        let newTime;
-                                        newTime = parseInt(startingTimeNum) + j;
-                                        if(newTime < 10){
-                                            newTime = '0' + newTime;
-                                        }
-                                        const funcObj:funcObj = {
-                                            entireFunction: () => database.put('/confirmAppointment', null, {
-                                                params:{
-                                                    date:selectedDate,
-                                                    time:(newTime + ':00:00'),
-                                                    userID: userData.userID,
-                                                    type: hairStyleData
-                                                }
-                                            }),
-                                            type: 'put'
-                                        };
-                                        await functionGetRetry(funcObj).then(()=>{router.push({pathname:"HomeScreen", params: {returnMessage: 'Your appointment has been booked!'}})}).catch((error) => notify('Error booking an appointment: ' + error.toString()));
-                                    }
-                                    }
-                                }
-                                >
-                                {({ pressed }) => (
-                                    <Text style={styles.confirmButtonText}>Confirm Appointment</Text>
-                                )}
-                            </Pressable>
-                        </View>
-                    </View>
-                </LinearGradient>
-            </View>
-            </ScrollView>
-        </>
+            <>{showPageContent()}</>
         </RootSiblingParent>
     );
 }
