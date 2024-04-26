@@ -45,8 +45,8 @@ const monthsWritten = {
  */
 const config = {
     user: 'hdw530', // better stored in an app setting such as process.env.DB_USER
-    password: '#RecyclingTeam', // better stored in an app setting such as process.env.DB_PASSWORD
-    server: 'hair-done-wright530.database.windows.net', // better stored in an app setting such as process.env.DB_SERVER
+    password: '#Recyclingteam', // better stored in an app setting such as process.env.DB_PASSWORD
+    server: 'hair-done-wright530-server.database.windows.net', // better stored in an app setting such as process.env.DB_SERVER
     port: 1433, // optional, defaults to 1433, better stored in an app setting such as process.env.DB_PORT
     database: 'mobile_app', // better stored in an app setting such as process.env.DB_NAME
     authentication: {
