@@ -1,6 +1,19 @@
 {
-    "scheme": "url",
-    "plugins": [
-      "expo-router"
-    ]
+  "scheme": "url",
+  "plugins": [
+    "expo-router"
+  ],
+  "expo": {
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "05acce6f-89dc-4f5e-b2a6-445939b6ce64"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.hairdonewright530.projectmullet"
+    }
+  }
 }
