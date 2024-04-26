@@ -26,6 +26,7 @@
     "expo-router": "^2.0.0",
     "expo-splash-screen": "~0.20.5",
     "expo-status-bar": "~1.6.0",
+    "expo-system-ui": "^2.9.4",
     "expo-updates": "~0.18.19",
     "express": "^4.18.2",
     "firebase": "^10.8.1",

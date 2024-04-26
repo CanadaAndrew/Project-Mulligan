@@ -1,22 +1,32 @@
 {
-  "scheme": "url",
-  "plugins": [
-    "expo-router"
-  ],
-  "android": {
-    "package": "com.hairdonewright530.projectmullet"
-  },
   "expo": {
-    "extra": {
-      "router": {
-        "origin": false
-      },
-      "eas": {
-        "projectId": "f7c8097b-ef33-4b7a-a53d-d4fdb1589bf3"
-      }
+    "name": "Project Mullet",
+    "slug": "ProjectMullet",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
     },
     "android": {
-      "package": "com.stormhawk.projectmullet"
-    }
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.hairdonewright530.projectmullet"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "scheme": "hairdonewright530"
   }
 }
