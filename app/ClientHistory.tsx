@@ -120,9 +120,10 @@ export default function ClientHistory() {
                 const response = await funcObj.entireFunction()
 
                 let appointmentArray = response.data;
+                //console.log('response', response.data); //for debugging
                 appointmentArray.forEach( (appointment) => {
                     let userID = appointment.UserID;
-                    //console.log('userID: ', userID); //for debugging
+                    //console.log('userID_allPast: ', userID); //for debugging
                     let appointmentDate = appointment.AppointmentDate;
                     //console.log('appointmentDate: ', appointmentDate); //for debugging
                     let serviceArr = appointment.TypeOfAppointment.split(",");
@@ -163,7 +164,7 @@ export default function ClientHistory() {
                 let appointmentArray = response.data;
                 appointmentArray.forEach( (appointment) => {
                     let userID = appointment.UserID;
-                    //console.log('userID: ', userID); //for debugging
+                    //console.log('userID_allUpcoming: ', userID); //for debugging
                     let appointmentDate = appointment.AppointmentDate;
                     //console.log('appointmentDate: ', appointmentDate); //for debugging
                     let serviceArr = appointment.TypeOfAppointment.split(",");
@@ -208,7 +209,7 @@ export default function ClientHistory() {
                 let appointmentArray = response.data;
                 appointmentArray.forEach( (appointment) => {
                     let userID = appointment.UserID;
-                    //console.log('userID: ', userID); //for debugging
+                    //console.log('userID_today: ', userID); //for debugging
                     let appointmentDate = appointment.AppointmentDate;
                     //console.log('appointmentDate: ', appointmentDate); //for debugging
                     let serviceArr = appointment.TypeOfAppointment.split(",");
@@ -259,7 +260,7 @@ export default function ClientHistory() {
                 let appointmentArray = response.data;
                 appointmentArray.forEach( (appointment) => {
                     let userID = appointment.UserID;
-                    //console.log('userID: ', userID); //for debugging
+                    //console.log('userID_thisWeekPast: ', userID); //for debugging
                     let appointmentDate = appointment.AppointmentDate;
                     //console.log('appointmentDate: ', appointmentDate); //for debugging
                     let serviceArr = appointment.TypeOfAppointment.split(",");
@@ -299,7 +300,7 @@ export default function ClientHistory() {
                 let appointmentArray = response.data;
                 appointmentArray.forEach( (appointment) => {
                     let userID = appointment.UserID;
-                    //console.log('userID: ', userID); //for debugging
+                    //console.log('userID_thisWeekUpcoming: ', userID); //for debugging
                     let appointmentDate = appointment.AppointmentDate;
                     //console.log('appointmentDate: ', appointmentDate); //for debugging
                     let serviceArr = appointment.TypeOfAppointment.split(",");
@@ -350,7 +351,7 @@ export default function ClientHistory() {
                 let appointmentArray = response.data;
                 appointmentArray.forEach( (appointment) => {
                     let userID = appointment.UserID;
-                    //console.log('userID: ', userID); //for debugging
+                    //console.log('userID_thisMonthPast: ', userID); //for debugging
                     let appointmentDate = appointment.AppointmentDate;
                     //console.log('appointmentDate: ', appointmentDate); //for debugging
                     let serviceArr = appointment.TypeOfAppointment.split(",");
@@ -390,7 +391,7 @@ export default function ClientHistory() {
                 let appointmentArray = response.data;
                 appointmentArray.forEach( (appointment) => {
                     let userID = appointment.UserID;
-                    //console.log('userID: ', userID); //for debugging
+                    //console.log('userID_thisMonthUpcoming: ', userID); //for debugging
                     let appointmentDate = appointment.AppointmentDate;
                     //console.log('appointmentDate: ', appointmentDate); //for debugging
                     let serviceArr = appointment.TypeOfAppointment.split(",");
@@ -443,6 +444,7 @@ export default function ClientHistory() {
 
     //called when a tile is pressed
     const handleTilePress = (item) => {
+        console.log('item.UserID', item.UserID); //for debugging
         setSelectedAppointment(item);
         setSelectedClientID(item.UserID);
         setOldAppointmentNotes(item.AppointmentNotes);
@@ -696,7 +698,7 @@ export default function ClientHistory() {
                              <TextInput
                                 value={newAppointmentNotes}
                                 onChangeText={setNewAppointmentNotes}
-                                placeholder={newAppointmentNotes}
+                                placeholder={newAppointmentNotes ? newAppointmentNotes : 'empty'}
                                 multiline={true}
                                 style={styles.modalNotes}
                         />
