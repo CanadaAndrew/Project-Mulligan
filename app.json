@@ -1,9 +1,30 @@
 {
-  "scheme": "url",
-  "plugins": [
-    "expo-router"
-  ],
-  "android": {
-    "package": "com.hairdonewright530.projectmullet"
+  "expo": {
+    "name": "Project Mullet",
+    "slug": "ProjectMullet",
+    "version": "1.0.1",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#DDA0DD"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#942989"
+      },
+      "package": "com.hairdonewright530.projectmullet"
+    },
+    "scheme": "hairdonewright530",
+    "plugins": ["expo-router"]
   }
 }

@@ -14,7 +14,7 @@ import {
     Keyboard,
 } from 'react-native';
 import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-list';
-import { Link } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import database from './axiosConfig'; // Import axios from the axiosConfig.js file
 //import {initializeApp} from 'firebase/app';
 import { listOfStates, funcObj, functionGetRetry, notify } from './Enums/Enums';
@@ -22,10 +22,19 @@ import Constants from 'expo-constants';
 import { RootSiblingParent } from 'react-native-root-siblings'
 import { response } from 'express';
 
-export default function NewClientInfo({route}) {
+export default function NewClientInfo() {
 
-   const { userData } = route.params;
+    const {userID} = useLocalSearchParams<{userID:string}>();
+    const {adminPriv} = useLocalSearchParams<{adminPriv:string}>();
+    const {newClient} = useLocalSearchParams<{newClient:string}>();
+    const {approved} = useLocalSearchParams<{approved:string}>();
 
+    const userData = {
+        userID: parseInt(userID),
+        adminPriv: adminPriv,
+        newClient: newClient,
+        approved: approved
+      }
     async function getName(userID){
         let funcObj:funcObj = {
             entireFunction: () => database.get('/findNewClientViewByID', {

@@ -25,7 +25,7 @@ export let hairStyleSelected: string[] = [];
 export let contactSelected: string[] = [];
 
 
-export default function SignUp({ navigation, route }) { // added route for page navigation
+export default function SignUp() { // added route for page navigation
 
     //initializes the Authentication and gets a reference to the service
     const auth = getAuth(firebase);

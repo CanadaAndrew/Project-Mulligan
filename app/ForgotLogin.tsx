@@ -16,7 +16,7 @@ declare global {
     }
 }
 
-export default function ForgotLogin({ navigation }) {
+export default function ForgotLogin() {
 
     const auth = getAuth(firebase);
     auth.languageCode = 'en';

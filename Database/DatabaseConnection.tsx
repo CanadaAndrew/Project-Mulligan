@@ -294,7 +294,7 @@ app.put('/confirmAppointment', (req, res) => {
 
     updateAppointment(date, time, userID, type)
     .then(res.send("Booked."))
-    .catch(err => {
+    .catch((err) => {
         console.error('Error updating appointments:', err.message);
         res.status(500).send('Internal Server Error');
     });
@@ -1502,6 +1502,7 @@ app.get('/queryUpcomingAppointmentsByUserIDAndDate', (req, res) =>{
     const date = req.query.date;
     const userID = req.query.userID;
     const query = "SELECT * FROM Appointments WHERE AppointmentDate >= '" + date + "' AND UserID = " + userID +";";
+    console.log(query);
     customQuery(query)
     .then((ret) => res.send(ret))
     .catch(err => {
@@ -1514,6 +1515,7 @@ app.get('/queryPastAppointmentsByUserIDAndDate', (req, res) =>{
     const date = req.query.date;
     const userID = req.query.userID;
     const query = "SELECT * FROM Appointments WHERE AppointmentDate <= '" + date + "' AND UserID = " + userID +";";
+    console.log(query);
     customQuery(query)
     .then((ret) => res.send(ret))
     .catch(err => {

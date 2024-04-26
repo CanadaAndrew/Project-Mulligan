@@ -11,14 +11,14 @@ import {
     Image,
     ScrollView
 } from 'react-native';
-import { Link, router } from 'expo-router';
+import { Link, router, useLocalSearchParams} from 'expo-router';
 import database from './axiosConfig'; // Import axios from the axiosConfig.js file
-import { SERVICES, militaryHours, displayHours, funcObj, functionGetRetry, notify} from './Enums/Enums';
+import { SERVICES, militaryHours, displayHours, funcObj, functionGetRetry, notify, stringToDate} from './Enums/Enums';
 import Constants from 'expo-constants';
 import { UTCtoPST } from './Enums/Enums';
 import { RootSiblingParent } from 'react-native-root-siblings'
 
-export default function SetupAppointment2({route}) { // added route for page navigation
+export default function SetupAppointment2() { // added route for page navigation
 
     const [selectedDate, setSelectedDate] = useState(null);
     const [appointmentTimes, setAppointmentTimes] = useState([[]]); //list of selected times to push to db upon confirmation
@@ -27,9 +27,23 @@ export default function SetupAppointment2({route}) { // added route for page nav
     const [selectedIndex, setSelectedIndex] = useState(0);
 
     // for data transfer between appointment pages
-    const {hairStyleData} = route.params;
-    const {dateData} = route.params;
-    const { userData } = route.params;
+    //const {hairStyleData} = route.params;
+    const {hairStyleData} = useLocalSearchParams<{hairStyleData:string}>();
+
+    //const {dateData} = route.params;
+    const {dateData} = useLocalSearchParams<{dateData:string}>();
+
+    const {userID} = useLocalSearchParams<{userID:string}>();
+    const {adminPriv} = useLocalSearchParams<{adminPriv:string}>();
+    const {newClient} = useLocalSearchParams<{newClient:string}>();
+    const {approved} = useLocalSearchParams<{approved:string}>();
+
+    const userData = {
+      userID: parseInt(userID),
+      adminPriv: adminPriv,
+      newClient: newClient,
+      approved: approved
+    }
 
     const displayDateTimes = async() =>
     {
@@ -138,7 +152,7 @@ export default function SetupAppointment2({route}) { // added route for page nav
         let i = 0
         try{
             dummyDates.forEach((date) => {
-                let newDate = UTCtoPST(date);
+                let newDate = stringToDate(date);
                 dates[i] = newDate.toDateString();
                 i++;
             })
@@ -317,8 +331,7 @@ export default function SetupAppointment2({route}) { // added route for page nav
                                             }),
                                             type: 'put'
                                         };
-                                        await functionGetRetry(funcObj).then(()=>{notify('Your appointment has been booked!')}).catch((error) => notify('Error booking an appointment.'));
-                                        router.push("HomeScreen");
+                                        await functionGetRetry(funcObj).then(()=>{router.push({pathname:"HomeScreen", params: {returnMessage: 'Your appointment has been booked!'}})}).catch((error) => notify('Error booking an appointment: ' + error.toString()));
                                     }
                                     }
                                 }

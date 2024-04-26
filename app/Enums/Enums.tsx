@@ -114,6 +114,13 @@ function UTCtoPST(date: Date)
     return new Date(moment(date).tz('America/Los_Angeles').format());
 }
 
+function stringToDate(date: string)
+{
+    //get the date and convert it to PST
+    //returns the date in PST format
+    return new Date(moment(date).tz('America/Los_Angeles').format());
+}
+
 function UTCtoPSTString(date: Date)
 {
     return moment(date).tz('America/Los_Angeles').format('YYYY-MM-DDTHH:mm:ss.SSS');
@@ -201,9 +208,9 @@ async function functionGetRetry(jsonObj:funcObj){
         }catch(error){
             currentAttempts += 1;
             recentError = error;
-            if(currentAttempts == maxAttempts){
-                await wait(Math.pow(2, currentAttempts))
+            if(currentAttempts < maxAttempts){
                 notify('There is a problem connecting to the server. Retrying in: ' + Math.pow(2, currentAttempts) + ' seconds')
+                await wait(Math.pow(2, currentAttempts))
             }
         }
     }
@@ -216,4 +223,4 @@ function notify(message){
       });
 }
 
-export{monthsNum, monthsWritten, militaryHours, displayHours, UTCtoPST, UTCtoPSTString, listOfStates, SERVICES, functionGetRetry, funcObj, notify};
+export{monthsNum, monthsWritten, militaryHours, displayHours, UTCtoPST, UTCtoPSTString, listOfStates, SERVICES, functionGetRetry, funcObj, notify, stringToDate};

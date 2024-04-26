@@ -9,7 +9,7 @@ import database from './axiosConfig.js'; // Import axios from the axiosConfig.js
 import { funcObj, functionGetRetry } from './Enums/Enums'
 import {RootSiblingParent} from "react-native-root-siblings"
 import { router } from 'expo-router';
-export default function Login({ route, navigation }) {
+export default function Login() {
 
     //test@fakemail.com
     const auth = getAuth(firebase);
@@ -50,7 +50,12 @@ export default function Login({ route, navigation }) {
                 await checkEmailExists(email);
                 console.log('Right Before Navigation');
                 //navigation.navigate("HomeScreen", { userData });
-                router.push({pathname:"HomeScreen", params: {userId:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved}});
+                if(userData.userID == 'guest'){
+                    router.push({pathname:"HomeScreen", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved, returnMessage: "Unable to get your information from the Database. Logged in as guest. Please try logging in again for more access."}});
+                }else{
+                    router.push({pathname:"HomeScreen", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved}});
+                }
+                
             } else {
                 // Handle the case where user is null
             }

@@ -8,6 +8,7 @@ import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "fir
 import { notify, SERVICES } from './Enums/Enums';
 import { RootSiblingParent } from 'react-native-root-siblings'
 import { MultipleSelectList } from 'react-native-dropdown-select-list';
+import { useLocalSearchParams } from 'expo-router';
 
 //Declaring Window as a global variable to be accessed
 declare global {
@@ -16,7 +17,7 @@ declare global {
     }
   }
   
-export default function NewClientInfo_AdminView({ navigation, route}){
+export default function NewClientInfo_AdminView(){
 
     const [selected, setSelected] = React.useState([]);
     let [hairStyleSelected, setHairStyleSelected] = React.useState([])
@@ -41,8 +42,8 @@ export default function NewClientInfo_AdminView({ navigation, route}){
     ];
 
 
-
-    const { id } = route.params;
+    const { ID } = useLocalSearchParams<{ID:string}>();
+    const id = parseInt(ID);
 
     console.log(id);
 
