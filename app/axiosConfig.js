@@ -1,5 +1,5 @@
 import axios from 'axios';
-//import config from './config'; 
+import config from './config'; 
 
 // Create an instance of axios with the configured base URL
 const database = axios.create({

@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "Project Mullet",
-    "slug": "ProjectMullet",
-    "version": "1.0.1",
+    "name": "HairDoneWright530",
+    "slug": "HairDoneWright530",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/logo.png",
     "userInterfaceStyle": "light",
@@ -27,14 +27,6 @@
     "scheme": "hairdonewright530",
     "plugins": [
       "expo-router"
-    ],
-    "extra": {
-      "router": {
-        "origin": false
-      },
-      "eas": {
-        "projectId": "0526e9d1-2963-4879-98d4-1c426dc7fd66"
-      }
-    }
+    ]
   }
 }
