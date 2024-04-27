@@ -27,6 +27,14 @@
     "scheme": "hairdonewright530",
     "plugins": [
       "expo-router"
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "0526e9d1-2963-4879-98d4-1c426dc7fd66"
+      }
+    }
   }
 }
