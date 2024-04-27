@@ -9,7 +9,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment'; //used to format dates and times
 import MyCalendar from './MyCalendar';
 import database from './axiosConfig'; // Import axios from the axiosConfig.js file
-import { displayHours } from './Enums/Enums';
+import { displayHours, militaryHours } from './Enums/Enums';
 import { validateLocaleAndSetLanguage } from 'typescript';
 import Constants from 'expo-constants';
 import { UTCtoPSTString, funcObj, functionGetRetry, notify} from './Enums/Enums';
@@ -128,7 +128,6 @@ export default function ModifyAv() {
     const handleAppointmentPress = (time) => {
         //console.log('appointmentTimes', appointmentTimes); //for testing purposes
         //console.log('time', time); //for testing purposes
-
         //update appointmentTimes and deletedTimes
         setAppointmentTimes((prevAppointments) => {
             //console.log('prevAppointments', prevAppointments); //for testing purposes
@@ -281,8 +280,8 @@ export default function ModifyAv() {
 
         const insertions = appointmentTimes.filter(time => !databaseTimes.includes(time)); //times to insert into database
         const deletions = deletedTimes.filter(time => !bookedAppointmentTimes.includes(time)); //times to delete from database
-        const timesToInsert = insertions.map(convertTo24Hour);
-        let timesToDelete = deletions.map(convertTo24Hour);
+        const timesToInsert = insertions.map((x) => {return militaryHours[x].slice(0, 5)});
+        let timesToDelete = deletions.map((y) => {return militaryHours[y].slice(0, 5)});
 
         //check if there are times to delete that are booked
         if (deletions.filter(time => bookedAppointmentTimes.includes(time)).length > 0) { //might not need

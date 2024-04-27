@@ -19,6 +19,8 @@ import firebase from './Firebase.js'
 import { getAuth, createUserWithEmailAndPassword  } from "firebase/auth";
 import {funcObj, functionGetRetry} from './Enums/Enums'
 import { router } from 'expo-router';
+import { notify } from './Enums/Enums';
+import {RootSiblingParent} from "react-native-root-siblings"
 
 //made this available for all pages in the app
 export let hairStyleSelected: string[] = [];
@@ -239,20 +241,19 @@ export default function SignUp() { // added route for page navigation
             await Promise.all(servicePromises); //wait for all services to be posted
 
             console.log('New user and related data posted successfully.');
-            alert('new account created successfully');
         } catch (error) {
             console.error('Error posting new user data:', error);
-            alert('problem with creating new account');
+            notify('Problem with creating new account.');
         }
     };
 
     function newUserSignUp() {
         //password conditionals if these are both false move onto setting the 
         if (password != confirmPassword) {
-            alert("Passwords did not match. Please try again.")
+            notify("Passwords did not match. Please try again.")
         }
         else if (password == "" || confirmPassword == "") {
-            alert("No password was entered. Please enter in a password.")
+            notify("No password was entered. Please enter in a password.")
         }
         else {
             createUserWithEmailAndPassword(auth, email, password)
@@ -270,7 +271,7 @@ export default function SignUp() { // added route for page navigation
             return 0;
         }
         //returns 1 if something along the way messed up so it doesn't post the new user to the database
-        alert("Something went wrong. Please enter account information and try again2.")
+        notify("Something went wrong. Please enter account information and try again.")
         return 1;
     }
 
@@ -282,11 +283,12 @@ export default function SignUp() { // added route for page navigation
         if (verify == 0) {
             await postNewUser();
             //navigation.navigate("Login")
-            router.replace("/");
+            router.replace({pathname:"/", params: {returnMessage:"Account created successfully!"}});
         }
     }
     return (
         <>
+        <RootSiblingParent>
             <StatusBar backgroundColor={'black'} />
             <ScrollView style={styles.container}>
                 <View style={styles.header}>
@@ -403,6 +405,7 @@ export default function SignUp() { // added route for page navigation
                     </View>
                 </LinearGradient>
             </ScrollView>
+            </RootSiblingParent>
         </>
     );
 }

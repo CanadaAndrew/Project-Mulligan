@@ -19,7 +19,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/HDR_App_Icon_Android.png",
         "backgroundColor": "#942989"
       },
       "package": "com.hairdonewright530.projectmullet"
