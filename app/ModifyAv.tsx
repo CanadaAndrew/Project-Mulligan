@@ -21,7 +21,7 @@ export default function ModifyAv() {
     //make a local const this way using route.params
     //const { userData } = route.params;
 
-
+    const [timeChanged, settimeChanged] = useState(false);
     const [selectedDate, setSelectedDate] = useState(null);
     const [appointmentTimes, setAppointmentTimes] = useState([]); //holds selected appointment times
     const [deletedTimes, setDeletedTimes] = useState([]); //holds deleted appointment times
@@ -173,6 +173,7 @@ export default function ModifyAv() {
     
     //changes time with time picker to set opening time
     const onChange1 = (event, selectedDate) => {
+       
         const currentDate = selectedDate;
         setShow1(false);
         setDate1(currentDate);
@@ -194,15 +195,19 @@ export default function ModifyAv() {
         //console.log('tempArray', tempArray); //for debugging
         setFilteredTimes(tempArray);
         tempArray = [];
+
+        //Time functions will run when user closes the modal
+        settimeChanged(true);
     };
 
     //changes time with time picker to set closing time
     const onChange2 = (event, selectedDate) => {
+       
         const currentDate = selectedDate;
         setShow2(false);
         setDate2(currentDate);
         var tempArray = []
-        for(let i = date1.getHours(); i < currentDate.getHours(); i++) {
+        for(let i = date1.getHours(); i < currentDate.getHours() + 1; i++) {
             if (i < 12) {
                 tempArray.push(i.toString().padStart(2, '0') + ":00AM");
             } else if (i === 12) {
@@ -219,6 +224,9 @@ export default function ModifyAv() {
         if(date1.getHours() <= currentDate.getHours()) {
             //not sure what this is for??? -> anyone know?
         }
+
+         //Time functions will run when user closes the modal
+        settimeChanged(true);
     };
   
     const showTimePicker1 = () => {setShow1(true); };
@@ -473,6 +481,7 @@ export default function ModifyAv() {
                                         mode={'time'}
                                         is24Hour={false}
                                         onChange={onChange1}
+                                        
                                     />
                                 )}
                                 {show2 && (
@@ -480,16 +489,27 @@ export default function ModifyAv() {
                                         value={date2}
                                         mode={'time'}
                                         is24Hour={false}
-                                        onChange={onChange2}
+                                        onChange={onChange2} 
+                                            
                                     />
                                 )}
                                 <Text>{"\n\n"}</Text>
                                 <Pressable style={({ pressed }) => [{ backgroundColor: pressed ? '#D8BFD8' : '#C154C1' }, //hide the popup window
                                 styles.backButtonText, styles.shadow]} onPress={() => {
                                     setModalVisible(false); //close modal
-                                    setListOfTimes(filteredTimes); //update available times
-                                    setFilteredTimes([]); //clear filtered times
-                                }}>
+                                    //if the user opens/closes Filter Schedule and makes no changes don't run these
+                                    if(timeChanged)
+                                        {
+                                            setListOfTimes(filteredTimes); //update available times
+                                            //setFilteredTimes([]); //clear filtered times
+                                            setFilteredTimes([]); //clear filtered times
+                                            settimeChanged(false);
+                                        } 
+                                       
+
+                                   
+                                }}
+                                >
                                     <Text style={styles.backButtonText} > Close    </Text>
                                 </Pressable>
                             </View>
