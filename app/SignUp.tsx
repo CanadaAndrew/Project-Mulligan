@@ -102,6 +102,29 @@ export default function SignUp() { // added route for page navigation
         setphoneNumberValid(phoneNumber.length == 12 || phoneNumber.length == 13 ? true : false);
 
     }
+    
+    // two functions below should format phone number for IOS
+    const formattingPhoneNumber = (input) => {
+        if (/^\d*$/.test(input)){
+            if (input.length <=10){
+                return input.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+            }
+        } else {
+            return input
+        }
+    }
+    const setPhoneNumFormat = (input) => {
+        if( input.length <= 14){
+            if( /^\d*$/.test(input)){
+                const formatPhoNum = formattingPhoneNumber(input);
+                newPhoneNumber(formatPhoNum);
+            }else{
+                const newPhone = input.replace(/\D/g, ''); 
+                newPhoneNumber(newPhone);
+            }
+        }
+    }
+
     function checkpasswordValid() {
         //if the password contains numbers and letters and is 8 chars or more in length...
         if (password.match(/^[A-Za-z0-9]*$/))
@@ -299,7 +322,7 @@ export default function SignUp() { // added route for page navigation
                             <TextInput
                                 style={styles.textField}
                                 value={phoneNumber}
-                                onChangeText={newPhoneNumber}
+                                onChangeText={setPhoneNumFormat}
                                 onTextInput={() => checkphoneNumberValid()}
                                 placeholder="Phone Number"
                                 keyboardType="numeric"
