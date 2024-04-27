@@ -72,7 +72,7 @@ function filterButtons(){
       style = {styles.homeButton}
       onPress = {() => router.push({pathname:"NewClientApproval", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved}})}
       >
-      <Text style = {styles.homeButtonText}>New Client approval</Text>
+      <Text style = {styles.homeButtonText}>New Client Approval</Text>
     </TouchableOpacity>
     //takes you to the Services Offered Page
     var servicesOfferedButton = <TouchableOpacity
@@ -178,7 +178,7 @@ function filterButtons(){
     style = {styles.homeButton}
     onPress = {() => router.push({pathname:"newClientInfo", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved}})}
     >
-    <Text style = {styles.homeButtonText}>NewClientInfo</Text>
+    <Text style = {styles.homeButtonText}>Complete Sign-Up</Text>
     </TouchableOpacity>
     if(userData.approved == 'true')
       buttons.push(newClientInfoButton);
