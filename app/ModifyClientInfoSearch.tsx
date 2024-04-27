@@ -6,10 +6,11 @@ import { SearchBar } from 'react-native-screens';
 import { SelectList } from 'react-native-dropdown-select-list';
 import { notify } from './Enums/Enums'
 import { RootSiblingParent } from 'react-native-root-siblings'
+import { router } from 'expo-router';
 
 const windowDimensions = Dimensions.get('window')
 
-export default function ModifyClientInfoSearch({navigation, route}) {
+export default function ModifyClientInfoSearch() {
 
     const windowDimensions = Dimensions.get('window')
 
@@ -28,7 +29,7 @@ export default function ModifyClientInfoSearch({navigation, route}) {
 
        try {
             //Navigate to the next page, passing client id as a parameter. Right now set to navigate to home
-            navigation.navigate("NewClientInfo_AdminView", { id });
+            router.push({pathname:"newClientInfo_AdminView", params: { ID:id }});
         } catch (error) {
             console.error('Error fetching client information:', error);
             notify('Error fetching client information: ' + error);
@@ -142,7 +143,6 @@ export default function ModifyClientInfoSearch({navigation, route}) {
     return (
         <RootSiblingParent>
         <SafeAreaView>
-            <ScrollView> 
             
             <LinearGradient
                 locations={[0.7, 1]}
@@ -211,7 +211,6 @@ export default function ModifyClientInfoSearch({navigation, route}) {
                     </View>
                 </View>
             </LinearGradient>
-            </ScrollView>
             
         </SafeAreaView>
         </RootSiblingParent>

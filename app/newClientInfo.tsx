@@ -14,7 +14,7 @@ import {
     Keyboard,
 } from 'react-native';
 import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-list';
-import { Link } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import database from './axiosConfig'; // Import axios from the axiosConfig.js file
 //import {initializeApp} from 'firebase/app';
 import { listOfStates, funcObj, functionGetRetry, notify } from './Enums/Enums';
@@ -22,10 +22,19 @@ import Constants from 'expo-constants';
 import { RootSiblingParent } from 'react-native-root-siblings'
 import { response } from 'express';
 
-export default function NewClientInfo({route}) {
+export default function NewClientInfo() {
 
-   const { userData } = route.params;
+    const {userID} = useLocalSearchParams<{userID:string}>();
+    const {adminPriv} = useLocalSearchParams<{adminPriv:string}>();
+    const {newClient} = useLocalSearchParams<{newClient:string}>();
+    const {approved} = useLocalSearchParams<{approved:string}>();
 
+    const userData = {
+        userID: parseInt(userID),
+        adminPriv: adminPriv,
+        newClient: newClient,
+        approved: approved
+      }
     async function getName(userID){
         let funcObj:funcObj = {
             entireFunction: () => database.get('/findNewClientViewByID', {
@@ -39,7 +48,7 @@ export default function NewClientInfo({route}) {
         try{
             name = await functionGetRetry(funcObj)
         }catch(error){
-                notify(error)
+                notify(error.toString())
                 return 'NA'
             }
             return name.data[0].FirstName;
@@ -96,8 +105,18 @@ export default function NewClientInfo({route}) {
                 };
             }
             const response = await functionGetRetry(funcObj);
+                funcObj = {
+                    entireFunction: () => database.delete('/deleteNewClientsByUserID',{
+                        params:{
+                            userID: user_ID
+                        }
+                    }),
+                    type: 'delete'
+                }
+                await functionGetRetry(funcObj);
             notify('Your information has been updated!');
             //should navigate to home page after successful submission -> need to implement
+            router.replace({pathname:'/', params: {returnMessage:"Your information has been updated! Please wait a minute and log in again."}});
         } catch (error) {
             console.error('Error adding current client:', error.response.data);
             notify('Error adding current client: ' + error.response.data)
@@ -135,6 +154,7 @@ export default function NewClientInfo({route}) {
             isApproved(data.data);
         } catch (error) {
             //IDK
+            notify(error.toString());
             console.log(error);
         }
     }

@@ -12,12 +12,12 @@ export default function Layout() {
         }}
         >
     <Stack.Screen name = "index" options= {{title: "Login"}}/>
-    <Stack.Screen name = "SetUpAppoint1"
+    <Stack.Screen name = "setUpAppoint1"
            options = {{
             title: "Set Appointment"
            }}
          />
-         <Stack.Screen name = "SetupAppointment2"
+         <Stack.Screen name = "setupAppointment2"
            options = {{
             title: "Set Appointment"
            }}
@@ -33,14 +33,14 @@ export default function Layout() {
             title: "Home"
            }}
          />
-         <Stack.Screen name = "AppointmentsClientView"
+         <Stack.Screen name = "appointmentsClientView"
            options = {{
             title: "Your Appointments"
            }}
          />
-         <Stack.Screen name = "NewClientInfo"
+         <Stack.Screen name = "newClientInfo"
             options={{
-             title: "New Client Info"
+             title: "Additional Information"
            }}
          />
         <Stack.Screen name="NewClientApproval"
@@ -78,7 +78,7 @@ export default function Layout() {
                 title: "Search"
             }}
         />
-         <Stack.Screen name = "NewClientInfo_AdminView"
+         <Stack.Screen name = "newClientInfo_AdminView"
            options={{
               title: "New Client Info Admin View"
            }}

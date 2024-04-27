@@ -10,15 +10,15 @@ const aboutMeText = "HairDoneWright530 is a place for your entire family.  Passi
 
 export default function AboutMe() {
     return (
-      
+
 <>
 
 
 <LinearGradient locations={[0.7, 1]} colors={['#DDA0DD', 'white']} style={styles.container}>
 <ScrollView>
-   
+
 <View >
- 
+
 </View>
 
                    

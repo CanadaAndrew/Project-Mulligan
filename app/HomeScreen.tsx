@@ -4,41 +4,29 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { router, useGlobalSearchParams, useLocalSearchParams } from 'expo-router';
+import { notify } from './Enums/Enums';
+import {RootSiblingParent} from "react-native-root-siblings"
 
 // button viewablility based on workflow in google drive green = new clients, blue = existing clients, and red = Admin with some 
 // overlap. comments have been added above each button for clarification.
 
-export default function HomeScreen({route, navigation}){
+export default function HomeScreen(){
   /*
     Creates a const of data to be sent to the other pages in the app
     You can add other consts or just add another variable to the existing userData const
   */
-    const {userId} = useGlobalSearchParams<{userId:string}>();
-    const {adminPriv} = useGlobalSearchParams<{adminPriv:string}>();
-    const {newClient} = useGlobalSearchParams<{newClient:string}>();
-    const {approved} = useGlobalSearchParams<{approved:string}>();
+    const {userID} = useLocalSearchParams<{userID:string}>();
+    const {adminPriv} = useLocalSearchParams<{adminPriv:string}>();
+    const {newClient} = useLocalSearchParams<{newClient:string}>();
+    const {approved} = useLocalSearchParams<{approved:string}>();
+    const {returnMessage} = useLocalSearchParams<{returnMessage:string}>();
 
-    const [userData, setUserData] = useState({
-      userId: userId,
+    const userData = {
+      userID: parseInt(userID),
       adminPriv: adminPriv,
       newClient: newClient,
       approved: approved
-    })
-    useEffect(() => {
-      updateGlobalParams()
-    },[userId, adminPriv, newClient, approved])
-
-    function updateGlobalParams(){
-      const userData = {
-        userId: userId,
-        adminPriv: adminPriv,
-        newClient: newClient,
-        approved: approved
-      }
-      setUserData(userData);
-      alert(JSON.stringify(userData));
     }
-
     
     console.log('You are in the Home Screen Now!');
     //alert('Proof' + JSON.stringify(userData));
@@ -61,14 +49,14 @@ function filterButtons(){
     //Modifies Calendar Availability
     var modifyAvButton = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("ModifyAv", {userData})}
+      onPress = {() => router.push({pathname:"ModifyAv", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved}})}
       >  
       <Text style = {styles.homeButtonText}>Modify Calendar</Text>
     </TouchableOpacity>
     //Views Client History 
     var clientHistoryButton = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("ClientHistory", {userData})}
+      onPress = {() => router.push({pathname:"ClientHistory", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved}})}
       >  
       <Text style = {styles.homeButtonText}>Client Appointments</Text>
     </TouchableOpacity>
@@ -82,9 +70,9 @@ function filterButtons(){
     //Takes you to the New Client Approval page !WIP! no functionality
     var newClientApprovalButton = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("NewClientApproval", {userData})}
-      >  
-      <Text style = {styles.homeButtonText}>New Client approval</Text>
+      onPress = {() => router.push({pathname:"NewClientApproval", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved}})}
+      >
+      <Text style = {styles.homeButtonText}>New Client Approval</Text>
     </TouchableOpacity>
     //takes you to the Services Offered Page
     var servicesOfferedButton = <TouchableOpacity
@@ -122,14 +110,14 @@ function filterButtons(){
     //Takes you to the Set Up Appointment Page
     var scheduleAppointmentButton2 = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("SetUpAppoint1", {userData})}
+      onPress = {() => router.push({pathname:"setUpAppoint1", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved}})}
       >
       <Text style = {styles.homeButtonText}>Schedule Appointments</Text>
     </TouchableOpacity>
     //Takes you to the Your Appointments page
     var yourAppointmentsButton = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("AppointmentsClientView", {userData})}
+      onPress = {() => router.push({pathname:"appointmentsClientView", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved}})}
       >
       <Text style = {styles.homeButtonText}>Your Appointments</Text>
     </TouchableOpacity>
@@ -188,25 +176,37 @@ function filterButtons(){
     // Once Approved new client can view and fill out this page
     var newClientInfoButton = <TouchableOpacity
     style = {styles.homeButton}
-    onPress = {() => navigation.navigate("NewClientInfo", {userData})}
+    onPress = {() => router.push({pathname:"newClientInfo", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved}})}
     >
-    <Text style = {styles.homeButtonText}>NewClientInfo</Text>
+    <Text style = {styles.homeButtonText}>Complete Sign-Up</Text>
     </TouchableOpacity>
-
+    if(userData.approved == 'true')
+      buttons.push(newClientInfoButton);
     buttons.push(servicesOfferedButton3);
     buttons.push(aboutMeButton3);
     //buttons.push(FAQButton3);
-    if(userData.approved == 'true')
-      buttons.push(newClientInfoButton);
+
     setButtonDisplay(buttons);
   }
 }
+
+function sendNotification(){
+  if(returnMessage != null && returnMessage.length != 0){
+    notify(returnMessage);
+    router.setParams({returnMessage:null});
+  }
+}
+
+  useEffect(()=>{
+    sendNotification();
+  }, [returnMessage])
+
   useEffect(()=>{
     filterButtons();
   }, [])
   return(
+          <RootSiblingParent>
             <View style = {styles.container}>
-              <ScrollView>
             {/*added logo image*/}
              <ImageBackground
               style = {styles.logo}
@@ -243,8 +243,8 @@ function filterButtons(){
 
               </View>
              </LinearGradient>
-             </ScrollView>
             </View>
+            </RootSiblingParent>
     );
 }
 

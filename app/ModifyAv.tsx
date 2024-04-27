@@ -1,14 +1,15 @@
 import React, { useEffect, useState, } from 'react';
 import {LinearGradient} from 'expo-linear-gradient';
 import { StatusBar, StyleSheet, Text, TouchableOpacity, View, Pressable,
-    FlatList, ScrollView, Modal } from 'react-native';
+    FlatList, ScrollView, Modal, Dimensions, useWindowDimensions, 
+    SectionList} from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { Link } from 'expo-router';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment'; //used to format dates and times
 import MyCalendar from './MyCalendar';
 import database from './axiosConfig'; // Import axios from the axiosConfig.js file
-import { displayHours } from './Enums/Enums';
+import { displayHours, militaryHours } from './Enums/Enums';
 import { validateLocaleAndSetLanguage } from 'typescript';
 import Constants from 'expo-constants';
 import { UTCtoPSTString, funcObj, functionGetRetry, notify} from './Enums/Enums';
@@ -20,7 +21,7 @@ export default function ModifyAv() {
     //make a local const this way using route.params
     //const { userData } = route.params;
 
-
+    const [timeChanged, settimeChanged] = useState(false);
     const [selectedDate, setSelectedDate] = useState(null);
     const [appointmentTimes, setAppointmentTimes] = useState([]); //holds selected appointment times
     const [deletedTimes, setDeletedTimes] = useState([]); //holds deleted appointment times
@@ -127,7 +128,6 @@ export default function ModifyAv() {
     const handleAppointmentPress = (time) => {
         //console.log('appointmentTimes', appointmentTimes); //for testing purposes
         //console.log('time', time); //for testing purposes
-
         //update appointmentTimes and deletedTimes
         setAppointmentTimes((prevAppointments) => {
             //console.log('prevAppointments', prevAppointments); //for testing purposes
@@ -172,6 +172,7 @@ export default function ModifyAv() {
     
     //changes time with time picker to set opening time
     const onChange1 = (event, selectedDate) => {
+       
         const currentDate = selectedDate;
         setShow1(false);
         setDate1(currentDate);
@@ -193,15 +194,19 @@ export default function ModifyAv() {
         //console.log('tempArray', tempArray); //for debugging
         setFilteredTimes(tempArray);
         tempArray = [];
+
+        //Time functions will run when user closes the modal
+        settimeChanged(true);
     };
 
     //changes time with time picker to set closing time
     const onChange2 = (event, selectedDate) => {
+       
         const currentDate = selectedDate;
         setShow2(false);
         setDate2(currentDate);
         var tempArray = []
-        for(let i = date1.getHours(); i < currentDate.getHours(); i++) {
+        for(let i = date1.getHours(); i < currentDate.getHours() + 1; i++) {
             if (i < 12) {
                 tempArray.push(i.toString().padStart(2, '0') + ":00AM");
             } else if (i === 12) {
@@ -218,6 +223,9 @@ export default function ModifyAv() {
         if(date1.getHours() <= currentDate.getHours()) {
             //not sure what this is for??? -> anyone know?
         }
+
+         //Time functions will run when user closes the modal
+        settimeChanged(true);
     };
   
     const showTimePicker1 = () => {setShow1(true); };
@@ -272,8 +280,8 @@ export default function ModifyAv() {
 
         const insertions = appointmentTimes.filter(time => !databaseTimes.includes(time)); //times to insert into database
         const deletions = deletedTimes.filter(time => !bookedAppointmentTimes.includes(time)); //times to delete from database
-        const timesToInsert = insertions.map(convertTo24Hour);
-        let timesToDelete = deletions.map(convertTo24Hour);
+        const timesToInsert = insertions.map((x) => {return militaryHours[x].slice(0, 5)});
+        let timesToDelete = deletions.map((y) => {return militaryHours[y].slice(0, 5)});
 
         //check if there are times to delete that are booked
         if (deletions.filter(time => bookedAppointmentTimes.includes(time)).length > 0) { //might not need
@@ -364,136 +372,168 @@ export default function ModifyAv() {
         setButtonColors(updatedColors);
     }, [listOfTimes, appointmentTimes, bookedAppointmentTimes]);
 
+    const printTimes = () => {
+        var result = [];
+        for (let i = 0; i < listOfTimes.length; i++) {
+            result.push(
+                <View style={styles.timeRow} key = {i} >
+                    <View style={styles.timeCell}>
+                        <TouchableOpacity
+                            style={[styles.timeButton, { backgroundColor: 'white' }]}
+                            onPress={() => handleAppointmentPress(listOfTimes[i])}
+                        >
+                            <Text style={[styles.buttonText, { color: buttonColors[i] }]}>
+                                {listOfTimes[i]}
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            )
+        }
+        return result
+    }
+
+    const showPageContent = () => {
+        let allParts = []
+        allParts.push(
+            <>
+                <StatusBar backgroundColor={'black'} />
+                <LinearGradient locations={[0.7, 1]} colors={['#DDA0DD', 'white']} style={styles.container}>
+
+                    <View style={styles.container}>
+                        <View style={styles.backButton}></View>
+                        <Calendar onDayPress={handleDayPress} />
+                        <View style={styles.dateContainer}>
+                            <Text style={styles.dateText}>{displayedDate}</Text>
+                        </View>
+                        <View style={styles.listView}>
+                            <Text>{printTimes()}</Text>
+                        </View>
+                        <View style={styles.bottomButtonContainer}>
+                            <View style={styles.bottomButton}>
+                                <Pressable
+                                    style={({ pressed }) => [{
+                                        backgroundColor: pressed ? '#D8BFD8' : '#C154C1'
+                                    },
+                                    styles.bottomButtonText
+                                    ]}
+                                    onPress={handleFilterSchedule}
+                                >
+                                    {({ pressed }) => (
+                                        <Text style={styles.bottomButtonText}>Filter Schedule</Text>
+                                    )}
+                                </Pressable>
+                            </View>
+                        </View>
+                        <View style={styles.bottomButtonContainer}>
+                            <View style={styles.bottomButton}>
+                                <Pressable
+                                    style={({ pressed }) => [{
+                                        backgroundColor: pressed ? '#D8BFD8' : '#C154C1'
+                                    },
+                                    styles.bottomButtonText
+                                    ]}
+                                    onPress={handleSetSchedule}
+                                >
+                                    {({ pressed }) => (
+                                        <Text style={styles.bottomButtonText}>Set Schedule</Text>
+                                    )}
+                                </Pressable>
+                            </View>
+                        </View>
+                        {/* Tester text that shows the userData Const from HomeScreen to see if it works. */}
+                        {/* <Text>
+                        UserId: {userData.UserId}, AdminPriv: {userData.AdminPriv.toString()}, NewClient: {userData.NewClient.toString()}
+                    </Text> */}
+                        {/*popup that displays the two times to input*/}
+                        <Modal visible={modalVisible} animationType="fade" transparent={true}>
+                            <View style={styles.modal}>
+                                <Text style={{ fontSize: 24 }}>{"\n"}Filter Schedule</Text>
+                                <Text>{"\n"}</Text>
+                                <View style={{ flexDirection: "row", flex: 0, columnGap: 10 }}>
+                                    <Text>Opening Time</Text>
+                                    <Text>                   Closing Time</Text>
+                                    <Text>{"\n"}</Text>
+                                </View>
+                                <View style={{ flexDirection: "row", flex: .2, columnGap: 85 }}>
+                                    <TouchableOpacity style={{ backgroundColor: '#FFFFFF', padding: 10, borderRadius: 4 }}>
+                                        <Text style={{ fontWeight: "bold" }}>{getTime1()}</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={{ backgroundColor: '#FFFFFF', padding: 10, borderRadius: 4 }}>
+                                        <Text style={{ fontWeight: "bold" }}>{getTime2()}</Text>
+                                    </TouchableOpacity>
+                                </View>
+                                <Text>{"\n"}</Text>
+                                <View style={{ flexDirection: "row", flex: .23, columnGap: 30 }}>
+                                    <Pressable style={({ pressed }) => [{ backgroundColor: pressed ? '#D8BFD8' : '#C154C1' },
+                                    styles.backButtonText, styles.shadow]} onPress={showTimePicker1}  >
+                                        <Text style={styles.backButtonText}>{" Change Opening  "}</Text>
+                                    </Pressable>
+                                    <Pressable style={({ pressed }) => [{ backgroundColor: pressed ? '#D8BFD8' : '#C154C1' },
+                                    styles.backButtonText, styles.shadow]} onPress={showTimePicker2}  >
+                                        <Text style={styles.backButtonText}>{" Change Closing   "}</Text>
+                                    </Pressable>
+                                </View>
+                                {show1 && (
+                                    <DateTimePicker
+                                        value={date1}
+                                        mode={'time'}
+                                        is24Hour={false}
+                                        onChange={onChange1}
+                                        
+                                    />
+                                )}
+                                {show2 && (
+                                    <DateTimePicker
+                                        value={date2}
+                                        mode={'time'}
+                                        is24Hour={false}
+                                        onChange={onChange2} 
+                                            
+                                    />
+                                )}
+                                <Text>{"\n\n"}</Text>
+                                <Pressable style={({ pressed }) => [{ backgroundColor: pressed ? '#D8BFD8' : '#C154C1' }, //hide the popup window
+                                styles.backButtonText, styles.shadow]} onPress={() => {
+                                    setModalVisible(false); //close modal
+                                    //if the user opens/closes Filter Schedule and makes no changes don't run these
+                                    if(timeChanged)
+                                        {
+                                            setListOfTimes(filteredTimes); //update available times
+                                            //setFilteredTimes([]); //clear filtered times
+                                            setFilteredTimes([]); //clear filtered times
+                                            settimeChanged(false);
+                                        } 
+                                       
+
+                                   
+                                }}
+                                >
+                                    <Text style={styles.backButtonText} > Close    </Text>
+                                </Pressable>
+                            </View>
+                        </Modal>
+                    </View>
+
+                </LinearGradient>
+            </>
+        )
+        return (
+            <FlatList
+                data={allParts}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item, index }) => (
+                    <View>{item}</View>
+                )}
+            />
+        )
+    }
+
+    useEffect(() => {showPageContent()}, []);
+
     return (
         <RootSiblingParent>
-        <>
-        <ScrollView>
-            <StatusBar backgroundColor={'black'} />
-            <LinearGradient locations={[0.7, 1]} colors={['#DDA0DD', 'white']} style={styles.container}>
-            
-                <View style={styles.container}>
-                    <View style={styles.backButton}></View>
-                    <Calendar onDayPress={handleDayPress} />
-                    <View style={styles.dateContainer}>
-                        <Text style={styles.dateText}>{displayedDate}</Text>
-                    </View>
-                    <View style = {styles.listView}>
-                    <FlatList
-                        data={listOfTimes}
-                        keyExtractor={(item, index) => index.toString()}
-                        renderItem={({ item, index }) => (
-                            <View style={styles.timeCell}>
-                                <TouchableOpacity
-                                    style={[styles.timeButton, { backgroundColor: 'white' }]}
-                                    onPress={() => handleAppointmentPress(item)}
-                                >
-                                    <Text style={[styles.buttonText, { color: buttonColors[index]}]}>
-                                        {item}
-                                    </Text>
-                                </TouchableOpacity>
-                            </View>
-                        )}
-                        numColumns={3}
-                        contentContainerStyle={styles.timeContainer}
-                    />
-                    </View>
-                    <View style={styles.bottomButtonContainer}>
-                        <View style={styles.bottomButton}>
-                            <Pressable
-                                style={({ pressed }) => [{
-                                backgroundColor: pressed ? '#D8BFD8' : '#C154C1'
-                                },
-                                styles.bottomButtonText
-                                ]}
-                                onPress={handleFilterSchedule}
-                            >
-                                {({ pressed }) => (
-                                    <Text style={styles.bottomButtonText}>Filter Schedule</Text>
-                                )}
-                            </Pressable>
-                        </View>
-                    </View>   
-                    <View style={styles.bottomButtonContainer}>
-                        <View style={styles.bottomButton}>
-                            <Pressable
-                                style={({ pressed }) => [{
-                                    backgroundColor: pressed ? '#D8BFD8' : '#C154C1'
-                                },
-                                styles.bottomButtonText
-                                ]}
-                                onPress={handleSetSchedule}
-                            >
-                                {({ pressed }) => (
-                                    <Text style={styles.bottomButtonText}>Set Schedule</Text>
-                                )}
-                            </Pressable>
-                        </View>
-                    </View>
-                    {/* Tester text that shows the userData Const from HomeScreen to see if it works. */}
-                    {/* <Text>
-                        UserId: {userData.UserId}, AdminPriv: {userData.AdminPriv.toString()}, NewClient: {userData.NewClient.toString()}
-                    </Text> */}   
-                    {/*popup that displays the two times to input*/}             
-                    <Modal visible={modalVisible} animationType="fade" transparent={true}>               
-                        <View style={styles.modal}>
-                            <Text style={{fontSize: 24}}>{"\n"}Filter Schedule</Text>
-                            <Text>{"\n"}</Text>
-                            <View style={{ flexDirection:"row", flex: 0, columnGap: 10}}>                    
-                                <Text>Opening Time</Text>                  
-                                <Text>                   Closing Time</Text>
-                                <Text>{"\n"}</Text>
-                            </View>                
-                            <View style={{ flexDirection:"row", flex: .2, columnGap: 85}}>
-                                <TouchableOpacity style={{ backgroundColor: '#FFFFFF', padding: 10, borderRadius: 4 }}>
-                                    <Text style={{fontWeight: "bold"}}>{getTime1()}</Text>
-                                </TouchableOpacity>                     
-                                <TouchableOpacity style={{ backgroundColor: '#FFFFFF', padding: 10, borderRadius: 4 }}>
-                                    <Text style={{fontWeight: "bold"}}>{getTime2()}</Text>
-                                </TouchableOpacity>
-                            </View>
-                            <Text>{"\n"}</Text>
-                            <View style={{ flexDirection:"row", flex: .23, columnGap: 30}}>
-                                <Pressable  style={({ pressed }) => [{ backgroundColor: pressed ? '#D8BFD8' : '#C154C1' }, 
-                                    styles.backButtonText, styles.shadow ]} onPress={showTimePicker1}  >
-                                    <Text style={styles.backButtonText}>{" Change Opening  "}</Text>
-                                </Pressable>
-                                <Pressable  style={({ pressed }) => [{ backgroundColor: pressed ? '#D8BFD8' : '#C154C1' }, 
-                                    styles.backButtonText, styles.shadow ]} onPress={showTimePicker2}  >
-                                    <Text style={styles.backButtonText}>{" Change Closing   "}</Text>
-                                </Pressable>
-                            </View>                     
-                            {show1 && (
-                                <DateTimePicker
-                                    value={date1}
-                                    mode={'time'}
-                                    is24Hour={false}
-                                    onChange={onChange1}                     
-                                />
-                            )}
-                            {show2 && (
-                                <DateTimePicker
-                                    value={date2}
-                                    mode={'time'}
-                                    is24Hour={false}
-                                    onChange={onChange2}                       
-                                />
-                            )}
-                            <Text>{"\n\n"}</Text> 
-                            <Pressable style={({ pressed }) => [{ backgroundColor: pressed ? '#D8BFD8' : '#C154C1' }, //hide the popup window
-                                styles.backButtonText, styles.shadow ]} onPress={() => {
-                                setModalVisible(false); //close modal
-                                setListOfTimes(filteredTimes); //update available times
-                                setFilteredTimes([]); //clear filtered times
-                            }}>
-                                <Text  style={styles.backButtonText} > Close    </Text>
-                            </Pressable>
-                        </View>                                
-                    </Modal>
-                </View>
-                
-            </LinearGradient>
-            </ScrollView>
-        </>
+            <>{showPageContent()}</>
         </RootSiblingParent>
     );
 };
@@ -501,7 +541,7 @@ export default function ModifyAv() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingBottom: 75
+        paddingBottom: 10
         //backgroundColor: '#DDA0DD'
     },
     // header
@@ -574,7 +614,7 @@ const styles = StyleSheet.create({
     timeCell: {
         //width: 80,
         paddingRight: 10,
-        width: '30%',             //Adjust width to 20% for five buttons per row
+        width: '20%',             //Adjust width to 20% for five buttons per row
         justifyContent: 'center', //center content vertically
         alignItems: 'center',     //center content horizontally
         marginBottom: 10,         //add marginBottom for spacing
@@ -583,7 +623,7 @@ const styles = StyleSheet.create({
     // bottom three buttons
     bottomButtonContainer: {
         //backgroundColor: 'lightgreen',
-        height: 50,
+        height: 55,
         paddingTop: 10,
         alignItems: 'center',
         justifyContent: 'space-evenly'
@@ -639,9 +679,10 @@ const styles = StyleSheet.create({
         elevation: 15, 
     },
     listView: {
-        height: 250,
+        width: '100%',
         paddingTop: 10,
         paddingBottom: 20,
         paddingLeft: 10,
+        alignItems: 'center'
     }
 });

@@ -19,13 +19,15 @@ import firebase from './Firebase.js'
 import { getAuth, createUserWithEmailAndPassword  } from "firebase/auth";
 import {funcObj, functionGetRetry} from './Enums/Enums'
 import { router } from 'expo-router';
+import { notify } from './Enums/Enums';
+import {RootSiblingParent} from "react-native-root-siblings"
 
 //made this available for all pages in the app
 export let hairStyleSelected: string[] = [];
 export let contactSelected: string[] = [];
 
 
-export default function SignUp({ navigation, route }) { // added route for page navigation
+export default function SignUp() { // added route for page navigation
 
     //initializes the Authentication and gets a reference to the service
     const auth = getAuth(firebase);
@@ -102,6 +104,29 @@ export default function SignUp({ navigation, route }) { // added route for page 
         setphoneNumberValid(phoneNumber.length == 12 || phoneNumber.length == 13 ? true : false);
 
     }
+    
+    // two functions below should format phone number for IOS
+    const formattingPhoneNumber = (input) => {
+        if (/^\d*$/.test(input)){
+            if (input.length <=10){
+                return input.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
+            }
+        } else {
+            return input
+        }
+    }
+    const setPhoneNumFormat = (input) => {
+        if( input.length <= 14){
+            if( /^\d*$/.test(input)){
+                const formatPhoNum = formattingPhoneNumber(input);
+                newPhoneNumber(formatPhoNum);
+            }else{
+                const newPhone = input.replace(/\D/g, ''); 
+                newPhoneNumber(newPhone);
+            }
+        }
+    }
+
     function checkpasswordValid() {
         //if the password contains numbers and letters and is 8 chars or more in length...
         if (password.match(/^[A-Za-z0-9]*$/))
@@ -216,20 +241,19 @@ export default function SignUp({ navigation, route }) { // added route for page 
             await Promise.all(servicePromises); //wait for all services to be posted
 
             console.log('New user and related data posted successfully.');
-            alert('new account created successfully');
         } catch (error) {
             console.error('Error posting new user data:', error);
-            alert('problem with creating new account');
+            notify('Problem with creating new account.');
         }
     };
 
     function newUserSignUp() {
         //password conditionals if these are both false move onto setting the 
         if (password != confirmPassword) {
-            alert("Passwords did not match. Please try again.")
+            notify("Passwords did not match. Please try again.")
         }
         else if (password == "" || confirmPassword == "") {
-            alert("No password was entered. Please enter in a password.")
+            notify("No password was entered. Please enter in a password.")
         }
         else {
             createUserWithEmailAndPassword(auth, email, password)
@@ -247,7 +271,7 @@ export default function SignUp({ navigation, route }) { // added route for page 
             return 0;
         }
         //returns 1 if something along the way messed up so it doesn't post the new user to the database
-        alert("Something went wrong. Please enter account information and try again2.")
+        notify("Something went wrong. Please enter account information and try again.")
         return 1;
     }
 
@@ -259,11 +283,12 @@ export default function SignUp({ navigation, route }) { // added route for page 
         if (verify == 0) {
             await postNewUser();
             //navigation.navigate("Login")
-            router.replace("index");
+            router.replace({pathname:"/", params: {returnMessage:"Account created successfully!"}});
         }
     }
     return (
         <>
+        <RootSiblingParent>
             <StatusBar backgroundColor={'black'} />
             <ScrollView style={styles.container}>
                 <View style={styles.header}>
@@ -299,7 +324,7 @@ export default function SignUp({ navigation, route }) { // added route for page 
                             <TextInput
                                 style={styles.textField}
                                 value={phoneNumber}
-                                onChangeText={newPhoneNumber}
+                                onChangeText={setPhoneNumFormat}
                                 onTextInput={() => checkphoneNumberValid()}
                                 placeholder="Phone Number"
                                 keyboardType="numeric"
@@ -380,6 +405,7 @@ export default function SignUp({ navigation, route }) { // added route for page 
                     </View>
                 </LinearGradient>
             </ScrollView>
+            </RootSiblingParent>
         </>
     );
 }

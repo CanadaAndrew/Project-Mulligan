@@ -55,7 +55,7 @@ export default function NewClientApproval() {
             console.log(data);
             updateClientDisplay(data.data);
         } catch (error) {
-
+            notify(error.toString())
         }
     }
 

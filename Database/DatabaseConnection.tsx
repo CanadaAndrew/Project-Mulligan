@@ -294,7 +294,7 @@ app.put('/confirmAppointment', (req, res) => {
 
     updateAppointment(date, time, userID, type)
     .then(res.send("Booked."))
-    .catch(err => {
+    .catch((err) => {
         console.error('Error updating appointments:', err.message);
         res.status(500).send('Internal Server Error');
     });
@@ -1022,7 +1022,7 @@ async function queryNewUserFromUserID(userId) {
 
 app.get('/queryNewUserFromUserID', async (req, res) => {
     try {
-        const userId = req.query.email;
+        const userId = req.query.userId;
         if (!userId) {
             throw new Error('Invalid request. Missing "userId"');
         }
@@ -1094,7 +1094,7 @@ app.get('/allPastAppointmentsQuery', async (req, res) => {
 async function allPastAppointmentsQuery(todaysDate){
     try {
         const poolConnection = await connect();
-        const query = `SELECT FirstName, LastName, AppointmentDate, TypeOfAppointment 
+        const query = `SELECT Appointments.UserID, FirstName, LastName, AppointmentDate, TypeOfAppointment, AppointmentNotes 
             FROM Appointments JOIN Clients ON Appointments.UserID = Clients.UserID 
             WHERE AppointmentDate < '${todaysDate}'`;
         const resultSet = await poolConnection
@@ -1125,7 +1125,7 @@ app.get('/allUpcomingAppointmentsQuery', async (req, res) => {
 async function allUpcomingAppointmentsQuery(todaysDate){
     try {
         const poolConnection = await connect();
-        const query = `SELECT FirstName, LastName, AppointmentDate, TypeOfAppointment 
+        const query = `SELECT Appointments.UserID, FirstName, LastName, AppointmentDate, TypeOfAppointment, AppointmentNotes
             FROM Appointments JOIN Clients ON Appointments.UserID = Clients.UserID 
             WHERE AppointmentDate >= '${todaysDate}';`;
         const resultSet = await poolConnection
@@ -1279,8 +1279,8 @@ app.put('/updateClientApproval', async (req, res) =>{
         {
             throw new Error("Invalid request. Missing 'UserID'")
         }
-        const result = await UpdateClientApproval(userID);
-        res.send(result);
+        await UpdateClientApproval(userID);
+        res.send("Completed");
     }
     catch
     {
@@ -1295,9 +1295,8 @@ async function UpdateClientApproval(userID)
     {
         const poolConnection = await connect();
         const query = "UPDATE NewClients SET ApprovalStatus = 0 WHERE UserID = " + userID + ";"
-        const resultSet = await poolConnection.request().query(query);
+        await poolConnection.request().query(query);
         poolConnection.close();
-        return sortingResults(resultSet);
     }
     catch(err)
     {
@@ -1502,6 +1501,7 @@ app.get('/queryUpcomingAppointmentsByUserIDAndDate', (req, res) =>{
     const date = req.query.date;
     const userID = req.query.userID;
     const query = "SELECT * FROM Appointments WHERE AppointmentDate >= '" + date + "' AND UserID = " + userID +";";
+    console.log(query);
     customQuery(query)
     .then((ret) => res.send(ret))
     .catch(err => {
@@ -1514,6 +1514,7 @@ app.get('/queryPastAppointmentsByUserIDAndDate', (req, res) =>{
     const date = req.query.date;
     const userID = req.query.userID;
     const query = "SELECT * FROM Appointments WHERE AppointmentDate <= '" + date + "' AND UserID = " + userID +";";
+    console.log(query);
     customQuery(query)
     .then((ret) => res.send(ret))
     .catch(err => {
@@ -1532,6 +1533,28 @@ app.get('/queryAllAppointmentsByUserID', (req, res) =>{
         res.status(500).send('Internal Server Error');
     })
 });
+
+app.delete('/deleteNewClientsByUserID', (req, res) =>{
+    const userID = req.query.userID;
+    const query = `DELETE FROM NewClients WHERE UserID = ${userID}`;
+    customQueryNoReturn(query)
+    .then((ret) => res.send(ret))
+    .catch(err => {
+        console.error('Error deleting a new client:', err.message);
+        res.status(500).send('Internal Server Error');
+    })
+});
+
+async function customQueryNoReturn(queryString){
+    try {
+        const poolConnection = await connect();
+        await poolConnection.request().query(queryString);
+        poolConnection.close();
+    } catch (err) {
+        console.error(err.message);
+        throw err;
+    }
+}
 
 //This opens the server, printing to console 'up' when it is up.
 const PORT = process.env.PORT || 3000;

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import config from './config'; 
+//import config from './config'; 
 
 // Create an instance of axios with the configured base URL
 const database = axios.create({
@@ -11,6 +11,7 @@ const database = axios.create({
     //baseURL: 'http://10.0.0.112:3000',
     //baseURL: 'http://192.168.1.33:3000' //dru pc local
     //baseURL: 'http://hair-done-wright530.azurewebsites.net'
+    //baseURL: 'http://192.168.68.131:3000' // tai laptop
 });
 
 export default database;

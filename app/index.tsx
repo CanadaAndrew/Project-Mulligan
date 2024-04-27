@@ -2,15 +2,27 @@ import { StyleSheet, Text, View, TextInput, Pressable, Image, ImageBackground, S
 import { LinearGradient } from 'expo-linear-gradient';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 //import { MaterialCommunityIcons as Icon} from "@expo/vector-icons";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import firebase from './Firebase.js'  // import firebase
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import database from './axiosConfig.js'; // Import axios from the axiosConfig.js file
-import { funcObj, functionGetRetry } from './Enums/Enums'
+import { funcObj, functionGetRetry, notify } from './Enums/Enums'
 import {RootSiblingParent} from "react-native-root-siblings"
-import { router } from 'expo-router';
-export default function Login({ route, navigation }) {
+import { router, useLocalSearchParams } from 'expo-router';
+export default function Login() {
 
+    const {returnMessage} = useLocalSearchParams<{returnMessage:string}>();
+    function sendNotification(){
+        if(returnMessage != null && returnMessage.length != 0){
+          notify(returnMessage);
+          router.setParams({returnMessage:null});
+        }
+      }
+      
+        useEffect(()=>{
+          sendNotification();
+        }, [returnMessage])
+        
     //test@fakemail.com
     const auth = getAuth(firebase);
     //sets the default language to the systems language
@@ -42,15 +54,39 @@ export default function Login({ route, navigation }) {
 
     const onClickLogin = async () => {
         try {
-            await signInWithEmailAndPassword(auth, email, password);
+            let actualEmail = email;
+            if(email.length == 12){
+                if(/(\d{3})-(\d{3})-(\d{4})/.test(email)){
+                    const funcObj:funcObj = {
+                        entireFunction: () => database.get('/findEmailByPhoneNumber', {
+                            params: {
+                                PhoneNumber : email,
+                            }
+                        }),
+                        type: 'get'
+                    };
+                    await functionGetRetry(funcObj)
+                    .then((ret) => {
+                        if(ret.data[0] != null){
+                            actualEmail = ret.data[0].Email;
+                        }
+                })
+            }
+        }
+            await signInWithEmailAndPassword(auth, actualEmail, password);
             loginErrorMsg('Login successful!');
             const user = auth.currentUser;
             if (user !== null) {
-                console.log(email);
-                await checkEmailExists(email);
+                console.log(actualEmail);
+                await checkEmailExists(actualEmail);
                 console.log('Right Before Navigation');
                 //navigation.navigate("HomeScreen", { userData });
-                router.push({pathname:"HomeScreen", params: {userId:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved}});
+                if(userData.userID == 'guest'){
+                    router.push({pathname:"HomeScreen", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved, returnMessage: "Unable to get your information from the Database. Logged in as guest. Please try logging in again for more access."}});
+                }else{
+                    router.push({pathname:"HomeScreen", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved}});
+                }
+                
             } else {
                 // Handle the case where user is null
             }
@@ -75,7 +111,7 @@ export default function Login({ route, navigation }) {
     const formattingPhoneNumber = (input) => {
         if (/^\d*$/.test(input)) {
             if (input.length <= 10) {
-                return input.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+                return input.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
             }
         } else {
             return input
