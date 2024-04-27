@@ -259,7 +259,7 @@ export default function SignUp() { // added route for page navigation
         if (verify == 0) {
             await postNewUser();
             //navigation.navigate("Login")
-            router.replace("index");
+            router.replace("/");
         }
     }
     return (
