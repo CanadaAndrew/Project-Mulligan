@@ -42,7 +42,7 @@ export default function ForgotLogin() {
                     await sendPasswordResetEmail(auth, email);
                 }
                 loginErrorMsg('Password reset email send if phone number was valid. Please check your inbox.');
-                router.replace("index"); 
+                router.replace("/"); 
             })
             .catch((err) => notify(err));
         }
@@ -51,7 +51,7 @@ export default function ForgotLogin() {
             await sendPasswordResetEmail(auth, email);
             loginErrorMsg('Password reset email send if email was valid. Please check your inbox.');
             //navigation.navigate('HomeScreen');
-            router.replace("index");
+            router.replace("/");
         }
         else {
             loginErrorMsg('Your email or phone number \n do not match any existing accounts \n please try again.');
