@@ -4,7 +4,7 @@
     "slug": "ProjectMullet",
     "version": "1.0.1",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logo.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/logo.png",
@@ -19,7 +19,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/HDR_App_Icon_Android.png",
+        "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#942989"
       },
       "package": "com.hairdonewright530.projectmullet"
@@ -27,14 +27,6 @@
     "scheme": "hairdonewright530",
     "plugins": [
       "expo-router"
-    ],
-    "extra": {
-      "router": {
-        "origin": false
-      },
-      "eas": {
-        "projectId": "0526e9d1-2963-4879-98d4-1c426dc7fd66"
-      }
-    }
+    ]
   }
 }
