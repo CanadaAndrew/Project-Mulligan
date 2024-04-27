@@ -2,7 +2,7 @@
   "expo": {
     "name": "HairDoneWright530",
     "slug": "HairDoneWright530",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/logo.png",
     "userInterfaceStyle": "light",
@@ -22,7 +22,7 @@
         "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#942989"
       },
-      "package": "com.hairdonewright530.projectmullet"
+      "package": "com.hairdonewright530.theprojectmullet"
     },
     "scheme": "hairdonewright530",
     "plugins": [

@@ -1,4 +1,4 @@
-package com.hairdonewright530.projectmullet;
+package com.hairdonewright530.theprojectmullet;
 
 import android.os.Build;
 import android.os.Bundle;

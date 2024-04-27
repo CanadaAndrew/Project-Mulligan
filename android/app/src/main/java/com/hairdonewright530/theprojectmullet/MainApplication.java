@@ -1,4 +1,4 @@
-package com.hairdonewright530.projectmullet;
+package com.hairdonewright530.theprojectmullet;
 
 import android.app.Application;
 import android.content.res.Configuration;
