@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
     StatusBar,
@@ -74,7 +74,8 @@ export default function SignUp() { // added route for page navigation
     const [confirmPasswordValid, setconfirmPasswordValid] =  React.useState(false);
 
     //is everything filled out? if so, unlock the sign up button
-    const formComplete =  !(firstNameValid && lastNameValid && emailValid && phoneNumberValid && passwordValid && confirmPasswordValid && selected.length != 0 && selectedCont.length != 0); 
+    //&& emailValid && phoneNumberValid && passwordValid && confirmPasswordValid
+    const formComplete =  !(firstNameValid && lastNameValid && emailValid && passwordValid && confirmPasswordValid && selected.length != 0 && selectedCont.length != 0); 
 
     //check() functions set the letter/number/length requirement of each text field
     //TODO: determine each requirement for each field 
@@ -99,12 +100,16 @@ export default function SignUp() { // added route for page navigation
         }
 
         //13 to account for international phones
-        setphoneNumberValid(phoneNumber.length == 12 || phoneNumber.length == 13 ? true : false);
-
+        if(phoneNumber.length == 12){
+            setphoneNumberValid(true);
+        }else{
+            setphoneNumberValid(false);
+        }
     }
     
     // two functions below should format phone number for IOS
     const formattingPhoneNumber = (input) => {
+        console.log(phoneNumber.length);
         if (/^\d*$/.test(input)){
             if (input.length <=10){
                 return input.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
@@ -114,7 +119,8 @@ export default function SignUp() { // added route for page navigation
         }
     }
     const setPhoneNumFormat = (input) => {
-        if( input.length <= 14){
+        console.log(phoneNumber.length);
+        if(input.length <= 12){
             if( /^\d*$/.test(input)){
                 const formatPhoNum = formattingPhoneNumber(input);
                 newPhoneNumber(formatPhoNum);
@@ -131,7 +137,11 @@ export default function SignUp() { // added route for page navigation
             setpasswordValid(password.length > 7 ? true : false);
     }
     function checkconfirmPasswordValid() {
-        setconfirmPasswordValid(password == confirmPassword ? true : false)
+        if(password == confirmPassword){
+            setconfirmPasswordValid(true);
+        }else{
+            setconfirmPasswordValid(false);
+        }
     }
 
     //options for drop down menu
@@ -162,6 +172,10 @@ export default function SignUp() { // added route for page navigation
 
     //posts new user to the database, assumes user is verified by firebase
     const postNewUser = async () => {
+        console.log(phoneNumber.length);
+        console.log(password == confirmPassword);
+        console.log(password);
+        console.log(confirmPassword);
         try {
             //post data for new user
             let funcObj:funcObj = {
