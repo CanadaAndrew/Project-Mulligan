@@ -82,13 +82,25 @@ export default function Login() {
             if (input.length <= 10) {
                 return input.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
             }
-        } else {
-            return input
+        } else if(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input)) {
+                return input
+        }else {
+                return input
         }
     }
     const setPhoneNumFormat = (input) => {
-        const formatPhoNum = formattingPhoneNumber(input);
-        setEmail(formatPhoNum);
+        if(/^[\d-]*$/.test(input)){
+            if(input.length <= 12){
+                const formatPhoNum = formattingPhoneNumber(input);
+                setEmail(formatPhoNum);
+            }
+        }else if(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input)){
+            const formatPhoNum = formattingPhoneNumber(input);
+             setEmail(formatPhoNum);
+        }else {
+            const formatPhoNum = formattingPhoneNumber(input);
+            setEmail(formatPhoNum);
+        }
     }
 
 

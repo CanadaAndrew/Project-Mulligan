@@ -267,7 +267,7 @@ export default function NewClientInfo_AdminView(){
         }
     }
     const setPhoneNumFormat = (input) => {
-        if( input.length <= 14){
+        if( input.length <= 12){
             if( /^\d*$/.test(input)){
                 const formatPhoNum = formattingPhoneNumber(input);
                 setNewCustPhone(formatPhoNum);

@@ -61,20 +61,32 @@ export default function ForgotLogin() {
     }
 
     // put user input into phone number format
-
     const formattingPhoneNumber = (input) => {
-        if (/^\d*$/.test(input)){
-            if (input.length <=10){
+        if (/^\d*$/.test(input)) {
+            if (input.length <= 10) {
                 return input.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
             }
-        } else {
-            return input
+        } else if(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input)) {
+                return input
+        }else {
+                return input
         }
     }
     const setPhoneNumFormat = (input) => {
-        const formatPhoNum = formattingPhoneNumber(input);
-        setNum(formatPhoNum);
+        if(/^[\d-]*$/.test(input)){
+            if(input.length <= 12){
+                const formatPhoNum = formattingPhoneNumber(input);
+                setNum(formatPhoNum);
+            }
+        }else if(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input)){
+            const formatPhoNum = formattingPhoneNumber(input);
+            setNum(formatPhoNum);
+        }else {
+            const formatPhoNum = formattingPhoneNumber(input);
+            setNum(formatPhoNum);
+        }
     }
+
 
     return (
         <RootSiblingParent>
