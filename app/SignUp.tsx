@@ -116,7 +116,7 @@ export default function SignUp() { // added route for page navigation
         }
     }
     const setPhoneNumFormat = (input) => {
-        if( input.length <= 14){
+        if( input.length <= 12){
             if( /^\d*$/.test(input)){
                 const formatPhoNum = formattingPhoneNumber(input);
                 newPhoneNumber(formatPhoNum);
