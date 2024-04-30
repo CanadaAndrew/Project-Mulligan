@@ -133,6 +133,9 @@ export default function SignUp() { // added route for page navigation
             setpasswordValid(password.length > 7 ? true : false);
     }
     function checkconfirmPasswordValid() {
+        console.log('setconfirmPasswordValid:', password == confirmPassword ? true : false); //for testing
+        console.log('password:', password); //for testing
+        console.log('confirmPassword:', confirmPassword); //for testing
         setconfirmPasswordValid(password == confirmPassword ? true : false)
     }
 
@@ -275,9 +278,29 @@ export default function SignUp() { // added route for page navigation
         return 1;
     }
 
+    useEffect(() => {
+        checkconfirmPasswordValid();
+        checkpasswordValid()
+    }, [password, confirmPassword]);
+
+    useEffect(() => {
+        checkphoneNumberValid()
+    }, [phoneNumber])
+
     async function handleSignUpPress() {
         //registers the user with Firebase first then if the function returns 0 meaning a successful user creation
         //it will post the user to the database and route them back to the login page
+        console.log('formComplete:', formComplete); //for testing
+        console.log('firstNameValid:', firstNameValid); //for testing
+        console.log('lastNameValid:', lastNameValid); //for testing
+        console.log('emailValid:', emailValid); //for testing
+        console.log('phoneNumberValid:', phoneNumberValid); //for testing
+        console.log('passwordValid:', passwordValid); //for testing
+        console.log('confirmPasswordValid:', confirmPasswordValid); //for testing
+        console.log('selected.length:', selected.length); //for testing
+        console.log('selectedCont.length:', selectedCont.length); //for testing
+        console.log('password:', password); //for testing
+        console.log('confirmPassword', confirmPassword); //for testing
         let verify = await newUserSignUp();
 
         if (verify == 0) {
