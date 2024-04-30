@@ -277,6 +277,10 @@ export default function ModifyAv() {
 
     //updates appointment schedule in database
     const handleSetSchedule = async (day) => {  
+        if(selectedDate == null){
+            notify("Please select a day before setting the schedule.");
+            return;
+        }
 
         const insertions = appointmentTimes.filter(time => !databaseTimes.includes(time)); //times to insert into database
         const deletions = deletedTimes.filter(time => !bookedAppointmentTimes.includes(time)); //times to delete from database
