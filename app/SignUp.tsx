@@ -196,8 +196,8 @@ export default function SignUp() { // added route for page navigation
                     lastName: last_name,
                     preferredWayOfContact: preferred_way_of_contact*/
                     userID: userID,
-                    firstName: firstName[0].toUpperCase + firstName.slice(1),
-                    lastName:  lastName[0].toUpperCase + lastName.slice(1),
+                    firstName: firstName,
+                    lastName:  lastName,
                     preferredWayOfContact:contactSelected.join(", "), //form info?
                 }),
                 type: 'post'
@@ -262,6 +262,7 @@ export default function SignUp() { // added route for page navigation
             createUserWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
                     const user = userCredential.user;
+                    return 0;
                 })
                 .catch((error) => {
                     const errorCode = error.code;
@@ -271,10 +272,9 @@ export default function SignUp() { // added route for page navigation
                     return 1; //returns 1 on sign up fail so that way it doesn't post this user to the database
                 });
             //}
-            return 0;
         }
         //returns 1 if something along the way messed up so it doesn't post the new user to the database
-        notify("Something went wrong. Please enter account information and try again.")
+        notify("Something went wrong. Please enter account information and try again. If you already signed up with the email used, please log in with that email.")
         return 1;
     }
 

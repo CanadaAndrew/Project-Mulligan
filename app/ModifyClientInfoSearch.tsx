@@ -102,7 +102,6 @@ export default function ModifyClientInfoSearch() {
                 tempFirstLetterArr.push(firstLetter);
             }
         }
-        alert(JSON.stringify(tempFirstLetterArr));
         //set two variables to use in the loop down below
         let temp: string[] = [];
         let currentLetter = '';
@@ -140,7 +139,6 @@ export default function ModifyClientInfoSearch() {
         }
 
         //setting all the lists that are needed for displaying
-        //alert(JSON.stringify(tempNameArr));
         setClientList2(tempNameArr);
         setFirstLetterArr(tempFirstLetterArr);
         setClientList(clientData);
