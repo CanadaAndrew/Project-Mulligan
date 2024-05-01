@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "Project Mullet",
-    "slug": "ProjectMullet",
-    "version": "1.0.1",
+    "name": "HairDoneWright530",
+    "slug": "HairDoneWright530",
+    "version": "1.0.3",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logo.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/logo.png",
@@ -19,12 +19,22 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/HDR_App_Icon_Android.png",
+        "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#942989"
       },
-      "package": "com.hairdonewright530.projectmullet"
+      "package": "com.hairdonewright530.theprojectmullet"
     },
     "scheme": "hairdonewright530",
-    "plugins": ["expo-router"]
+    "plugins": [
+      "expo-router"
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "5ad33889-585e-4b44-afa0-bbaa64233468"
+      }
+    }
   }
 }
