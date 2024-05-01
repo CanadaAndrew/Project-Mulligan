@@ -3,7 +3,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
 import database from './axiosConfig'; // Import axios from the axiosConfig.js file
 import Constants from 'expo-constants';
-import {UTCtoPSTString, funcObj, functionGetRetry, notify} from './Enums/Enums';
+import {UTCtoPSTString, displayHours, funcObj, functionGetRetry, notify} from './Enums/Enums';
 import {RootSiblingParent} from 'react-native-root-siblings'
 import { SERVICES } from './Enums/Enums'
 import { useLocalSearchParams } from 'expo-router';
@@ -89,7 +89,8 @@ export default function AppointmentsClientView(){
             let dateTimeArray = appointment.AppointmentDate.split("T");
             let newDate = dateTimeArray[0];
             let newTime = dateTimeArray[1].split("Z")[0];
-
+            newTime = displayHours[newTime.split(".")[0]];
+            
             let serviceArr = appointment.TypeOfAppointment.split(",");
             let clientServices: string[] = [];
             serviceArr.forEach(serviceEl => {
@@ -119,6 +120,7 @@ export default function AppointmentsClientView(){
             let dateTimeArray = appointment.AppointmentDate.split("T");
             let newDate = dateTimeArray[0];
             let newTime = dateTimeArray[1].split("Z")[0];
+            newTime = displayHours[newTime.split(".")[0]];
 
             let serviceArr = appointment.TypeOfAppointment.split(",");
             let clientServices: string[] = [];
