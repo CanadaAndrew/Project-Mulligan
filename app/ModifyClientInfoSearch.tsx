@@ -50,6 +50,9 @@ export default function ModifyClientInfoSearch() {
         setClientList2(filteredClients);
     };
 
+    useEffect(()=>{
+        handleNameSearch();
+    },[nameInput])
     async function displayClientList(selectedOption)
     {
         let clientNames: string[] = [];
@@ -61,12 +64,13 @@ export default function ModifyClientInfoSearch() {
         let client1;
 
         console.log(selectedOption);
+        /*
         //sorts clientData based on the dropdown menu. Ascending(A-Z) is the default option.
        if(selectedOption == 'Ascending') 
         clientData.sort((a, b) => a.FirstName.localeCompare(b.FirstName));
+        
         else if(selectedOption == 'Descending')
         clientData.sort((a, b) => a.FirstName.localeCompare(b.FirstName)).reverse(); // reverse flips the array to Z-A
-      
         //this loop makes the array of all the first letters in first names to be used to sort the list later.
         for(client1 in clientData)
         {
@@ -76,6 +80,7 @@ export default function ModifyClientInfoSearch() {
                 tempFirstLetterArr.push(firstLetter);
             }
         }
+        */
 
         //loop that makes a string array with only the names of the clients and nothing else.
         let iterable;
@@ -84,7 +89,20 @@ export default function ModifyClientInfoSearch() {
             let name = clientData[iterable].FirstName + " " + clientData[iterable].LastName;
             clientNames.push(name);
         }
-
+        if(selectedOption == 'Ascending') 
+            clientNames.sort();
+            else if(selectedOption == 'Descending')
+            clientNames.sort().reverse(); // reverse flips the array to Z-A
+        let name;
+        for(name of clientNames)
+        {
+            let firstLetter = name[0];
+            if(tempFirstLetterArr.find(o => o === firstLetter) == null)
+            {
+                tempFirstLetterArr.push(firstLetter);
+            }
+        }
+        alert(JSON.stringify(tempFirstLetterArr));
         //set two variables to use in the loop down below
         let temp: string[] = [];
         let currentLetter = '';
@@ -105,12 +123,14 @@ export default function ModifyClientInfoSearch() {
                 }
                 currentLetter = firstLetter;
                 temp = [client];
+
             }
             //else if they are equal just push the clients name to temp.
             else if(firstLetter == currentLetter)
             {
                 temp.push(client)
             }
+
         }
 
         //after loop finishes if temp has anything in it make sure to push whatever is in it to the temp array of arrays
@@ -120,6 +140,7 @@ export default function ModifyClientInfoSearch() {
         }
 
         //setting all the lists that are needed for displaying
+        //alert(JSON.stringify(tempNameArr));
         setClientList2(tempNameArr);
         setFirstLetterArr(tempFirstLetterArr);
         setClientList(clientData);
@@ -127,7 +148,7 @@ export default function ModifyClientInfoSearch() {
     }
 
     useEffect(() => {
-        displayClientList('firstNameAscending');
+        displayClientList('Ascending');
     }, []);
     
      //for the drop down list below
@@ -193,10 +214,9 @@ export default function ModifyClientInfoSearch() {
                                                     <TouchableOpacity
                                                         style={styles.nameButton}
                                                         onPress={() => handleNamePress(item)}
-                                                        
                                                         >
 
-                                                        <Text style={styles.nameText}>{item}</Text>  
+                                                        <Text style={styles.nameText}>{item}</Text>
 
                                                     </TouchableOpacity>
 
@@ -206,7 +226,7 @@ export default function ModifyClientInfoSearch() {
                                     </View>
                                 </View>
                             )}
-                                style={{height: useWindowDimensions().height*.78}}
+                                style={{height: useWindowDimensions().height}}
                         />
                     </View>
                 </View>

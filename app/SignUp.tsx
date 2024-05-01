@@ -196,8 +196,8 @@ export default function SignUp() { // added route for page navigation
                     lastName: last_name,
                     preferredWayOfContact: preferred_way_of_contact*/
                     userID: userID,
-                    firstName: firstName,
-                    lastName: lastName,
+                    firstName: firstName[0].toUpperCase + firstName.slice(1),
+                    lastName:  lastName[0].toUpperCase + lastName.slice(1),
                     preferredWayOfContact:contactSelected.join(", "), //form info?
                 }),
                 type: 'post'

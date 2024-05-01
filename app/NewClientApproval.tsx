@@ -15,7 +15,7 @@ export default function NewClientApproval() {
         email: string;
         phoneNumber: string;
         service: string;
-        ID: string;
+        ID: number;
     }
 
     const [newClient, setNewClient] = React.useState([]); //set to dummyClients for testing
@@ -59,29 +59,60 @@ export default function NewClientApproval() {
         }
     }
 
-    function updateClientDisplay(data) {
+    async function updateClientDisplay(data) {
         console.log(data);
         let clientList: Client[] = [];
         let i = 0;
-        data.forEach((client) => {
-
-            let serviceArr = client.ServiceName.split(",");
-            let clientServices: string[] = [];
-            serviceArr.forEach(serviceEl => {
-                let temp = serviceEl.trim();
-                clientServices.push(SERVICES[temp]['service']);
-            });
-
-            let newClient: Client = {
-                name: getFullName(client.FirstName, client.LastName),
-                email: client.Email,
-                phoneNumber: client.PhoneNumber,
-                service: clientServices.join(", ").toString(),
-                ID: client.UserID
+        let promises = [];
+        data.forEach(async (client) => {
+            promises[i] = new Promise(async (resolve) =>{
+                try{
+                const funcObj: funcObj = {
+                    entireFunction: () => database.get('/getNewClientInfoServices', {
+                        params: {
+                            userID: client.UserID
+                        }
+                    }),
+                    type: 'get'
+                };
+                const data = await functionGetRetry(funcObj);
+                let serviceArr = data.data;
+                //alert(JSON.stringify(serviceArr));
+                let clientServices: string[] = [];
+                serviceArr.forEach(serviceEl => {
+                    let temp = serviceEl.ServiceName.trim();
+                    clientServices.push(SERVICES[temp]['service']);
+                });
+    
+                let newClient: Client = {
+                    name: getFullName(client.FirstName, client.LastName),
+                    email: client.Email,
+                    phoneNumber: client.PhoneNumber,
+                    service: clientServices.join(", ").toString(),
+                    ID: client.UserID
+                }
+                clientList[i] = newClient;
+                i += 1;
+                
+            }catch(error){
+                notify("Error getting the services of some clients.");
+                let newClient: Client = {
+                    name: getFullName(client.FirstName, client.LastName),
+                    email: client.Email,
+                    phoneNumber: client.PhoneNumber,
+                    service: "Error",
+                    ID: client.UserID
+                }
+                clientList[i] = newClient;
+                i += 1;
+            }finally{
+                resolve('Done');
             }
-            clientList[i] = newClient;
-            i += 1;
+        }
+        )
+        
         })
+        await Promise.all(promises);
         setNewClient(clientList);
         //alert("Upcoming List: " + JSON.stringify(appointmentList));
     }
