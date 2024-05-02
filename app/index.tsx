@@ -9,6 +9,7 @@ import database from './axiosConfig.js'; // Import axios from the axiosConfig.js
 import { funcObj, functionGetRetry, notify } from './Enums/Enums'
 import {RootSiblingParent} from "react-native-root-siblings"
 import { router, useLocalSearchParams } from 'expo-router';
+import Toast from 'react-native-root-toast';
 export default function Login() {
 
     const {returnMessage} = useLocalSearchParams<{returnMessage:string}>();
@@ -74,7 +75,8 @@ export default function Login() {
             }
         }
             await signInWithEmailAndPassword(auth, actualEmail, password);
-            loginErrorMsg('Login successful!');
+            //loginErrorMsg('Login successful!');
+            showToast('Login Sucessfull!', 'success');
             const user = auth.currentUser;
             if (user !== null) {
                 console.log(actualEmail);
@@ -91,9 +93,22 @@ export default function Login() {
                 // Handle the case where user is null
             }
         } catch (error) {
-            loginErrorMsg('Your email and password \n do not match. Please try again.');
+            //loginErrorMsg('Your email and password \n do not match. Please try again.');
+            showToast('Your email and password do not match. Please try again.', 'error');
             console.log(error.message, error.code);
         }
+    }
+
+    const showToast = (message, type) => {
+        Toast.show(message, {
+            duration: Toast.durations.SHORT,
+            position: Toast.positions.BOTTOM,
+            shadow: true,
+            animation: true,
+            hideOnPress: true,
+            backgroundColor: type === 'success' ? 'green' : 'red',
+            textColor: 'white',
+        });
     }
     
 
