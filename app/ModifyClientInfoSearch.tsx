@@ -6,10 +6,11 @@ import { SearchBar } from 'react-native-screens';
 import { SelectList } from 'react-native-dropdown-select-list';
 import { notify } from './Enums/Enums'
 import { RootSiblingParent } from 'react-native-root-siblings'
+import { router } from 'expo-router';
 
 const windowDimensions = Dimensions.get('window')
 
-export default function ModifyClientInfoSearch({navigation, route}) {
+export default function ModifyClientInfoSearch() {
 
     const windowDimensions = Dimensions.get('window')
 
@@ -28,7 +29,7 @@ export default function ModifyClientInfoSearch({navigation, route}) {
 
        try {
             //Navigate to the next page, passing client id as a parameter. Right now set to navigate to home
-            navigation.navigate("NewClientInfo_AdminView", { id });
+            router.push({pathname:"newClientInfo_AdminView", params: { ID:id }});
         } catch (error) {
             console.error('Error fetching client information:', error);
             notify('Error fetching client information: ' + error);
@@ -49,6 +50,9 @@ export default function ModifyClientInfoSearch({navigation, route}) {
         setClientList2(filteredClients);
     };
 
+    useEffect(()=>{
+        handleNameSearch();
+    },[nameInput])
     async function displayClientList(selectedOption)
     {
         let clientNames: string[] = [];
@@ -60,12 +64,13 @@ export default function ModifyClientInfoSearch({navigation, route}) {
         let client1;
 
         console.log(selectedOption);
+        /*
         //sorts clientData based on the dropdown menu. Ascending(A-Z) is the default option.
        if(selectedOption == 'Ascending') 
         clientData.sort((a, b) => a.FirstName.localeCompare(b.FirstName));
+        
         else if(selectedOption == 'Descending')
         clientData.sort((a, b) => a.FirstName.localeCompare(b.FirstName)).reverse(); // reverse flips the array to Z-A
-      
         //this loop makes the array of all the first letters in first names to be used to sort the list later.
         for(client1 in clientData)
         {
@@ -75,6 +80,7 @@ export default function ModifyClientInfoSearch({navigation, route}) {
                 tempFirstLetterArr.push(firstLetter);
             }
         }
+        */
 
         //loop that makes a string array with only the names of the clients and nothing else.
         let iterable;
@@ -83,7 +89,19 @@ export default function ModifyClientInfoSearch({navigation, route}) {
             let name = clientData[iterable].FirstName + " " + clientData[iterable].LastName;
             clientNames.push(name);
         }
-
+        if(selectedOption == 'Ascending') 
+            clientNames.sort();
+            else if(selectedOption == 'Descending')
+            clientNames.sort().reverse(); // reverse flips the array to Z-A
+        let name;
+        for(name of clientNames)
+        {
+            let firstLetter = name[0];
+            if(tempFirstLetterArr.find(o => o === firstLetter) == null)
+            {
+                tempFirstLetterArr.push(firstLetter);
+            }
+        }
         //set two variables to use in the loop down below
         let temp: string[] = [];
         let currentLetter = '';
@@ -104,12 +122,14 @@ export default function ModifyClientInfoSearch({navigation, route}) {
                 }
                 currentLetter = firstLetter;
                 temp = [client];
+
             }
             //else if they are equal just push the clients name to temp.
             else if(firstLetter == currentLetter)
             {
                 temp.push(client)
             }
+
         }
 
         //after loop finishes if temp has anything in it make sure to push whatever is in it to the temp array of arrays
@@ -126,7 +146,7 @@ export default function ModifyClientInfoSearch({navigation, route}) {
     }
 
     useEffect(() => {
-        displayClientList('firstNameAscending');
+        displayClientList('Ascending');
     }, []);
     
      //for the drop down list below
@@ -142,7 +162,6 @@ export default function ModifyClientInfoSearch({navigation, route}) {
     return (
         <RootSiblingParent>
         <SafeAreaView>
-            <ScrollView> 
             
             <LinearGradient
                 locations={[0.7, 1]}
@@ -193,10 +212,9 @@ export default function ModifyClientInfoSearch({navigation, route}) {
                                                     <TouchableOpacity
                                                         style={styles.nameButton}
                                                         onPress={() => handleNamePress(item)}
-                                                        
                                                         >
 
-                                                        <Text style={styles.nameText}>{item}</Text>  
+                                                        <Text style={styles.nameText}>{item}</Text>
 
                                                     </TouchableOpacity>
 
@@ -206,12 +224,11 @@ export default function ModifyClientInfoSearch({navigation, route}) {
                                     </View>
                                 </View>
                             )}
-                                style={{height: useWindowDimensions().height*.78}}
+                                style={{height: useWindowDimensions().height}}
                         />
                     </View>
                 </View>
             </LinearGradient>
-            </ScrollView>
             
         </SafeAreaView>
         </RootSiblingParent>

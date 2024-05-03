@@ -3,14 +3,22 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
 import database from './axiosConfig'; // Import axios from the axiosConfig.js file
 import Constants from 'expo-constants';
-import {UTCtoPSTString, funcObj, functionGetRetry, notify} from './Enums/Enums';
+import {UTCtoPSTString, displayHours, funcObj, functionGetRetry, notify} from './Enums/Enums';
 import {RootSiblingParent} from 'react-native-root-siblings'
 import { SERVICES } from './Enums/Enums'
-export default function AppointmentsClientView({route}){
+import { useLocalSearchParams } from 'expo-router';
+export default function AppointmentsClientView(){
 
-    const { userData } = route.params;
-
-
+    const {userID} = useLocalSearchParams<{userID:string}>();
+    const {adminPriv} = useLocalSearchParams<{adminPriv:string}>();
+    const {newClient} = useLocalSearchParams<{newClient:string}>();
+    const {approved} = useLocalSearchParams<{approved:string}>();
+    const userData = {
+        userID: parseInt(userID),
+        adminPriv: adminPriv,
+        newClient: newClient,
+        approved: approved
+      }
 
     const windowDimensions = Dimensions.get('window')
     interface Appointment {
@@ -52,7 +60,7 @@ export default function AppointmentsClientView({route}){
         functionGetRetry(funcObj)
             .then((ret) => data = ret.data)
             .then(() => {updateUpcomingAppointmentsDisplay(data, name)})
-            .catch((error) => notify(error))
+            .catch((error) => notify(error.toString()))
     }
 
     function updatePastAppointments(date, userID, name){
@@ -69,7 +77,7 @@ export default function AppointmentsClientView({route}){
             functionGetRetry(funcObj)
             .then((ret) => data = ret.data)
             .then(() => {updatePastAppointmentsDisplay(data, name)})
-            .catch((error) => notify(error));
+            .catch((error) => notify(error.toString()));
     }
 
     function updateUpcomingAppointmentsDisplay(data, name){
@@ -81,7 +89,8 @@ export default function AppointmentsClientView({route}){
             let dateTimeArray = appointment.AppointmentDate.split("T");
             let newDate = dateTimeArray[0];
             let newTime = dateTimeArray[1].split("Z")[0];
-
+            newTime = displayHours[newTime.split(".")[0]];
+            
             let serviceArr = appointment.TypeOfAppointment.split(",");
             let clientServices: string[] = [];
             serviceArr.forEach(serviceEl => {
@@ -111,6 +120,7 @@ export default function AppointmentsClientView({route}){
             let dateTimeArray = appointment.AppointmentDate.split("T");
             let newDate = dateTimeArray[0];
             let newTime = dateTimeArray[1].split("Z")[0];
+            newTime = displayHours[newTime.split(".")[0]];
 
             let serviceArr = appointment.TypeOfAppointment.split(",");
             let clientServices: string[] = [];
@@ -145,7 +155,7 @@ export default function AppointmentsClientView({route}){
         try{
             name = await functionGetRetry(funcObj)
         }catch(error){
-            notify(error)
+            notify(error.toString())
             return 'NA'
         }
         return name.data[0].FirstName + " " + name.data[0].LastName;

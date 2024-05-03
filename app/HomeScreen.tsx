@@ -1,21 +1,35 @@
 
 import { StyleSheet, Text, View, Pressable, Image, ImageBackground, ScrollView, Button, Touchable, FlatList} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { router, useGlobalSearchParams, useLocalSearchParams } from 'expo-router';
+import { notify } from './Enums/Enums';
+import {RootSiblingParent} from "react-native-root-siblings"
 
 // button viewablility based on workflow in google drive green = new clients, blue = existing clients, and red = Admin with some 
 // overlap. comments have been added above each button for clarification.
 
-export default function HomeScreen({route, navigation}){
+export default function HomeScreen(){
   /*
     Creates a const of data to be sent to the other pages in the app
     You can add other consts or just add another variable to the existing userData const
   */
+    const {userID} = useLocalSearchParams<{userID:string}>();
+    const {adminPriv} = useLocalSearchParams<{adminPriv:string}>();
+    const {newClient} = useLocalSearchParams<{newClient:string}>();
+    const {approved} = useLocalSearchParams<{approved:string}>();
+    const {returnMessage} = useLocalSearchParams<{returnMessage:string}>();
 
-    const { userData } = route.params;
+    const userData = {
+      userID: parseInt(userID),
+      adminPriv: adminPriv,
+      newClient: newClient,
+      approved: approved
+    }
+    
     console.log('You are in the Home Screen Now!');
-    console.log('Proof', userData);
+    //alert('Proof' + JSON.stringify(userData));
      //The buttons array that stores all individual buttons on a page load/reload
   let buttons = [];
   let [buttonDisplay, setButtonDisplay] = React.useState([]);
@@ -30,61 +44,47 @@ export default function HomeScreen({route, navigation}){
 
 //This block constructs buttons that the Admin can see
 function filterButtons(){
-    if(userData.adminPriv == true)
+    if(userData.adminPriv == 'true')
   {
     //Modifies Calendar Availability
     var modifyAvButton = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("ModifyAv", {userData})}
+      onPress = {() => router.push({pathname:"ModifyAv", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved}})}
       >  
       <Text style = {styles.homeButtonText}>Modify Calendar</Text>
-    </TouchableOpacity>
-    //Views Client Info and Edit
-    var clientInfoButton = <TouchableOpacity
-      style = {styles.homeButton}
-      onPress = {() => navigation.navigate("NewClientInfo_AdminView", {userData})}
-      >  
-      <Text style = {styles.homeButtonText}>modify Client Info</Text>
     </TouchableOpacity>
     //Views Client History 
     var clientHistoryButton = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("ClientHistory", {userData})}
+      onPress = {() => router.push({pathname:"ClientHistory", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved}})}
       >  
       <Text style = {styles.homeButtonText}>Client Appointments</Text>
     </TouchableOpacity>
     //Views Client Search screen
     var ModifyClientInfoSearch = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("ModifyClientInfoSearch")}
+      onPress = {() => router.push("ModifyClientInfoSearch")}
       >  
       <Text style = {styles.homeButtonText}>Modify Client Search</Text>
     </TouchableOpacity>
     //Takes you to the New Client Approval page !WIP! no functionality
     var newClientApprovalButton = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("NewClientApproval", {userData})}
-      >  
-      <Text style = {styles.homeButtonText}>New Client approval</Text>
-    </TouchableOpacity>
-    //Takes you to the Set Up Appiontment Page
-    var scheduleAppointmentButton = <TouchableOpacity
-      style = {styles.homeButton}
-      onPress = {() => navigation.navigate("SetUpAppoint1", {userData})}
+      onPress = {() => router.push({pathname:"NewClientApproval", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved}})}
       >
-      <Text style = {styles.homeButtonText}>Schedule Appointments</Text>
+      <Text style = {styles.homeButtonText}>New Client Approval</Text>
     </TouchableOpacity>
     //takes you to the Services Offered Page
     var servicesOfferedButton = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("ServicesOffered")}
+      onPress = {() => router.push("ServicesOffered")}
       >
       <Text style = {styles.homeButtonText}>Services Offered</Text>
     </TouchableOpacity>
     //Takes you to the About Me Page
     var aboutMeButton = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("AboutMe")}
+      onPress = {() => router.push("AboutMe")}
       >
       <Text style = {styles.homeButtonText}>About Me</Text>
     </TouchableOpacity>
@@ -96,44 +96,42 @@ function filterButtons(){
     //  <Text style = {styles.homeButtonText}>FAQ</Text>
     //</TouchableOpacity>
     buttons.push(modifyAvButton);
-    buttons.push(clientInfoButton);
     buttons.push(clientHistoryButton);
     buttons.push(newClientApprovalButton);
     buttons.push(ModifyClientInfoSearch);
-    buttons.push(scheduleAppointmentButton);
     buttons.push(servicesOfferedButton);
     buttons.push(aboutMeButton);
     //buttons.push(FAQButton);
     setButtonDisplay(buttons);
   }
   //This block constructs buttons that only old clients can see
-  else if(userData.newClient == false)
+  else if(userData.newClient == 'false')
   {
     //Takes you to the Set Up Appointment Page
     var scheduleAppointmentButton2 = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("SetUpAppoint1", {userData})}
+      onPress = {() => router.push({pathname:"setUpAppoint1", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved}})}
       >
       <Text style = {styles.homeButtonText}>Schedule Appointments</Text>
     </TouchableOpacity>
     //Takes you to the Your Appointments page
     var yourAppointmentsButton = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("AppointmentsClientView", {userData})}
+      onPress = {() => router.push({pathname:"appointmentsClientView", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved}})}
       >
       <Text style = {styles.homeButtonText}>Your Appointments</Text>
     </TouchableOpacity>
     //Takes you to the Services offered page
     var servicesOfferedButton2 = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("ServicesOffered")}
+      onPress = {() => router.push("ServicesOffered")}
       >
       <Text style = {styles.homeButtonText}>Services Offered</Text>
     </TouchableOpacity>
     //Takes you to the About Me page
     var aboutMeButton2 = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("AboutMe")}
+      onPress = {() => router.push("AboutMe")}
       >
       <Text style = {styles.homeButtonText}>About Me</Text>
     </TouchableOpacity>
@@ -144,34 +142,27 @@ function filterButtons(){
     //  >
     //  <Text style = {styles.homeButtonText}>FAQ</Text>
     //</TouchableOpacity>
-    var newClientInfo2 = <TouchableOpacity
-      style = {styles.homeButton}
-      onPress={() => navigation.navigate('NewClientInfo', {userData})}
-      >
-      <Text style = {styles.backButtonText}>New Client Info</Text>
-      </TouchableOpacity>
     buttons.push(scheduleAppointmentButton2);
     buttons.push(yourAppointmentsButton);
     buttons.push(servicesOfferedButton2);
     buttons.push(aboutMeButton2);
     //buttons.push(FAQButton2);
-    buttons.push(newClientInfo2);
     setButtonDisplay(buttons);
   }
   //This block constructs buttons that the new clients can see
-  else if(userData.newClient == true)
+  else if(userData.newClient == 'true')
   {
     //Takes you to the services offerd page
     var servicesOfferedButton3 = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("ServicesOffered")}
+      onPress = {() => router.push("ServicesOffered")}
       >
       <Text style = {styles.homeButtonText}>Services Offered</Text>
     </TouchableOpacity>
     //Takes you to the About Me page
     var aboutMeButton3 = <TouchableOpacity
       style = {styles.homeButton}
-      onPress = {() => navigation.navigate("AboutMe")}
+      onPress = {() => router.push("AboutMe")}
       >
       <Text style = {styles.homeButtonText}>About Me</Text>
     </TouchableOpacity>
@@ -185,25 +176,37 @@ function filterButtons(){
     // Once Approved new client can view and fill out this page
     var newClientInfoButton = <TouchableOpacity
     style = {styles.homeButton}
-    onPress = {() => navigation.navigate("NewClientInfo", {userData})}
+    onPress = {() => router.push({pathname:"newClientInfo", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved}})}
     >
-    <Text style = {styles.homeButtonText}>NewClientInfo</Text>
+    <Text style = {styles.homeButtonText}>Complete Sign-Up</Text>
     </TouchableOpacity>
-
+    if(userData.approved == 'true')
+      buttons.push(newClientInfoButton);
     buttons.push(servicesOfferedButton3);
     buttons.push(aboutMeButton3);
     //buttons.push(FAQButton3);
-    if(userData.approved == true)
-      buttons.push(newClientInfoButton);
+
     setButtonDisplay(buttons);
   }
 }
+
+function sendNotification(){
+  if(returnMessage != null && returnMessage.length != 0){
+    notify(returnMessage);
+    router.setParams({returnMessage:null});
+  }
+}
+
+  useEffect(()=>{
+    sendNotification();
+  }, [returnMessage])
+
   useEffect(()=>{
     filterButtons();
   }, [])
   return(
+          <RootSiblingParent>
             <View style = {styles.container}>
-              <ScrollView>
             {/*added logo image*/}
              <ImageBackground
               style = {styles.logo}
@@ -240,8 +243,8 @@ function filterButtons(){
 
               </View>
              </LinearGradient>
-             </ScrollView>
             </View>
+            </RootSiblingParent>
     );
 }
 

@@ -13,19 +13,21 @@ import {
     TextInput
 } from 'react-native';
 import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-list';
-import { Link } from 'expo-router';
 import database from './axiosConfig'; // Import axios from the axiosConfig.js file
 //firebase imports VVV
 import firebase from './Firebase.js'
 import { getAuth, createUserWithEmailAndPassword  } from "firebase/auth";
 import {funcObj, functionGetRetry} from './Enums/Enums'
+import { router } from 'expo-router';
+import { notify } from './Enums/Enums';
+import {RootSiblingParent} from "react-native-root-siblings"
 
 //made this available for all pages in the app
 export let hairStyleSelected: string[] = [];
 export let contactSelected: string[] = [];
 
 
-export default function SignUp({ navigation, route }) { // added route for page navigation
+export default function SignUp() { // added route for page navigation
 
     //initializes the Authentication and gets a reference to the service
     const auth = getAuth(firebase);
@@ -102,12 +104,38 @@ export default function SignUp({ navigation, route }) { // added route for page 
         setphoneNumberValid(phoneNumber.length == 12 || phoneNumber.length == 13 ? true : false);
 
     }
+    
+    // two functions below should format phone number for IOS
+    const formattingPhoneNumber = (input) => {
+        if (/^\d*$/.test(input)){
+            if (input.length <=10){
+                return input.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
+            }
+        } else {
+            return input
+        }
+    }
+    const setPhoneNumFormat = (input) => {
+        if( input.length <= 12){
+            if( /^\d*$/.test(input)){
+                const formatPhoNum = formattingPhoneNumber(input);
+                newPhoneNumber(formatPhoNum);
+            }else{
+                const newPhone = input.replace(/\D/g, ''); 
+                newPhoneNumber(newPhone);
+            }
+        }
+    }
+
     function checkpasswordValid() {
         //if the password contains numbers and letters and is 8 chars or more in length...
         if (password.match(/^[A-Za-z0-9]*$/))
             setpasswordValid(password.length > 7 ? true : false);
     }
     function checkconfirmPasswordValid() {
+        console.log('setconfirmPasswordValid:', password == confirmPassword ? true : false); //for testing
+        console.log('password:', password); //for testing
+        console.log('confirmPassword:', confirmPassword); //for testing
         setconfirmPasswordValid(password == confirmPassword ? true : false)
     }
 
@@ -169,7 +197,7 @@ export default function SignUp({ navigation, route }) { // added route for page 
                     preferredWayOfContact: preferred_way_of_contact*/
                     userID: userID,
                     firstName: firstName,
-                    lastName: lastName,
+                    lastName:  lastName,
                     preferredWayOfContact:contactSelected.join(", "), //form info?
                 }),
                 type: 'post'
@@ -216,25 +244,25 @@ export default function SignUp({ navigation, route }) { // added route for page 
             await Promise.all(servicePromises); //wait for all services to be posted
 
             console.log('New user and related data posted successfully.');
-            alert('new account created successfully');
         } catch (error) {
             console.error('Error posting new user data:', error);
-            alert('problem with creating new account');
+            notify('Problem with creating new account.');
         }
     };
 
     function newUserSignUp() {
         //password conditionals if these are both false move onto setting the 
         if (password != confirmPassword) {
-            alert("Passwords did not match. Please try again.")
+            notify("Passwords did not match. Please try again.")
         }
         else if (password == "" || confirmPassword == "") {
-            alert("No password was entered. Please enter in a password.")
+            notify("No password was entered. Please enter in a password.")
         }
         else {
             createUserWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
                     const user = userCredential.user;
+                    return 0;
                 })
                 .catch((error) => {
                     const errorCode = error.code;
@@ -244,25 +272,46 @@ export default function SignUp({ navigation, route }) { // added route for page 
                     return 1; //returns 1 on sign up fail so that way it doesn't post this user to the database
                 });
             //}
-            return 0;
         }
         //returns 1 if something along the way messed up so it doesn't post the new user to the database
-        alert("Something went wrong. Please enter account information and try again2.")
+        notify("Something went wrong. Please enter account information and try again. If you already signed up with the email used, please log in with that email.")
         return 1;
     }
 
-    function handleSignUpPress() {
+    useEffect(() => {
+        checkconfirmPasswordValid();
+        checkpasswordValid()
+    }, [password, confirmPassword]);
+
+    useEffect(() => {
+        checkphoneNumberValid()
+    }, [phoneNumber])
+
+    async function handleSignUpPress() {
         //registers the user with Firebase first then if the function returns 0 meaning a successful user creation
         //it will post the user to the database and route them back to the login page
-        let verify = newUserSignUp();
+        console.log('formComplete:', formComplete); //for testing
+        console.log('firstNameValid:', firstNameValid); //for testing
+        console.log('lastNameValid:', lastNameValid); //for testing
+        console.log('emailValid:', emailValid); //for testing
+        console.log('phoneNumberValid:', phoneNumberValid); //for testing
+        console.log('passwordValid:', passwordValid); //for testing
+        console.log('confirmPasswordValid:', confirmPasswordValid); //for testing
+        console.log('selected.length:', selected.length); //for testing
+        console.log('selectedCont.length:', selectedCont.length); //for testing
+        console.log('password:', password); //for testing
+        console.log('confirmPassword', confirmPassword); //for testing
+        let verify = await newUserSignUp();
 
         if (verify == 0) {
-            postNewUser();
-            navigation.navigate("Login")
+            await postNewUser();
+            //navigation.navigate("Login")
+            router.replace({pathname:"/", params: {returnMessage:"Account created successfully!"}});
         }
     }
     return (
         <>
+        <RootSiblingParent>
             <StatusBar backgroundColor={'black'} />
             <ScrollView style={styles.container}>
                 <View style={styles.header}>
@@ -298,7 +347,7 @@ export default function SignUp({ navigation, route }) { // added route for page 
                             <TextInput
                                 style={styles.textField}
                                 value={phoneNumber}
-                                onChangeText={newPhoneNumber}
+                                onChangeText={setPhoneNumFormat}
                                 onTextInput={() => checkphoneNumberValid()}
                                 placeholder="Phone Number"
                                 keyboardType="numeric"
@@ -379,6 +428,7 @@ export default function SignUp({ navigation, route }) { // added route for page 
                     </View>
                 </LinearGradient>
             </ScrollView>
+            </RootSiblingParent>
         </>
     );
 }

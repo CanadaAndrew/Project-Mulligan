@@ -4,22 +4,21 @@ import { Link } from 'expo-router';
 import React from 'react';
 import MyCalendar from './MyCalendar';
 import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-list';
-import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const aboutMeText = "HairDoneWright530 is a place for your entire family.  Passion for hair is something I have enjoyed my entire life.  I love color, cut and specialize in Blonding Services.  I believe every client is a masterpiece.  Message me.  Let’s work together to achieve your hair dreams. -Melissa";
 
 export default function AboutMe() {
     return (
-      
+
 <>
 
 
 <LinearGradient locations={[0.7, 1]} colors={['#DDA0DD', 'white']} style={styles.container}>
 <ScrollView>
-   
+
 <View >
- 
+
 </View>
 
                    

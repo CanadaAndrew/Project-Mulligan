@@ -1,17 +1,19 @@
 import { StyleSheet, Text, View, Pressable, Image, ImageBackground, ScrollView, Button} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Link } from 'expo-router';
+import { Link, router, useLocalSearchParams } from 'expo-router';
 import React from 'react';
 import MyCalendar from './MyCalendar';
 import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-list';
-import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useRef } from 'react';
 import { notify } from './Enums/Enums';
 import { RootSiblingParent } from 'react-native-root-siblings'
 
+
+
+export default function SetUpAppoint1() { // add navigation to default function for data transfer between pages
 //made this available for all pages in the app
-export let hairStyleSelected: string[] = [];
+let hairStyleSelected: string[] = [];
 
 //Variable is interchangeable in terms of function with the calendar
 const calendarContainerRef = useRef(null);
@@ -25,10 +27,17 @@ const renderSelectedDates = () => {
       return null;
     }
 }
+    const {userID} = useLocalSearchParams<{userID:string}>();
+    const {adminPriv} = useLocalSearchParams<{adminPriv:string}>();
+    const {newClient} = useLocalSearchParams<{newClient:string}>();
+    const {approved} = useLocalSearchParams<{approved:string}>();
 
-export default function SetUpAppoint1({navigation, route}) { // add navigation to default function for data transfer between pages
-
-    const { userData } = route.params;
+    const userData = {
+        userID: parseInt(userID),
+        adminPriv: adminPriv,
+        newClient: newClient,
+        approved: approved
+    }
     //{ route }, { navigation }
     //useState for drop down menu
     const [selected, setSelected] = React.useState([]);
@@ -129,11 +138,17 @@ export default function SetUpAppoint1({navigation, route}) { // add navigation t
                                 notify('Please select at least one service and one day.');
                                 return;
                             }else{
+                                router.push({pathname:"setupAppointment2", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved,
+                                    hairStyleData: hairStyleSelected.join(', '),
+                                    dateData: selectedDates.join(', ')
+                                }});
+                                /*
                                 navigation.navigate('SetupAppointment2', { 
                                     userData,
                                     hairStyleData: hairStyleSelected.join(', '),
                                     dateData: selectedDates.join(', '),
                                     });
+                                    */
                             }
                             }}>
                         <Text style={styles.appointButtonText}>Schedule Appointment</Text>

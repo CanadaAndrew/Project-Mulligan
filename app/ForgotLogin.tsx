@@ -7,6 +7,7 @@ import firebase from './Firebase';
 import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import {funcObj, functionGetRetry, notify} from './Enums/Enums';
 import { RootSiblingParent } from 'react-native-root-siblings';
+import { router } from 'expo-router';
 
 //Declaring Window as a global variable to be accessed
 declare global {
@@ -15,7 +16,7 @@ declare global {
     }
 }
 
-export default function ForgotLogin({ navigation }) {
+export default function ForgotLogin() {
 
     const auth = getAuth(firebase);
     auth.languageCode = 'en';
@@ -26,30 +27,33 @@ export default function ForgotLogin({ navigation }) {
     const onClickLogin = async () => {
         let email = rawNum;
         if(rawNum.length == 12){
-            const funcObj:funcObj = {
-                entireFunction: () => database.get('/findEmailByPhoneNumber', {
-                    params: {
-                        PhoneNumber : rawNum,
+            if(/(\d{3})-(\d{3})-(\d{4})/.test(rawNum)){
+                const funcObj:funcObj = {
+                    entireFunction: () => database.get('/findEmailByPhoneNumber', {
+                        params: {
+                            PhoneNumber : rawNum,
+                        }
+                    }),
+                    type: 'get'
+                };
+                functionGetRetry(funcObj)
+                .then(async (ret) => {
+                    if(ret.data[0] != null){
+                        email = ret.data[0].Email;
+                        await sendPasswordResetEmail(auth, email);
                     }
-                }),
-                type: 'get'
-            };
-            functionGetRetry(funcObj)
-            .then(async (ret) => {
-                if(ret.data[0] != null){
-                    email = ret.data[0].Email;
-                    await sendPasswordResetEmail(auth, email);
-                }
-                loginErrorMsg('Password reset email send if phone number was valid. Please check your inbox.');
-            })
-            .catch((err) => notify(err));
+                    loginErrorMsg('Password reset email send if phone number was valid. Please check your inbox.');
+                    router.replace({pathname: "/", params: {returnMessage:'Password reset email send if phone number was valid. Please check your inbox.'}}); 
+                })
+                .catch((err) => notify(err));
+            }
         }
         else if (rawNum.includes("@")) {
             email = rawNum;
             await sendPasswordResetEmail(auth, email);
             loginErrorMsg('Password reset email send if email was valid. Please check your inbox.');
-            // For now goes to HomeScreen cause LoginPage doesnt exist yet in this branch
-            navigation.navigate('HomeScreen');
+            //navigation.navigate('HomeScreen');
+            router.replace({pathname: "/", params: {returnMessage:'Password reset email send if phone number was valid. Please check your inbox.'}}); 
         }
         else {
             loginErrorMsg('Your email or phone number \n do not match any existing accounts \n please try again.');
@@ -63,7 +67,7 @@ export default function ForgotLogin({ navigation }) {
     const formattingPhoneNumber = (input) => {
         if (/^\d*$/.test(input)){
             if (input.length <=10){
-                return input.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+                return input.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
             }
         } else {
             return input

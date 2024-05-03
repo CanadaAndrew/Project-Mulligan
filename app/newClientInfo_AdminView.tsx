@@ -8,6 +8,7 @@ import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "fir
 import { notify, SERVICES } from './Enums/Enums';
 import { RootSiblingParent } from 'react-native-root-siblings'
 import { MultipleSelectList } from 'react-native-dropdown-select-list';
+import { useLocalSearchParams } from 'expo-router';
 
 //Declaring Window as a global variable to be accessed
 declare global {
@@ -16,7 +17,7 @@ declare global {
     }
   }
   
-export default function NewClientInfo_AdminView({ navigation, route}){
+export default function NewClientInfo_AdminView(){
 
     const [selected, setSelected] = React.useState([]);
     let [hairStyleSelected, setHairStyleSelected] = React.useState([])
@@ -41,8 +42,8 @@ export default function NewClientInfo_AdminView({ navigation, route}){
     ];
 
 
-
-    const { id } = route.params;
+    const { ID } = useLocalSearchParams<{ID:string}>();
+    const id = parseInt(ID);
 
     console.log(id);
 
@@ -259,7 +260,7 @@ export default function NewClientInfo_AdminView({ navigation, route}){
     const formattingPhoneNumber = (input) => {
         if (/^\d*$/.test(input)){
             if (input.length <=10){
-                return input.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+                return input.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
             }
         } else {
             return input
@@ -406,7 +407,8 @@ export default function NewClientInfo_AdminView({ navigation, route}){
                 style={styles.editButton}
                 onPress={editingPreferences ? savePreferencesChanges : toggleEditPreferences}
                 >
-                <Text style={styles.editButtonText}>{editingPreferences ? 'Save' : 'Edit'}</Text>
+                    {/*Just copied the editing button from the first one above seems to work fine*/}
+                    <Text style={styles.editButtonText}>{editingPreferences ? 'Save' : 'Edit'}</Text>
                 </TouchableOpacity>
             </View>
 
