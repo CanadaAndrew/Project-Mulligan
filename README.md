@@ -111,23 +111,54 @@ QR code that you can scan to run the app on your phone. We recommend you use 'np
 
 ## Testing
 
-*To Do Will be Completed in CSC 191*
+Testing can be done either manually or through semi-auto - to fully automatic testing. Our Development team performed testing mostly through manual testing of the different pages but some testing was done by using a dependency called Jest. You can install Jest by going to the terminal and pasting this command in:
+
+```bash
+npm install --save-dev jest
+```
+
+There are many ways to use Jest withing the confines of the project. The base version of Jest however, cannot work with react native or TypeScript so extra dependencies will need to be installed. With some manual work in the configs of the project. We will provide the following command for the different dependencies but you should go the Jest website and follow their instructions because it may have changed by the time you are working on this project. 
+
+React Native:
+```bash
+npm install --save-dev jest @testing-library/react-native react-native-testing-library
+```
+
+For [TypeScript](https://jestjs.io/docs/getting-started):
+```bash
+npm install --save-dev @types/jest
+```
+
+In order to run tests on various functions you will to make a file that ends with .test as Jest will know to run the tests on files that end with it. 
+
+An Example of Jest code is provided with the SignUp Page's functions:
+
+![Example Jest Code](./app/images/Demo_Images/Jest_Example_Code.png)
+
+Jest will after running the following command:
+
+```bash
+npm test
+```
+
+Will automatically run tests on all files that have .test in it. An example with SignUp.test.js being run is below:
+
+![Successfull Jest Run](./app/images/Demo_Images/Positive_Test.png)
 
 ## Deployment
 
 *To Do Will be Completed in CSC 191*
 
-## Developer Instructions
-*To Do Will be Completed in CSC 191*
-
-
-## Screenshots
+## Screenshots of the App
 
 ### Terminal After Successfull Run
 ![Terminal Image](./app/images/Demo_Images/Terminal.png)
 
-### Temporary Home Screen of App
-![Temporary Home Screen](./app/images/Demo_Images/Temp_Home_Nav_Screen.png)
+### Login Screen
+![Login Screen](./app/images/Demo_Images/Login_Screen.png)
+
+### Sign-Up Page
+![Sign-Up Page](./app/images/Demo_Images/Simulator%20Screenshot%20-%20iPhone%2015%20Pro%20Max%20-%202024-05-03%20at%2011.13.02.png)
 
 ### SetUp Appointment, Modify Availability, Client Appointment Screen
 ![](./app/images/Demo_Images/SetUpAppointment_Screen.png) ![](./app/images/Demo_Images/Modify_Av_Screen.png) ![](./app/images/Demo_Images/Client_Appointment_Screen.png)
