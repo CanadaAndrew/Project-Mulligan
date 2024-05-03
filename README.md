@@ -169,6 +169,10 @@ Will automatically run tests on all files that have .test in it. An example with
 ### Current User
 ![Current User Home](./app/images/Demo_Images/Current_Home.png)
 
+![Appointment1](./app/images/Demo_Images/Appointment1.png) ![Appointment 2](./app/images/Demo_Images/Simulator%20Screenshot%20-%20iPhone%2015%20Pro%20Max%20-%202024-05-03%20at%2012.31.53.png)
+
+![Client View Appointments](./app/images/Demo_Images/Client_View_App.png)
+
 ### Approved New User
 ![Approved New User Home](./app/images/Demo_Images/Approved_Home.png)
 
