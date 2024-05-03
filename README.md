@@ -1,7 +1,7 @@
 # Project Mullet ![](./app/images/logo.png)
 
-This project is a beauty app being developed for HairDoneWright530. HairDoneWright530 is located in Olivehurst, California and is privately owned by 
-Melissa Wright. 
+HairDoneWright530 is located in Olivehurst, California and is privately owned by 
+Melissa Wright. The HairDoneWright530 app is designed to connect Melissa with her clients and the clients to Melissa by providing an easy to use User Interface (UI) for use in the app. This app will help drive business to HairDoneWright530 by providing to the community a state licensed cosmetologists’s services in one application. The Administrator side of the app allows for booking appointments and changing of appointments, selection of clienttell, integrated schedule setting, customized notes and information for contacting clients, and for clients they can book and see available times Melissa has for appointments while also providing a convenient, and easy to use selection of available services. 
 
 This project is being completed by a team from Sacramento State University called the Recycling Team as part of a Senior Project over the time span of 2 semesters.
 
@@ -32,14 +32,14 @@ This project is being completed by a team from Sacramento State University calle
 
 ## Authors
 
-- [@Andrew Canada](https://github.com/CanadaAndrew)
-- [@Chris Wright](https://github.com/cdub-616)
-- [@Adrian Gonzalez](https://github.com/VoicelessBark44)
-- [@Andrew Covert](https://github.com/acovert2)
-- [@Leaith Rawashdeh](https://github.com/LeaithR)
-- [@Tai Tang](https://github.com/ttang0)
-- [@Cameron Ingersoll](https://github.com/CamIngersoll)
-- [@Wilson Toy](https://github.com/Wilson-Toy)
+- [@Andrew Canada](https://github.com/CanadaAndrew) - Github
+- [@Chris Wright](https://github.com/cdub-616) - Github
+- [@Adrian Gonzalez](https://github.com/VoicelessBark44) - Github
+- [@Andrew Covert](https://github.com/acovert2) - Github
+- [@Leaith Rawashdeh](https://github.com/LeaithR) - Github
+- [@Tai Tang](https://github.com/ttang0) - Github
+- [@Cameron Ingersoll](https://github.com/CamIngersoll) - Github
+- [@Wilson Toy](https://github.com/Wilson-Toy) - Github
 
 
 ## Project Flow (EERD)
@@ -48,7 +48,7 @@ This project is being completed by a team from Sacramento State University calle
 
 ## Installation
 
-You can install the project to run locally by installing a few different dependencies and cloning the project. You can clone the project by using the terminal.
+To install and run the project on your computer you will need to first clone the project on your local machine in the manor you wish either by downloading the source code or by using the provided command below. 
 
 ```bash
 git clone https://github.com/CanadaAndrew/Project-Mullet
@@ -69,13 +69,32 @@ npm install moment-timezone
 npm install @react-native-community/datetimepicker --save
 npm install firebase
 npm install @expo/vector-icons
-npm i react-native-vector-icons
+npm install react-native-vector-icons
 npm install firebase
 npm install @react-native-async-storage/async-storage
 npm install react-native-root-toast
 ```
-    
-### Running the Program
+
+## Setting up the Simulators
+
+In order to run the project and properly test it youw will have to have a simulator available for expo to run the react native app on. There are many choices how you go about this but, my team used and tested on 2 different methods; IOS Simulator and Android.
+
+### Android Simulator
+
+The android simulator takes a bit more work to get running than the ios simulator but it has a lot of options for how you go about running the app on the simulator. Firrst you will need to download and install [Android Studio](https://developer.android.com/studio/install). Android Studio as of writing this section (5/1/24) runs on Windows, Some distros of Linux (Ubuntu), Mac OS, and Chrome OS. 
+
+After downloading and installing Android Studio you will need to install a device to simulate Android on. The app should be fine for most versions of android devices such as Pixel phones. 
+
+When launching the development server you will need to activate the simulator first and then click 'a' in the terminak for development server so that it starts launching the expo app on the andoid simulator.
+
+### IOS Simulator
+
+In order to run the IOS simualtor you will need either a IOS device or a Mac capable of running the IOS simulator (Most modernish Macs should be able to). The next step after securing a mac would be to go to the App Store and download [X-Code](https://apps.apple.com/us/app/xcode/id497799835?mt=12). 
+
+Once in X-Code you will need to go to the settings page and from there platforms where you can select the version number and what kind of device you would like to simulate on. Then download the platform/device. You can either go to your simulators (Will appear in your application froms now on) or when lauching the developement server just click 'i' to load the app in the simulator and it should automatically activate and load the app into the simulator.
+
+
+## Running the Program
 
 To deploy this project type in the terminal:
 
