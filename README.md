@@ -160,11 +160,23 @@ Will automatically run tests on all files that have .test in it. An example with
 ### Sign-Up Page
 ![Sign-Up Page](./app/images/Demo_Images/Simulator%20Screenshot%20-%20iPhone%2015%20Pro%20Max%20-%202024-05-03%20at%2011.13.02.png)
 
-### SetUp Appointment, Modify Availability, Client Appointment Screen
-![](./app/images/Demo_Images/SetUpAppointment_Screen.png) ![](./app/images/Demo_Images/Modify_Av_Screen.png) ![](./app/images/Demo_Images/Client_Appointment_Screen.png)
+### Admin Screen
+![Admin Home](./app/images/Demo_Images/Admin_Home.png)
 
-### SetUp Appointment Screen 2
-![](./app/images/Demo_Images/SetUpAppointment_Screen.png) ![](./app/images/Demo_Images/SetUpAppointment_Screen1.png)
+![Modify Calendar](./app/images/Demo_Images/Modify_Calendar_New.png)
+![Client Search](./app/images/Demo_Images/Client_Search.png) ![Modify Client](./app/images/Demo_Images/Modify_Client.png)
+
+### Current User
+![Current User Home](./app/images/Demo_Images/Current_Home.png)
+
+### Approved New User
+![Approved New User Home](./app/images/Demo_Images/Approved_Home.png)
+
+![Complete Sign-Up](./app/images/Demo_Images/Complete_Sign_Up.png)
+
+### Unapproved User (New Client)
+
+![New Client Home](./app/images/Demo_Images/Not_Approved_Home.png)
 
 ## Jira Timeline
 ### Sprint 1 
