@@ -12,6 +12,8 @@ const database = axios.create({
     //baseURL: 'http://192.168.1.33:3000' //dru pc local
     //baseURL: 'http://hair-done-wright530.azurewebsites.net'
     //baseURL: 'http://192.168.68.131:3000' // tai laptop
+    //baseURL: 'http://10.0.0.135:3000',
+
 });
 
 export default database;
