@@ -89,7 +89,7 @@ The android simulator takes a bit more work to get running than the ios simulato
 
 After downloading and installing Android Studio you will need to install a device to simulate Android on. The app should be fine for most versions of android devices such as Pixel phones. 
 
-When launching the development server you will need to activate the simulator first and then click 'a' in the terminak for development server so that it starts launching the expo app on the andoid simulator.
+When launching the development server you will need to activate the simulator first and then click 'a' in the terminal for development server so that it starts launching the expo app on the andoid simulator.
 
 ### IOS Simulator
 
