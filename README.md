@@ -48,7 +48,11 @@ This project is being completed by a team from Sacramento State University calle
 
 ## Project Flow (EERD)
 
-![Project Mullet EERD Diagram](./app/images/Demo_Images/ProjectMulletEERD.png)
+![Project Mullet EERD Diagram](./app/images/Demo_Images/Operation_Mullet_EERD_1.png)
+
+Relational Mapping for the Database:
+
+![Relational Map](./app/images/Demo_Images/Project_Mullet_Relational_Mapping.png)
 
 ## Installation
 
