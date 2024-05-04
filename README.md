@@ -216,7 +216,58 @@ npx expo run::android
 Finally to submit to the Google Play Store you will need to sign in with your developer account and click on the **App Bundle Explorer** to see the lost of AABs. Once clicked there should be a button called **Upload new version** which you can use to creae a new release or to update the app. 
 ### IOS Deployment
 
-stuff
+There are several ways to deploy to the Apple App Store for IOS. This will explain the steps we used to deploy to the Apple App Store.
+
+Expo uses a client called [EAS](https://expo.dev/eas) which requires an account to use. Next you will need to open up and connect your Android simulator. Next you will need to open up your terminal and install the EAS Client by running this command:
+
+```bash
+npm install -g eas-cli
+```
+
+Next you will need to create an `eas.json` file in the root folder of the project. Which should contain the following code:
+
+```json
+{
+  "build": {
+    "production":{}
+  },
+  "cli": {
+    "requireCommit":true
+  }
+}
+```
+
+The next step is to choose which platform to build the app for. We wil be choosing IOS for this specidic tutorial so the user will need to enter the following command into the Terminal:
+
+```bash
+eas build --platform ios
+```
+
+This should if there aren't any error create an IPA that can be used to submit to the Apple App Store or just run locally. If there are errors the following instructions will help you diagnose and deal with them.
+
+You should make another Github branch for the work you are about to do. In order to help find errors you will run the following command:
+
+```bash
+npx expo prebuild --platform ios
+```
+
+This should create an ios folder using the app.josn file from expo.
+
+For some Macs you may get an error and it can be a multitude of errors. These are ones we encountered and how to fix them:
+
+If you need ot update/install cocoa pods, it should give you a command using gem. If sudo isn't working, use the command:
+
+```bash
+gem install cocoapods --user-install
+```
+
+Next it may say that Pods do not exist in which case you will need to move your current working directory to the ios directory and run the command:
+
+```bash
+Pods install
+```
+
+After the sucessfull IPA build that is generated you will login into the Apple App Store with your developer account and submit the new IPA build for review and deployment to your app. 
 
 ## Screenshots of the App
 
