@@ -9,10 +9,14 @@ This project is being completed by a team from Sacramento State University calle
 - [Authors](#authors)
 - [Project Flow (EERD)](#project-flow-eerd)
 - [Installation](#installation)
+  - [Setting up Simulators](#setting-up-the-simulators)
+    - [Android Simulator](#android-simulator)
+    - [IOS Simulator](#ios-simulator)
 - [Running the Program](#running-the-program)
 - [Testing](#testing)
 - [Deployment](#deployment)
-- [Developer Instructions](#developer-instructions)
+  - [Android Instructions](#android-deployment)
+  - [IOS Deployment](#ios-deployment)
 - [Screenshots](#screenshots)
   - [Terminal After Successfull Run](#terminal-after-successfull-run)
   - [Temporary Home Screen of App](#temporary-home-screen-of-app)
@@ -334,47 +338,47 @@ Completion Status: Almost every task was completed. Calendar functionality was i
 ### Sprint 4
 Sprint Start Date: 2023/11/13
 
-Sprint End Date: *In Progress*
+Sprint End Date: 2023/11/27
 
-Goals for the Sprint: Finish work from Sprint 3 that was not completed namely setting up BackEnd with MicroSoft Azure. Development for creating Appointments with more fuctionality for the built in calendar feature.
+Goals for the Sprint: Finish up the admin schedule pages, and creating the client schedule pages, along with database communications.
 
-Completion Status: *In Progress*
+Completion Status: Complete
 
 ### Sprint 5
-Sprint Start Date: 2024/01/21
+Sprint Start Date: 2024/02/10
 
-Sprint End Date: 2024/02/04
+Sprint End Date: 2024/02/11
 
 Goals for the Sprint: Create a new and improved HomeScreen, Upcoming Appointment Screen, and LogIn Screen.
 
-Completion Status: *Hasn't Started*
+Completion Status: Complete
 
 ### Sprint 6
-Sprint Start Date: 2024/02/04
+Sprint Start Date: 2024/02/14
 
-Sprint End Date: 2024/02/18
+Sprint End Date: 2024/02/26
 
 Goals for the Sprint: Development the client and admin interaction with client screens. Create a client sign up screen, ClientInfo Screen (Admin Side), and Client Approval Screen (Admin). If there is time the ability to modify client info will be added as well the ability to reset password/email for an account or update email/login for an account.
 
-Completion Status: *Hasn't Started*
+Completion Status: Complete
 
 ### Sprint 7
-Sprint Start Date: 2024/02/18
+Sprint Start Date: 2024/02/26
 
-Sprint End Date: 2024/03/03
+Sprint End Date: 2024/03/12
 
 Goals for the Sprint: Complete the last tasks from Sprint 6 that may not have been started due to time or couldn't be completed. After previous Sprint tasks are done make an AboutMe page for Melissa Wright, FAQ page, and Services offered Screen.
 
-Completion Status: *Hasn't Started*
+Completion Status: Complete
 
 ### Sprint 8
-Sprint Start Date: 2024/03/03
+Sprint Start Date: 2024/03/12
 
-Sprint End Date: 2024/03/18
+Sprint End Date: 2024/03/31
 
 Goals for the Sprint: Complete any tasks leftover from Sprint 7 and after these are completed use whatever left over time to polish the program and fix any bugs we can.
 
-Completion Status: *Hasn't Started*
+Completion Status: Complete
 
 ### Sprint 9
 
@@ -382,7 +386,9 @@ Sprint Start Date: 2024/04/01
 
 Sprint End Date: 2024/04/15
 
-Completion Status: 
+Goals for the Sprint: Update the app with changes requested by the Client, update the server to be faster, begin deployment of the Android app and ios version. Begin documentation required for the end of the semester. 
+
+Completion Status: Complete
 
 ### Sprint 10
 
@@ -390,5 +396,7 @@ Sprint Start Date: 2024/04/15
 
 Sprint End Date: 2024/04/29
 
-Completion Status: 
+Goals for the Sprint: Finish last bugs before the end of the semester and project due and begin/finish deployment to the Google and Apple App store.
+
+Completion Status: Complete
 
