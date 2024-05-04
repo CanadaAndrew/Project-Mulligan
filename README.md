@@ -147,7 +147,76 @@ Will automatically run tests on all files that have .test in it. An example with
 
 ## Deployment
 
-*To Do Will be Completed in CSC 191*
+### Android Deployment
+
+There are several ways to deploy to the Google Play store for Android. This will explain the steps we used to deploy to the Google Play Store.
+
+Expo uses a client called [EAS](https://expo.dev/eas) which requires an account to use. Next you will need to open up and connect your Android simulator. Next you will need to open up your terminal and install the EAS Client by running this command:
+
+```bash
+npm install -g eas-cli
+```
+
+Next you will need to create an `eas.json` file in the root folder of the project. Which should contain the following code:
+
+```json
+{
+  "build": {
+    "production":{}
+  },
+  "cli": {
+    "requireCommit":true
+  }
+}
+```
+
+The next step is to choose which platform to build the app for. We wil be choosing Android for this specidic tutorial so the user will need to enter the following command into the Terminal:
+
+```bash
+eas build --platform android
+```
+
+This should if there aren't any error create an APK that can be used to submit to the Google Playstore or just run locally. If there are errors the following instructions will help you diagnose and deal with them.
+
+You should make another Github branch for the work you are about to do. In order to help find errors you will run the following command:
+
+```bash
+npx expo prebuild
+```
+or
+```bash
+npx expo prebuild --platform android
+```
+
+This should create an android folder using the app.josn file from expo. From here you can explore and experiment with the diferent potential errors you are getting within the confines of a prebuild. If you would like to test the prebuild locally you can run the following command:
+
+```bash
+eas build --platform android --local
+```
+
+If you are using a Mac or Linux you can use:
+
+```bash
+npx expo run::android
+```
+*For testing you will need to add an additonal file called `local.properties` and add the location of your android SDK*
+
+*For Windows Users the default location is:*
+
+`sdk.dir=C\:\\Users\\USERNAME\\AppData\\Local\\Android\\sdk`
+
+*For Mac OS users:*
+
+`sdk.dir = /Users/USERNAME/Library/Android/sdk`
+
+*For Linux Users:*
+
+`sdk.dir = /home/USERNAME/Android/Sdk`
+
+Finally to submit to the Google Play Store you will need to sign in with your developer account and click on the **App Bundle Explorer** to see the lost of AABs. Once clicked there should be a button called **Upload new version** which you can use to creae a new release or to update the app. 
+### IOS Deployment
+
+stuff
 
 ## Screenshots of the App
 
@@ -255,4 +324,20 @@ Sprint End Date: 2024/03/18
 Goals for the Sprint: Complete any tasks leftover from Sprint 7 and after these are completed use whatever left over time to polish the program and fix any bugs we can.
 
 Completion Status: *Hasn't Started*
+
+### Sprint 9
+
+Sprint Start Date: 2024/04/01
+
+Sprint End Date: 2024/04/15
+
+Completion Status: 
+
+### Sprint 10
+
+Sprint Start Date: 2024/04/15
+
+Sprint End Date: 2024/04/29
+
+Completion Status: 
 
