@@ -936,6 +936,34 @@ app.get('/getNewClientInfo', async (req, res) => {
     }
 });
 
+async function getNewClientInfo() {
+    try {
+        const poolConnection = await connect();
+        const query = 'SELECT NewClientView.FirstName, NewClientView.LastName, NewClientView.Email, NewClientView.PhoneNumber, NewClientView.ApprovalStatus, NewClientView.UserID FROM NewClientView WHERE ApprovalStatus = 1;';
+        const resultSet = await poolConnection
+            .request()
+            .query(query);
+        poolConnection.close();
+        return sortingResults(resultSet);
+    } catch (err) {
+        console.error(err.message);
+        throw err;
+    }
+}
+
+app.get('/getNewClientInfoServices', async (req, res) => {
+    try {
+        const userID = req.query.userID;
+        console.log(`User ID: ${userID}`);
+        let query = `SELECT ServiceName FROM ServicesWanted WHERE UserID = ${userID};`
+        console.log(query);
+        const result = await customQuery(query);
+        res.send(result);
+    } catch {
+        res.status(400).send('Bad Request');
+    }
+});
+
 async function queryCurrentUserFromEmail(email) {
 
     try {
@@ -951,21 +979,6 @@ async function queryCurrentUserFromEmail(email) {
         throw err;
     }
 
-}
-
-async function getNewClientInfo() {
-    try {
-        const poolConnection = await connect();
-        const query = 'SELECT ServicesWanted.ServiceName, NewClientView.FirstName, NewClientView.LastName, NewClientView.Email, NewClientView.PhoneNumber, NewClientView.ApprovalStatus, NewClientView.UserID FROM ServicesWanted INNER JOIN NewClientView ON ServicesWanted.UserID = NewClientView.UserID WHERE ApprovalStatus = 1;';
-        const resultSet = await poolConnection
-            .request()
-            .query(query);
-        poolConnection.close();
-        return sortingResults(resultSet);
-    } catch (err) {
-        console.error(err.message);
-        throw err;
-    }
 }
 
 async function selectAppointmentsByTime(beginDay, endDay) {

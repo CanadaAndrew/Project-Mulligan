@@ -192,6 +192,12 @@ export default function NewClientInfo() {
         //console.log('formComplete', formComplete); //for testing purposes
     }
 
+    useEffect(() => {
+        checkStateValid();
+        checkCityValid();
+        checkZipValid();
+    }, [State, City, ZipCode]);
+
     function checkZipValid()
     {
         //zip codes are 5 digits

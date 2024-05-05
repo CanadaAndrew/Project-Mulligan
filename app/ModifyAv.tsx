@@ -277,6 +277,10 @@ export default function ModifyAv() {
 
     //updates appointment schedule in database
     const handleSetSchedule = async (day) => {  
+        if(selectedDate == null){
+            notify("Please select a day before setting the schedule.");
+            return;
+        }
 
         const insertions = appointmentTimes.filter(time => !databaseTimes.includes(time)); //times to insert into database
         const deletions = deletedTimes.filter(time => !bookedAppointmentTimes.includes(time)); //times to delete from database
@@ -376,7 +380,7 @@ export default function ModifyAv() {
         var result = [];
         for (let i = 0; i < listOfTimes.length; i++) {
             result.push(
-                <View style={styles.timeRow} key = {i} >
+                <View key = {i} >
                     <View style={styles.timeCell}>
                         <TouchableOpacity
                             style={[styles.timeButton, { backgroundColor: 'white' }]}
@@ -604,17 +608,14 @@ const styles = StyleSheet.create({
     },
     // for the time slots
     timeContainer: {
-        flexGrow: 1,
-    },
-    timeRow: {
         flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        paddingBottom: 15
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     timeCell: {
-        //width: 80,
+        width: 110,
         paddingRight: 10,
-        width: '20%',             //Adjust width to 20% for five buttons per row
         justifyContent: 'center', //center content vertically
         alignItems: 'center',     //center content horizontally
         marginBottom: 10,         //add marginBottom for spacing
@@ -654,7 +655,6 @@ const styles = StyleSheet.create({
     timeButton: {
         padding: 10,
         borderRadius: 5,
-        alignItems: 'center',
     },
     buttonText: {
         fontSize: 16,

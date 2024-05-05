@@ -116,7 +116,7 @@ export default function SignUp() { // added route for page navigation
         }
     }
     const setPhoneNumFormat = (input) => {
-        if( input.length <= 14){
+        if( input.length <= 12){
             if( /^\d*$/.test(input)){
                 const formatPhoNum = formattingPhoneNumber(input);
                 newPhoneNumber(formatPhoNum);
@@ -133,6 +133,9 @@ export default function SignUp() { // added route for page navigation
             setpasswordValid(password.length > 7 ? true : false);
     }
     function checkconfirmPasswordValid() {
+        console.log('setconfirmPasswordValid:', password == confirmPassword ? true : false); //for testing
+        console.log('password:', password); //for testing
+        console.log('confirmPassword:', confirmPassword); //for testing
         setconfirmPasswordValid(password == confirmPassword ? true : false)
     }
 
@@ -194,7 +197,7 @@ export default function SignUp() { // added route for page navigation
                     preferredWayOfContact: preferred_way_of_contact*/
                     userID: userID,
                     firstName: firstName,
-                    lastName: lastName,
+                    lastName:  lastName,
                     preferredWayOfContact:contactSelected.join(", "), //form info?
                 }),
                 type: 'post'
@@ -259,6 +262,7 @@ export default function SignUp() { // added route for page navigation
             createUserWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
                     const user = userCredential.user;
+                    return 0;
                 })
                 .catch((error) => {
                     const errorCode = error.code;
@@ -268,16 +272,35 @@ export default function SignUp() { // added route for page navigation
                     return 1; //returns 1 on sign up fail so that way it doesn't post this user to the database
                 });
             //}
-            return 0;
         }
         //returns 1 if something along the way messed up so it doesn't post the new user to the database
-        notify("Something went wrong. Please enter account information and try again.")
+        notify("Something went wrong. Please enter account information and try again. If you already signed up with the email used, please log in with that email.")
         return 1;
     }
+
+    useEffect(() => {
+        checkconfirmPasswordValid();
+        checkpasswordValid()
+    }, [password, confirmPassword]);
+
+    useEffect(() => {
+        checkphoneNumberValid()
+    }, [phoneNumber])
 
     async function handleSignUpPress() {
         //registers the user with Firebase first then if the function returns 0 meaning a successful user creation
         //it will post the user to the database and route them back to the login page
+        console.log('formComplete:', formComplete); //for testing
+        console.log('firstNameValid:', firstNameValid); //for testing
+        console.log('lastNameValid:', lastNameValid); //for testing
+        console.log('emailValid:', emailValid); //for testing
+        console.log('phoneNumberValid:', phoneNumberValid); //for testing
+        console.log('passwordValid:', passwordValid); //for testing
+        console.log('confirmPasswordValid:', confirmPasswordValid); //for testing
+        console.log('selected.length:', selected.length); //for testing
+        console.log('selectedCont.length:', selectedCont.length); //for testing
+        console.log('password:', password); //for testing
+        console.log('confirmPassword', confirmPassword); //for testing
         let verify = await newUserSignUp();
 
         if (verify == 0) {
