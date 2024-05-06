@@ -250,7 +250,7 @@ export default function SignUp() { // added route for page navigation
         }
     };
 
-    function newUserSignUp() {
+    async function newUserSignUp() {
         //password conditionals if these are both false move onto setting the 
         if (password != confirmPassword) {
             notify("Passwords did not match. Please try again.")
@@ -259,18 +259,17 @@ export default function SignUp() { // added route for page navigation
             notify("No password was entered. Please enter in a password.")
         }
         else {
-            createUserWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    const user = userCredential.user;
-                    return 0;
-                })
-                .catch((error) => {
-                    const errorCode = error.code;
-                    const errorMessage = error.message;
-                    console.log(errorCode);
-                    console.log(errorMessage);
-                    return 1; //returns 1 on sign up fail so that way it doesn't post this user to the database
-                });
+            try{
+                await createUserWithEmailAndPassword(auth, email, password)
+                return 0;
+            }catch(error){
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(errorCode);
+                console.log(errorMessage);
+                notify("Something went wrong. Please enter account information and try again. If you already signed up with the email used, please log in with that email.")
+                return 1; //returns 1 on sign up fail so that way it doesn't post this user to the database
+            }           
             //}
         }
         //returns 1 if something along the way messed up so it doesn't post the new user to the database
