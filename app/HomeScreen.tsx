@@ -4,8 +4,10 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { router, useGlobalSearchParams, useLocalSearchParams } from 'expo-router';
-import { notify } from './Enums/Enums';
+import { functionGetRetry, notify, funcObj } from './Enums/Enums';
 import {RootSiblingParent} from "react-native-root-siblings"
+import { deleteUser, getAuth } from 'firebase/auth';
+import database from './axiosConfig';
 
 // button viewablility based on workflow in google drive green = new clients, blue = existing clients, and red = Admin with some 
 // overlap. comments have been added above each button for clarification.
@@ -44,6 +46,12 @@ export default function HomeScreen(){
 
 //This block constructs buttons that the Admin can see
 function filterButtons(){
+    var deleteButton = <TouchableOpacity
+      style = {styles.homeButton}
+      onPress = {() => deleteAccount()}
+      >
+      <Text style = {styles.homeButtonText}>Delete your account</Text>
+      </TouchableOpacity>
     if(userData.adminPriv == 'true')
   {
     //Modifies Calendar Availability
@@ -101,6 +109,7 @@ function filterButtons(){
     buttons.push(ModifyClientInfoSearch);
     buttons.push(servicesOfferedButton);
     buttons.push(aboutMeButton);
+    buttons.push(deleteButton)
     //buttons.push(FAQButton);
     setButtonDisplay(buttons);
   }
@@ -146,6 +155,7 @@ function filterButtons(){
     buttons.push(yourAppointmentsButton);
     buttons.push(servicesOfferedButton2);
     buttons.push(aboutMeButton2);
+    buttons.push(deleteButton)
     //buttons.push(FAQButton2);
     setButtonDisplay(buttons);
   }
@@ -185,9 +195,29 @@ function filterButtons(){
     buttons.push(servicesOfferedButton3);
     buttons.push(aboutMeButton3);
     //buttons.push(FAQButton3);
-
+    buttons.push(deleteButton)
     setButtonDisplay(buttons);
   }
+}
+
+async function deleteAccount(){
+  const auth = getAuth();
+  const user = auth.currentUser;
+  try{
+    await deleteUser(user)
+    const funcObj:funcObj = {
+      entireFunction: () => database.delete('/deleteUsersByUserID',{
+          params:{
+              userID: userData.userID
+          }
+      }),
+      type: 'delete'
+  };
+  await functionGetRetry(funcObj);
+  }catch(error){
+    notify(error.toString())
+  }
+  router.replace({pathname:"/", params: {returnMessage:"Account has been deleted"}});
 }
 
 function sendNotification(){
