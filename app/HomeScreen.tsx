@@ -1,5 +1,5 @@
 
-import { StyleSheet, Text, View, Pressable, Image, ImageBackground, ScrollView, Button, Touchable, FlatList} from 'react-native';
+import { StyleSheet, Text, View, Pressable, Image, ImageBackground, ScrollView, Button, Touchable, FlatList, Alert} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -200,24 +200,40 @@ function filterButtons(){
   }
 }
 
-async function deleteAccount(){
+async function deleteAccount() {
+  Alert.alert(
+    "Confirm Deletion",
+    "Are you sure you want to delete your account?",
+    [
+      {
+        text: "Cancel",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel"
+      },
+      { text: "OK", onPress: () => confirmDelete() }
+    ],
+    { cancelable: false }
+  );
+}
+
+async function confirmDelete() {
   const auth = getAuth();
   const user = auth.currentUser;
-  try{
+  try {
     await deleteUser(user)
-    const funcObj:funcObj = {
-      entireFunction: () => database.delete('/deleteUsersByUserID',{
-          params:{
-              userID: userData.userID
-          }
+    const funcObj: funcObj = {
+      entireFunction: () => database.delete('/deleteUsersByUserID', {
+        params: {
+          userID: userData.userID
+        }
       }),
       type: 'delete'
-  };
-  await functionGetRetry(funcObj);
-  }catch(error){
+    };
+    await functionGetRetry(funcObj);
+    router.replace({ pathname: "/", params: { returnMessage: "Account has been deleted" } });
+  } catch (error) {
     notify(error.toString())
   }
-  router.replace({pathname:"/", params: {returnMessage:"Account has been deleted"}});
 }
 
 function sendNotification(){
