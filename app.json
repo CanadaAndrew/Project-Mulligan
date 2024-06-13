@@ -16,7 +16,9 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "buildNumber": "1"
+      "buildNumber": "1",
+      "bundleIdentifier": "com.hairdonewright530.theprojectmullet",
+      "image":"latest"
     },
     "android": {
       "adaptiveIcon": {
