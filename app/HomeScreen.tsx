@@ -262,6 +262,8 @@ export default function HomeScreen(){
                 <ImageBackground
                     style = {styles.logo}
                     source={require('./images/Hair_Done_Wright_LOGO.png')}
+                    imageStyle = {styles.logo}
+                    resizeMode='cover'
                 >
                 </ImageBackground>
                 <LinearGradient
@@ -321,6 +323,7 @@ export default function HomeScreen(){
 
 const styles = StyleSheet.create({
     container:{
+      backgroundColor: 'white',
         borderRadius: 90
     },
     listView:{
@@ -343,6 +346,7 @@ const styles = StyleSheet.create({
     logo: {
         width: 435,
         height: 250,
+        alignSelf: 'center'
     },
     // shadow for objects IOS
     boxShadowIOS: {

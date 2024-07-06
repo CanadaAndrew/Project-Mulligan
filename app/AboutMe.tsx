@@ -22,7 +22,7 @@ export default function AboutMe() {
 </View>
 
                    
-                    <Image style = {styles.logo} source={require('./images/Melissa.jpg')} />
+                    <ImageBackground style = {styles.logo} source={require('./images/Melissa.jpg')} imageStyle = {styles.logo} resizeMode='cover'/>
                     <View>
                         <Text>{'\n'}</Text>
                     </View>
@@ -39,6 +39,7 @@ export default function AboutMe() {
 
 const styles = StyleSheet.create({
     container: {
+        backgroundColor: 'white',
         flex: 1,
         //backgroundColor: '#DDA0DD'
     },
@@ -192,5 +193,6 @@ const styles = StyleSheet.create({
       logo: {
         width: 435,
         height: 250,
+        alignSelf: 'center'
     }
 })

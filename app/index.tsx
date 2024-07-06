@@ -220,6 +220,8 @@ export default function Login() {
                 <ImageBackground
                     style={styles.logo}
                     source={require('./images/Hair_Done_Wright_LOGO.png')}
+                    imageStyle = {styles.logo}
+                    resizeMode='cover'
                 >
                 </ImageBackground>
 
@@ -305,6 +307,7 @@ export default function Login() {
 
 const styles = StyleSheet.create({
     container: {
+        backgroundColor: 'white',
         borderRadius: 90,
         paddingBottom: 0
     },
@@ -331,6 +334,7 @@ const styles = StyleSheet.create({
     logo: {
         width: 440,
         height: 275,
+        alignSelf: 'center'
     },
     // shadow for objects IOS
     boxShadowIOS: {
