@@ -16,7 +16,9 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "buildNumber": "1"
+      "buildNumber": "2",
+      "bundleIdentifier": "com.hairdonewright530.theprojectmullet",
+      "image":"latest"
     },
     "android": {
       "adaptiveIcon": {
@@ -24,7 +26,7 @@
         "backgroundColor": "#942989"
       },
       "package": "com.hairdonewright530.theprojectmullet",
-      "versionCode": 2
+      "versionCode": 3
     },
     "scheme": "hairdonewright530",
     "plugins": [
