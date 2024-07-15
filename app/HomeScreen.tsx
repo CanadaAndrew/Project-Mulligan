@@ -1,8 +1,7 @@
 
-import { StyleSheet, Text, View, Pressable, Image, ImageBackground, ScrollView, Button, Touchable, FlatList, Alert, Modal} from 'react-native';
+import { StyleSheet, Text, View, Pressable, Image, ImageBackground, ScrollView, Button, Touchable, FlatList, Alert, Modal, TouchableOpacity} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { router, useGlobalSearchParams, useLocalSearchParams } from 'expo-router';
 import { functionGetRetry, notify, funcObj } from './Enums/Enums';
 import {RootSiblingParent} from "react-native-root-siblings"
@@ -116,7 +115,6 @@ export default function HomeScreen(){
             buttons.push(ModifyClientInfoSearch);
             buttons.push(servicesOfferedButton);
             buttons.push(aboutMeButton);
-            buttons.push(deleteButton)
             //buttons.push(FAQButton);
             setButtonDisplay(buttons);
         }
