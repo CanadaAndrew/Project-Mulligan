@@ -9,7 +9,8 @@ import {
     Pressable,
     FlatList,
     Image,
-    ScrollView
+    ScrollView,
+    ImageBackground
 } from 'react-native';
 import { Link, router, useLocalSearchParams} from 'expo-router';
 import database from './axiosConfig'; // Import axios from the axiosConfig.js file
@@ -210,14 +211,7 @@ export default function SetupAppointment2() { // added route for page navigation
             <>
                 <StatusBar backgroundColor={'black'} />
                     <View style={styles.container}>
-                        <View style={styles.header}>
-                            <View style={styles.backButton}>
-                            </View>
-                            <View style={styles.logoContainer}>
-                                <Image source={require('./images/logo.png')} style={styles.logo} />
-                            </View>
-                        </View>
-
+                        <ImageBackground source={require('./images/logo.png')} style={styles.logo} imageStyle = {styles.logo} resizeMode='cover'/>
                         <LinearGradient locations={[0.8, 1]} colors={['#DDA0DD', 'white']} style={styles.linearGradientStyle}>
                             <View style={styles.body}>
                                 <View style={styles.appointmentInfoContainer}>
@@ -367,8 +361,8 @@ export default function SetupAppointment2() { // added route for page navigation
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         backgroundColor: 'white',
+        borderRadius: 90,
         paddingBottom: 400
     },
     body: {
@@ -394,7 +388,8 @@ const styles = StyleSheet.create({
     logo: {
         width: 170,
         height: 150,
-    },
+        alignSelf:'center'
+        },
     logoContainer: {
         //height: 60,
         alignItems: 'center',

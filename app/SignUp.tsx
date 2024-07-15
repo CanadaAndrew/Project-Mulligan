@@ -10,7 +10,8 @@ import {
     Pressable,
     FlatList,
     Image,
-    TextInput
+    TextInput,
+    ImageBackground
 } from 'react-native';
 import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-list';
 import database from './axiosConfig'; // Import axios from the axiosConfig.js file
@@ -314,7 +315,7 @@ export default function SignUp() { // added route for page navigation
             <StatusBar backgroundColor={'black'} />
             <ScrollView style={styles.container}>
                 <View style={styles.header}>
-                    <Image source={require('./images/logo.png')} style={styles.logo} />
+                    <ImageBackground source={require('./images/logo.png')} style={styles.logo} imageStyle={styles.logo} />
                 </View>
                 <LinearGradient locations={[0.8, 1]} colors={['#DDA0DD', 'white']} style={styles.linearGradientStyle}>
                     <View style={styles.body}>
@@ -463,7 +464,8 @@ const styles = StyleSheet.create({
     // logo styling
     logo: {
         width: 170,
-        height: 150
+        height: 150,
+        alignSelf: 'center'
     },
     // create account
     createAccountContainer: {

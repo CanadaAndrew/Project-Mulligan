@@ -1558,6 +1558,17 @@ app.delete('/deleteNewClientsByUserID', (req, res) =>{
     })
 });
 
+app.delete('/deleteUsersByUserID', (req, res) =>{
+    const userID = req.query.userID;
+    const query = `DELETE FROM Users WHERE UserID = ${userID}`;
+    customQueryNoReturn(query)
+    .then((ret) => res.send(ret))
+    .catch(err => {
+        console.error('Error deleting a new client:', err.message);
+        res.status(500).send('Internal Server Error');
+    })
+});
+
 async function customQueryNoReturn(queryString){
     try {
         const poolConnection = await connect();

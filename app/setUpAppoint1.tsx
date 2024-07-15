@@ -87,6 +87,8 @@ const renderSelectedDates = () => {
             <ImageBackground
               style = {styles.logo}
               source={require('./images/Hair_Done_Wright_LOGO.png')}
+              resizeMode = 'cover'
+              imageStyle = {styles.logo}
             >
             </ImageBackground>
 
@@ -169,6 +171,7 @@ const renderSelectedDates = () => {
 
 const styles = StyleSheet.create({
     container:{
+        backgroundColor: 'white',
         borderRadius: 90
     },
     // title styling for dropdown menu and calendar 
@@ -207,6 +210,7 @@ const styles = StyleSheet.create({
     logo: {
         width: 435,
         height: 250,
+        alignSelf: 'center'
     },
     // shadow for objects IOS
     boxShadowIOS: {
