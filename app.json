@@ -2,7 +2,7 @@
   "expo": {
     "name": "HairDoneWright530",
     "slug": "HairDoneWright530",
-    "version": "1.0.4",
+    "version": "1.0.6",
     "orientation": "portrait",
     "icon": "./assets/logo.png",
     "userInterfaceStyle": "light",
@@ -16,7 +16,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "buildNumber": "2",
+      "buildNumber": "3",
       "bundleIdentifier": "com.hairdonewright530.theprojectmullet",
       "image":"latest"
     },
@@ -26,7 +26,7 @@
         "backgroundColor": "#942989"
       },
       "package": "com.hairdonewright530.theprojectmullet",
-      "versionCode": 3
+      "versionCode": 4
     },
     "scheme": "hairdonewright530",
     "plugins": [
