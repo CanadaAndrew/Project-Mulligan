@@ -324,7 +324,7 @@ export default function SetupAppointment2() { // added route for page navigation
                                                     }),
                                                     type: 'put'
                                                 };
-                                                await functionGetRetry(funcObj).then(() => { router.push({ pathname: "HomeScreen", params: { returnMessage: 'Your appointment has been booked!' } }) }).catch((error) => notify('Error booking an appointment: ' + error.toString()));
+                                                await functionGetRetry(funcObj).then(() => { router.navigate({ pathname: "HomeScreen", params: { userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved, returnMessage: 'Your appointment has been booked!' } }) }).catch((error) => notify('Error booking an appointment: ' + error.toString()));
                                             }
                                         }
                                         }

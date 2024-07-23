@@ -1,11 +1,10 @@
-import { StyleSheet, Text, View, Pressable, FlatList, Button, Modal, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Pressable, FlatList, Button, Modal, TouchableOpacity, ScrollView, TextInput  } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState, } from 'react';
 import { Link } from 'expo-router';
 import { SelectList } from 'react-native-dropdown-select-list';
 import database from './axiosConfig'; // Import axios from the axiosConfig.js file
 import moment from 'moment-timezone';
-import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import { text } from 'express';
 import Constants from 'expo-constants';
 import { UTCtoPSTString, funcObj, functionGetRetry, notify} from './Enums/Enums';

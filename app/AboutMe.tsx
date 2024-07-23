@@ -1,10 +1,9 @@
-import { StyleSheet, Text, View, Pressable, Image, ImageBackground, ScrollView, Button} from 'react-native';
+import { StyleSheet, Text, View, Pressable, Image, ImageBackground, ScrollView, Button, TouchableOpacity} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Link } from 'expo-router';
 import React from 'react';
 import MyCalendar from './MyCalendar';
 import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-list';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const aboutMeText = "HairDoneWright530 is a place for your entire family.  Passion for hair is something I have enjoyed my entire life.  I love color, cut and specialize in Blonding Services.  I believe every client is a masterpiece.  Message me.  Let’s work together to achieve your hair dreams. -Melissa";
 

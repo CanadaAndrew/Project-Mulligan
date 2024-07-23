@@ -63,42 +63,42 @@ export default function HomeScreen(){
             //Modifies Calendar Availability
             var modifyAvButton = <TouchableOpacity
                 style = {styles.homeButton}
-                onPress = {() => router.push({pathname:"ModifyAv", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved}})}
+                onPress = {() => router.push({pathname:"ModifyAv", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved, returnMessage: null}})}
                 >  
                 <Text style = {styles.homeButtonText}>Modify Calendar</Text>
             </TouchableOpacity>
             //Views Client History 
             var clientHistoryButton = <TouchableOpacity
                 style = {styles.homeButton}
-                onPress = {() => router.push({pathname:"ClientHistory", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved}})}
+                onPress = {() => router.push({pathname:"ClientHistory", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved, returnMessage: null}})}
                 >  
                 <Text style = {styles.homeButtonText}>Client Appointments</Text>
             </TouchableOpacity>
             //Views Client Search screen
             var ModifyClientInfoSearch = <TouchableOpacity
                 style = {styles.homeButton}
-                onPress = {() => router.push("ModifyClientInfoSearch")}
+                onPress = {() => router.push({pathname:"ModifyClientInfoSearch", params: {returnMessage: null}})}
                 >  
                 <Text style = {styles.homeButtonText}>Modify Client Search</Text>
             </TouchableOpacity>
             //Takes you to the New Client Approval page !WIP! no functionality
             var newClientApprovalButton = <TouchableOpacity
                 style = {styles.homeButton}
-                onPress = {() => router.push({pathname:"NewClientApproval", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved}})}
+                onPress = {() => router.push({pathname:"NewClientApproval", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved, returnMessage: null}})}
                 >
                 <Text style = {styles.homeButtonText}>New Client Approval</Text>
             </TouchableOpacity>
             //takes you to the Services Offered Page
             var servicesOfferedButton = <TouchableOpacity
                 style = {styles.homeButton}
-                onPress = {() => router.push("ServicesOffered")}
+                onPress = {() => router.push({pathname: "ServicesOffered", params: {returnMessage: null}})}
                 >
                 <Text style = {styles.homeButtonText}>Services Offered</Text>
             </TouchableOpacity>
             //Takes you to the About Me Page
             var aboutMeButton = <TouchableOpacity
                 style = {styles.homeButton}
-                onPress = {() => router.push("AboutMe")}
+                onPress = {() => router.push({pathname: "AboutMe", params: {returnMessage: null}})}
                 >
                 <Text style = {styles.homeButtonText}>About Me</Text>
             </TouchableOpacity>
@@ -123,28 +123,28 @@ export default function HomeScreen(){
             //Takes you to the Set Up Appointment Page
             var scheduleAppointmentButton2 = <TouchableOpacity
                 style = {styles.homeButton}
-                onPress = {() => router.push({pathname:"setUpAppoint1", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved}})}
+                onPress = {() => router.push({pathname:"setUpAppoint1", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved, returnMessage: null}})}
                 >
                 <Text style = {styles.homeButtonText}>Schedule Appointments</Text>
             </TouchableOpacity>
             //Takes you to the Your Appointments page
             var yourAppointmentsButton = <TouchableOpacity
                 style = {styles.homeButton}
-                onPress = {() => router.push({pathname:"appointmentsClientView", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved}})}
+                onPress = {() => router.push({pathname:"appointmentsClientView", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved, returnMessage: null}})}
                 >
                 <Text style = {styles.homeButtonText}>Your Appointments</Text>
             </TouchableOpacity>
             //Takes you to the Services offered page
             var servicesOfferedButton2 = <TouchableOpacity
                 style = {styles.homeButton}
-                onPress = {() => router.push("ServicesOffered")}
+                onPress = {() => router.push({pathname: "ServicesOffered", params:{returnMessage: null}})}
                 >
                 <Text style = {styles.homeButtonText}>Services Offered</Text>
             </TouchableOpacity>
             //Takes you to the About Me page
             var aboutMeButton2 = <TouchableOpacity
                 style = {styles.homeButton}
-                onPress = {() => router.push("AboutMe")}
+                onPress = {() => router.push({pathname: "AboutMe", params: {returnMessage: null}})}
                 >
                 <Text style = {styles.homeButtonText}>About Me</Text>
             </TouchableOpacity>
@@ -168,14 +168,14 @@ export default function HomeScreen(){
         //Takes you to the services offerd page
         var servicesOfferedButton3 = <TouchableOpacity
             style = {styles.homeButton}
-            onPress = {() => router.push("ServicesOffered")}
+            onPress = {() => router.push({pathname: "ServicesOffered", params:{returnMessage: null}})}
             >
             <Text style = {styles.homeButtonText}>Services Offered</Text>
         </TouchableOpacity>
         //Takes you to the About Me page
         var aboutMeButton3 = <TouchableOpacity
             style = {styles.homeButton}
-            onPress = {() => router.push("AboutMe")}
+            onPress = {() => router.push({pathname: "AboutMe", params:{returnMessage: null}})}
             >
             <Text style = {styles.homeButtonText}>About Me</Text>
         </TouchableOpacity>
@@ -189,7 +189,7 @@ export default function HomeScreen(){
         // Once Approved new client can view and fill out this page
         var newClientInfoButton = <TouchableOpacity
             style = {styles.homeButton}
-            onPress = {() => router.push({pathname:"newClientInfo", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved}})}
+            onPress = {() => router.push({pathname:"newClientInfo", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved, returnMessage: null}})}
             >
             <Text style = {styles.homeButtonText}>Complete Sign-Up</Text>
         </TouchableOpacity>
@@ -242,12 +242,13 @@ export default function HomeScreen(){
     function sendNotification(){
         if(returnMessage != null && returnMessage.length != 0){
             notify(returnMessage);
-            router.setParams({returnMessage:null});
         }
     }
 
     useEffect(()=>{
-        sendNotification();
+        if(returnMessage != null){
+            sendNotification();
+        }
     }, [returnMessage])
 
     useEffect(()=>{

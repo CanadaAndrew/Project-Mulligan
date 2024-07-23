@@ -1,6 +1,5 @@
-import { StyleSheet, Text, View, TextInput, Pressable, Image, ImageBackground, ScrollView, Button, Touchable } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Pressable, Image, ImageBackground, ScrollView, Button, Touchable, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 //import { MaterialCommunityIcons as Icon} from "@expo/vector-icons";
 import React, { useEffect, useState } from 'react';
 import firebase from './Firebase.js'  // import firebase
@@ -16,7 +15,6 @@ export default function Login() {
     function sendNotification(){
         if(returnMessage != null && returnMessage.length != 0){
           notify(returnMessage);
-          router.setParams({returnMessage:null});
         }
       }
       
@@ -45,12 +43,12 @@ export default function Login() {
 
     const onClickSignUp = () => {
         //navigation.navigate("SignUp", { userData });
-        router.push("SignUp");
+        router.push({pathname: "SignUp", params: {returnMessage: null}});
     }
 
     const onClickForgotLogin = () => {
         //navigation.navigate("ForgotLogin", { userData });
-        router.push("ForgotLogin");
+        router.push({pathname: "ForgotLogin", params:{returnMessage: null}});
     }
 
     const onClickLogin = async () => {
@@ -86,7 +84,7 @@ export default function Login() {
                 if(userData.userID == 'guest'){
                     router.push({pathname:"HomeScreen", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved, returnMessage: "Unable to get your information from the Database. Logged in as guest. Please try logging in again for more access."}});
                 }else{
-                    router.push({pathname:"HomeScreen", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved}});
+                    router.push({pathname:"HomeScreen", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved, returnMessage: null}});
                 }
                 
             } else {

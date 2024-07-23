@@ -1,6 +1,5 @@
-import { StyleSheet, Text, View, ScrollView, TextInput, ImageBackground,} from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TextInput, ImageBackground, TouchableOpacity} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import React, {useState, useEffect} from 'react';
 import database from './axiosConfig'; // Import axios from the axiosConfig.js file
 import firebase from './Firebase';

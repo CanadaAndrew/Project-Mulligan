@@ -1,10 +1,9 @@
-import { StyleSheet, Text, View, Pressable, Image, ImageBackground, ScrollView, Button} from 'react-native';
+import { StyleSheet, Text, View, Pressable, Image, ImageBackground, ScrollView, Button, TouchableOpacity} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Link, router, useLocalSearchParams } from 'expo-router';
 import React from 'react';
 import MyCalendar from './MyCalendar';
 import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-list';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useRef } from 'react';
 import { notify } from './Enums/Enums';
 import { RootSiblingParent } from 'react-native-root-siblings'
