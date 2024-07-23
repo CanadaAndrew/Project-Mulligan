@@ -81,6 +81,7 @@ npm install react-native-vector-icons
 npm install firebase
 npm install @react-native-async-storage/async-storage
 npm install react-native-root-toast
+npx expo install expo-build-properties
 ```
 
 ## Setting up the Simulators
