@@ -288,9 +288,6 @@ export default function HomeScreen(){
                                 contentContainerStyle = {{flexGrow: 1}}
                             />
                         </View>
-                        <TouchableOpacity style={styles.homeButton} onPress={deleteAccount}>
-                            <Text style={styles.homeButtonText}>Delete your account</Text>
-                        </TouchableOpacity>
                         {/* Delete Account Modal */}
                         <Modal
                             animationType="fade"
