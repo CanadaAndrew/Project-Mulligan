@@ -1,5 +1,7 @@
 import { StyleSheet, Text, View, TextInput, Pressable, Image, ImageBackground, ScrollView, Button, Touchable, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+//import { TouchableOpacity } from 'react-native-gesture-handler';
+import {TouchableOpacity} from 'react-native';
 //import { MaterialCommunityIcons as Icon} from "@expo/vector-icons";
 import React, { useEffect, useState } from 'react';
 import firebase from './Firebase.js'  // import firebase
