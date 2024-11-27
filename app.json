@@ -2,7 +2,7 @@
   "expo": {
     "name": "HairDoneWright530",
     "slug": "HairDoneWright530",
-    "version": "1.0.6",
+    "version": "1.0.61",
     "orientation": "portrait",
     "icon": "./assets/logo.png",
     "userInterfaceStyle": "light",
@@ -16,9 +16,12 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "buildNumber": "3",
+      "buildNumber": "4",
       "bundleIdentifier": "com.hairdonewright530.theprojectmullet",
-      "image": "latest"
+      "image": "latest",
+      "config": {
+        "hermes": true
+      }
     },
     "android": {
       "adaptiveIcon": {
