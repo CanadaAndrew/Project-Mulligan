@@ -25,7 +25,10 @@
         "backgroundColor": "#942989"
       },
       "package": "com.hairdonewright530.theprojectmullet",
-      "versionCode": 5
+      "versionCode": 5,
+      "permissions": [
+        "android.permission.DETECT_SCREEN_CAPTURE"
+      ]
     },
     "scheme": "hairdonewright530",
     "plugins": [
