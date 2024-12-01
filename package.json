@@ -45,14 +45,15 @@
     "react-native-web": "~0.19.6",
     "react-navigation-stack": "^2.10.4",
     "react-router-dom": "^6.18.0",
-    "typescript": "~5.3.3"
+    "typescript": "~5.3.3",
+    "expo-system-ui": "~2.9.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
   },
   "overrides": {
-    "metro": "0.76.0",
-    "metro-resolver": "0.76.0"
+    "metro": "~0.80.4",
+    "metro-resolver": "~0.80.4"
   },
   "private": true
 }

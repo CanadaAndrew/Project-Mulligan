@@ -83,7 +83,7 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.hairdonewright530"
+    namespace 'com.hairdonewright530.theprojectmullet'
     defaultConfig {
         applicationId 'com.hairdonewright530.theprojectmullet'
         minSdkVersion rootProject.ext.minSdkVersion
