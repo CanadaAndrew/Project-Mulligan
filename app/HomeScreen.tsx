@@ -1,5 +1,6 @@
 
-import { StyleSheet, Text, View, Pressable, Image, ImageBackground, ScrollView, Button, Touchable, FlatList, Alert, Modal, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View, Pressable, Image, ImageBackground, ScrollView, 
+    Button, Touchable, FlatList, Alert, Modal, TouchableOpacity} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
 import { router, useGlobalSearchParams, useLocalSearchParams } from 'expo-router';
@@ -319,10 +320,11 @@ export default function HomeScreen(){
 
 const styles = StyleSheet.create({
     container:{
-      backgroundColor: 'white',
-        borderRadius: 90
+        flex: 1,
+        backgroundColor: 'white',
     },
     listView:{
+        flex: 1,
         height: 475
     },
     // title styling 
