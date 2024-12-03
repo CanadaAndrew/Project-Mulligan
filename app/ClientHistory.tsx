@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View, Pressable, FlatList, Button, Modal, TouchableOpacity, ScrollView, TextInput  } from 'react-native';
+import { StyleSheet, Text, View, Pressable, FlatList, Button, Modal, 
+    TouchableOpacity, ScrollView, TextInput, SafeAreaView  } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState, } from 'react';
 import { Link } from 'expo-router';
@@ -532,220 +533,221 @@ export default function ClientHistory() {
 
     return (
         <RootSiblingParent>
-        <>
-        <ScrollView>
-            <LinearGradient
+          <SafeAreaView style={{ flex: 1 }}>
+            <>
+            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+              <LinearGradient
                 locations={[0.7, 1]}
                 colors={['#DDA0DD', 'white']}
-                style={styles.container}>
-                <View style={styles.container}>
+                style={{ flex: 1 }}>
+                <View style={{ flex: 1 }}>
 
-                    {/*Upcoming Appointments*/}
-                    <View style = {styles.sectionTitle}>
-                        <Text style = {styles.sectionTitleText}>Upcoming Appointments:</Text>
-                    </View>
+                  {/*Upcoming Appointments*/}
+                  <View style = {styles.sectionTitle}>
+                    <Text style = {styles.sectionTitleText}>Upcoming Appointments:</Text>
+                  </View>
 
-                    {/*drop down list formatting and rendering */}
-                    <View>
-                        <SelectList
-                            dropdownShown={false}
-                            setSelected={(val) => setSelected(val)}
-                            data={filter}
-                            boxStyles={{ backgroundColor: 'white' }}
-                            dropdownStyles={{ backgroundColor: 'white' }}
-                            save='value'
-                            search={false}
-                            defaultOption={{ key: 'Today', value: 'Today' }}
-                            onSelect={() => handleSelection(selected)}
-                            
-                        />
-                    </View>
-
-                    {/* flat list is replacing the hard coded list from before as this can work with database data and print out the entire list at once */}
-                    <FlatList
-                        data={upcomingClientAppointments}
-                        horizontal={true}
-                        renderItem={({ item }) => (
-                            <Pressable onPress={() => handleTilePress(item)}>
-                                <View style={[styles.appointBox, styles.boxShadowIOS, styles.boxShadowAndroid]}>
-                                    <View style={styles.textAlignment}>
-                                        <Text style={[styles.appointText, styles.clientContainer]}>
-                                            <Text style={styles.clientLabel}>Customer:  </Text>
-                                            <Text style={styles.clientInfo}> {item.FirstName + ' ' + item.LastName}</Text>
-                                        </Text>
-                                    </View>
-                                    <View style={styles.textAlignment}>
-                                        <Text style={[styles.appointText, styles.clientContainer]}>
-                                            <Text style={styles.clientLabel}>Service:  </Text>
-                                            <Text style={styles.clientInfo}>{item.TypeOfAppointment}</Text>
-                                        </Text>
-                                    </View>
-                                    <View style={styles.textAlignment}>
-                                        <Text style={[styles.appointText, styles.clientContainer]}>
-                                            <Text style={styles.clientLabel}>Date:  </Text>
-                                            <Text style={styles.clientInfo}>{item.AppointmentDate.substring(0, 10)}</Text>
-                                        </Text>
-                                    </View>
-                                    <View style={styles.textAlignment}>
-                                        <Text style={[styles.appointText, styles.clientContainer]}>
-                                            <Text style={styles.clientLabel}>Time:  </Text>
-                                            <Text style={styles.clientInfo}>{item.AppointmentDate.substring(11, 16)}</Text>
-                                        </Text>
-                                    </View>
-                                    <View style={styles.textAlignment}>
-                                        <Text style={[styles.appointText, styles.clientContainer]}>
-                                            <Text style={styles.clientLabel}>Appointment Notes:  </Text>
-                                            <Text style={styles.clientInfo}>{item.AppointmentNotes}</Text>
-                                        </Text>
-                                    </View>
-                                </View>
-                            </Pressable>
-                        )}
+                  {/*drop down list formatting and rendering */}
+                  <View>
+                    <SelectList
+                      dropdownShown={false}
+                      setSelected={(val) => setSelected(val)}
+                      data={filter}
+                      boxStyles={{ backgroundColor: 'white' }}
+                      dropdownStyles={{ backgroundColor: 'white' }}
+                      save='value'
+                      search={false}
+                      defaultOption={{ key: 'Today', value: 'Today' }}
+                      onSelect={() => handleSelection(selected)}      
                     />
+                  </View>
 
-                    {/*Past Appointments*/}
-                    <View style={styles.sectionTitle}>
-                        <Text style={styles.sectionTitleText}>Past Appointments:</Text>
-                    </View>
-
-                    {/*drop down list formatting and rendering */}
-                    <View>
-                        <SelectList
-                            setSelected={(val) => setSelected(val)}
-                            data={filter}
-                            boxStyles={{ backgroundColor: 'white' }}
-                            dropdownStyles={{ backgroundColor: 'white' }}
-                            save='value'
-                            search={false}
-                            defaultOption={{ key: 'Today', value: 'Today' }}
-                            onSelect={() => handleSelection(selected)}
-                        />
-                    </View>
-                    <View style = {styles.appointBox}>
-                        <View style = {styles.textAlignment}>
-
-                                <TextInput
-                                    value={searchName}
-                                    onChangeText={text => setSearchName(text)}
-                                    placeholder="Enter Name"
-                                    style = {styles.textInput}
-                                />
-                                <Button
-                                    title = "Search"
-                                    onPress={handleNameSearch}
-                                    color = "#942989"
-                                />
-
+                  {/* flat list is replacing the hard coded list from before as this can work with database data and print out the entire list at once */}
+                  <FlatList
+                    data={upcomingClientAppointments}
+                    horizontal={true}
+                    renderItem={({ item }) => (
+                    <Pressable onPress={() => handleTilePress(item)}>
+                      <View style={[styles.appointBox, styles.boxShadowIOS, styles.boxShadowAndroid]}>
+                        <View style={styles.textAlignment}>
+                          <Text style={[styles.appointText, styles.clientContainer]}>
+                            <Text style={styles.clientLabel}>Customer:  </Text>
+                            <Text style={styles.clientInfo}> {item.FirstName + ' ' + item.LastName}</Text>
+                          </Text>
                         </View>
-                    </View>
+                        <View style={styles.textAlignment}>
+                          <Text style={[styles.appointText, styles.clientContainer]}>
+                            <Text style={styles.clientLabel}>Service:  </Text>
+                            <Text style={styles.clientInfo}>{item.TypeOfAppointment}</Text>
+                          </Text>
+                        </View>
+                        <View style={styles.textAlignment}>
+                          <Text style={[styles.appointText, styles.clientContainer]}>
+                            <Text style={styles.clientLabel}>Date:  </Text>
+                            <Text style={styles.clientInfo}>{item.AppointmentDate.substring(0, 10)}</Text>
+                          </Text>
+                        </View>
+                        <View style={styles.textAlignment}>
+                          <Text style={[styles.appointText, styles.clientContainer]}>
+                            <Text style={styles.clientLabel}>Time:  </Text>
+                            <Text style={styles.clientInfo}>{item.AppointmentDate.substring(11, 16)}</Text>
+                          </Text>
+                        </View>
+                        <View style={styles.textAlignment}>
+                          <Text style={[styles.appointText, styles.clientContainer]}>
+                            <Text style={styles.clientLabel}>Appointment Notes:  </Text>
+                            <Text style={styles.clientInfo}>{item.AppointmentNotes}</Text>
+                          </Text>
+                        </View>
+                      </View>
+                    </Pressable>
+                    )}
+                  />
 
-                    {/* flat list is replacing the hard coded list from before as this can work with database data and print out the entire list at once */}
-                    <FlatList
-                        data={pastClientAppointments}
-                        horizontal={true}
-                        renderItem={({ item }) => (
-                            <Pressable onPress={() => handleTilePress(item)}>
-                                <View style={[styles.appointBox, styles.boxShadowIOS, styles.boxShadowAndroid]}>
-                                    <View style={styles.textAlignment}>
-                                        <Text style={[styles.appointText, styles.clientContainer]}>
-                                            <Text style={styles.clientLabel}>Customer:  </Text>
-                                            <Text style={styles.clientInfo}> {item.FirstName + ' ' + item.LastName}</Text>
-                                        </Text>
-                                    </View>
-                                    <View style={styles.textAlignment}>
-                                        <Text style={[styles.appointText, styles.clientContainer]}>
-                                            <Text style={styles.clientLabel}>Service:  </Text>
-                                            <Text style={styles.clientInfo}>{item.TypeOfAppointment}</Text>
-                                        </Text>
-                                    </View>
-                                    <View style={styles.textAlignment}>
-                                        <Text style={[styles.appointText, styles.clientContainer]}>
-                                            <Text style={styles.clientLabel}>Date:  </Text>
-                                            <Text style={styles.clientInfo}>{item.AppointmentDate.substring(0, 10)}</Text>
-                                        </Text>
-                                    </View>
-                                    <View style={styles.textAlignment}>
-                                        <Text style={[styles.appointText, styles.clientContainer]}>
-                                            <Text style={styles.clientLabel}>Time:  </Text>
-                                            <Text style={styles.clientInfo}>{item.AppointmentDate.substring(11, 16)}</Text>
-                                        </Text>
-                                    </View>
-                                    <View style={styles.textAlignment}>
-                                        <Text style={[styles.appointText, styles.clientContainer]}>
-                                            <Text style={styles.clientLabel}>Appointment Notes:  </Text>
-                                            <Text style={styles.clientInfo}>{item.AppointmentNotes}</Text>
-                                        </Text>
-                                    </View>
-                                </View>
-                            </Pressable>
-                        )}
+                  {/*Past Appointments*/}
+                  <View style={styles.sectionTitle}>
+                    <Text style={styles.sectionTitleText}>Past Appointments:</Text>
+                  </View>
+
+                  {/*drop down list formatting and rendering */}
+                  <View>
+                    <SelectList
+                      setSelected={(val) => setSelected(val)}
+                      data={filter}
+                      boxStyles={{ backgroundColor: 'white' }}
+                      dropdownStyles={{ backgroundColor: 'white' }}
+                      save='value'
+                      search={false}
+                      defaultOption={{ key: 'Today', value: 'Today' }}
+                      onSelect={() => handleSelection(selected)}
                     />
-                </View>
-            </LinearGradient>
+                  </View>
+                  <View style = {styles.appointBox}>
+                    <View style = {styles.textAlignment}>
+                      <TextInput
+                        value={searchName}
+                        onChangeText={text => setSearchName(text)}
+                        placeholder="Enter Name"
+                        style = {styles.textInput}
+                      />
+                      <Button
+                        title = "Search"
+                        onPress={handleNameSearch}
+                        color = "#942989"
+                      />
+                    </View>
+                  </View>
+
+                  {/* flat list is replacing the hard coded list from before as this can work with database data and print out the entire list at once */}
+                  <FlatList
+                    data={pastClientAppointments}
+                    horizontal={true}
+                    renderItem={({ item }) => (
+                      <Pressable onPress={() => handleTilePress(item)}>
+                        <View style={[styles.appointBox, styles.boxShadowIOS, styles.boxShadowAndroid]}>
+                          <View style={styles.textAlignment}>
+                            <Text style={[styles.appointText, styles.clientContainer]}>
+                              <Text style={styles.clientLabel}>Customer:  </Text>
+                              <Text style={styles.clientInfo}> {item.FirstName + ' ' + item.LastName}</Text>
+                            </Text>
+                          </View>
+                          <View style={styles.textAlignment}>
+                            <Text style={[styles.appointText, styles.clientContainer]}>
+                              <Text style={styles.clientLabel}>Service:  </Text>
+                              <Text style={styles.clientInfo}>{item.TypeOfAppointment}</Text>
+                            </Text>
+                          </View>
+                          <View style={styles.textAlignment}>
+                            <Text style={[styles.appointText, styles.clientContainer]}>
+                              <Text style={styles.clientLabel}>Date:  </Text>
+                              <Text style={styles.clientInfo}>{item.AppointmentDate.substring(0, 10)}</Text>
+                            </Text>
+                          </View>
+                          <View style={styles.textAlignment}>
+                            <Text style={[styles.appointText, styles.clientContainer]}>
+                              <Text style={styles.clientLabel}>Time:  </Text>
+                              <Text style={styles.clientInfo}>{item.AppointmentDate.substring(11, 16)}</Text>
+                            </Text>
+                          </View>
+                          <View style={styles.textAlignment}>
+                            <Text style={[styles.appointText, styles.clientContainer]}>
+                              <Text style={styles.clientLabel}>Appointment Notes:  </Text>
+                              <Text style={styles.clientInfo}>{item.AppointmentNotes}</Text>
+                            </Text>
+                          </View>
+                        </View>
+                      </Pressable>
+                      )}
+                    />
+                  </View>
+                </LinearGradient>
             </ScrollView>
 
             {/*Modal for appointment notes*/}
             <Modal
-                animationType="fade"
-                transparent={true}
-                visible={isModalVisible}
-                onRequestClose={() => setIsModalVisible(false)}
-            >
-                <View style={styles.modalContainer}>
-                    <View style={styles.modalContent}>
-                        <Text style={styles.headerTitle}>Change Appointment</Text>
-                             <TextInput
-                                value={newAppointmentNotes}
-                                onChangeText={setNewAppointmentNotes}
-                                placeholder={newAppointmentNotes ? newAppointmentNotes : 'empty'}
-                                multiline={true}
-                                style={styles.modalNotes}
-                        />
-                        <View style={styles.modalButtonContainer}>
-                            <TouchableOpacity style={styles.modalButton} onPress={handleSaveNotes}>
-                                <Text style={styles.modalButtonText}>Save Notes</Text>
-                            </TouchableOpacity>
-                            <View style={styles.modalSpacer} />
-                            <TouchableOpacity style={styles.modalButton} onPress={() => {setIsModalVisible(false); setIsDeleteModalVisible(true);}}>
-                                <Text style={styles.modalButtonText}>Delete Appointment</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <TouchableOpacity style={styles.modalButton} onPress={() => setIsModalVisible(false)}>
-                            <Text style={styles.modalButtonText}>Close</Text>
-                        </TouchableOpacity>
+              animationType="fade"
+              transparent={true}
+              visible={isModalVisible}
+              onRequestClose={() => setIsModalVisible(false)}
+              >
+              <View style={styles.modalContainer}>
+                <View style={styles.modalContent}>
+                  <Text style={styles.headerTitle}>Change Appointment</Text>
+                  <TextInput
+                    value={newAppointmentNotes}
+                    onChangeText={setNewAppointmentNotes}
+                    placeholder={newAppointmentNotes ? newAppointmentNotes : 'empty'}
+                    multiline={true}
+                    style={styles.modalNotes}
+                  />
+                  <View style={styles.modalButtonContainer}>
+                    <TouchableOpacity style={styles.modalButton} onPress={handleSaveNotes}>
+                      <Text style={styles.modalButtonText}>Save Notes</Text>
+                    </TouchableOpacity>
+                    <View style={styles.modalSpacer} />
+                      <TouchableOpacity style={styles.modalButton} onPress={() => {setIsModalVisible(false); setIsDeleteModalVisible(true);}}>
+                        <Text style={styles.modalButtonText}>Delete Appointment</Text>
+                      </TouchableOpacity>
                     </View>
+                    <TouchableOpacity style={styles.modalButton} onPress={() => setIsModalVisible(false)}>
+                      <Text style={styles.modalButtonText}>Close</Text>
+                    </TouchableOpacity>
                 </View>
+              </View>
             </Modal>
+            
             {/*Modal for deleting appointment*/}
             <Modal
-                animationType="fade"
-                transparent={true}
-                visible={isDeleteModalVisible}
-                onRequestClose={() => setIsDeleteModalVisible(false)}
-            >
-                <View style={styles.modalContainer}>
-                    <View style={styles.modalContent}>
-                        <Text style={styles.modalTitle}>Are you sure you want to delete this appointment? This cannot be undone.</Text>
-                        <View style={styles.modalButtonContainer}>
-                            <TouchableOpacity style={styles.modalButton} onPress={() => {handleDeleteAppointment(); setIsDeleteModalVisible(false);}}>
-                                <Text style={styles.modalButtonText}>Yes</Text>
-                            </TouchableOpacity>
-                            <View style={styles.modalSpacer} />
-                            <TouchableOpacity style={styles.modalButton} onPress={() => setIsDeleteModalVisible(false)}>
-                                <Text style={styles.modalButtonText}>No</Text>
-                            </TouchableOpacity>
-                        </View>
+              animationType="fade"
+              transparent={true}
+              visible={isDeleteModalVisible}
+              onRequestClose={() => setIsDeleteModalVisible(false)}
+              >
+              <View style={styles.modalContainer}>
+                <View style={styles.modalContent}>
+                  <Text style={styles.modalTitle}>Are you sure you want to delete this appointment? This cannot be undone.</Text>
+                  <View style={styles.modalButtonContainer}>
+                    <TouchableOpacity style={styles.modalButton} onPress={() => {handleDeleteAppointment(); setIsDeleteModalVisible(false);}}>
+                      <Text style={styles.modalButtonText}>Yes</Text>
+                    </TouchableOpacity>
+                    <View style={styles.modalSpacer} />
+                      <TouchableOpacity style={styles.modalButton} onPress={() => setIsDeleteModalVisible(false)}>
+                      <Text style={styles.modalButtonText}>No</Text>
+                      </TouchableOpacity>
                     </View>
+                  </View>
                 </View>
-            </Modal>
-        </>
+              </Modal>
+            </>
+          </SafeAreaView>
         </RootSiblingParent>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        paddingBottom: 300,
+        flex: 1,
+        //paddingBottom: 300,
     },
     // title of page
     headerTitle: {

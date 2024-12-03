@@ -213,8 +213,8 @@ export default function Login() {
     }
 
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
         <RootSiblingParent>
+          <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
           <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             <View style={styles.container}>
 
@@ -298,8 +298,8 @@ export default function Login() {
               </LinearGradient>
             </View>
           </ScrollView>
+          </SafeAreaView>
         </RootSiblingParent>
-      </SafeAreaView>
     );
 }
 

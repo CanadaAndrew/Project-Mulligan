@@ -1,6 +1,6 @@
 
 import { StyleSheet, Text, View, Pressable, Image, ImageBackground, ScrollView, 
-    Button, Touchable, FlatList, Alert, Modal, TouchableOpacity} from 'react-native';
+    Button, Touchable, FlatList, Alert, Modal, TouchableOpacity, SafeAreaView} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
 import { router, useGlobalSearchParams, useLocalSearchParams } from 'expo-router';
@@ -257,6 +257,7 @@ export default function HomeScreen(){
     }, [])
     return(
         <RootSiblingParent>
+          <SafeAreaView style={{ flex: 1 }}>
             <View style = {styles.container}>
                 {/*added logo image*/}
                 <ImageBackground
@@ -314,6 +315,7 @@ export default function HomeScreen(){
                     </View>
                 </LinearGradient>
             </View>
+          </SafeAreaView>
         </RootSiblingParent>
     );
 };
