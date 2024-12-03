@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View, TextInput, Pressable, Image, ImageBackground, ScrollView, Button, Touchable, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Pressable, Image, ImageBackground, 
+    ScrollView, Button, Touchable, TouchableOpacity, SafeAreaView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 //import { TouchableOpacity } from 'react-native-gesture-handler';
 //import {TouchableOpacity} from 'react-native';
@@ -212,8 +213,9 @@ export default function Login() {
     }
 
     return (
+        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <RootSiblingParent>
-        <ScrollView>
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             <View style={styles.container}>
 
                 {/*added logo image*/}
@@ -302,14 +304,15 @@ export default function Login() {
             </View>
         </ScrollView>
         </RootSiblingParent>
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         backgroundColor: 'white',
-        borderRadius: 90,
-        paddingBottom: 0
+        paddingBottom: 0,
     },
     // title styling 
     objectTitle: {
@@ -327,6 +330,7 @@ const styles = StyleSheet.create({
     },
     // background under logo image
     background: {
+        flex: 1,
         paddingBottom: 300,
         alignItems: 'center',
     },
