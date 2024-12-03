@@ -213,98 +213,93 @@ export default function Login() {
     }
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-      <RootSiblingParent>
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+        <RootSiblingParent>
+          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             <View style={styles.container}>
 
-                {/*added logo image*/}
-                <ImageBackground
-                    style={styles.logo}
-                    source={require('./images/Hair_Done_Wright_LOGO.png')}
-                    imageStyle = {styles.logo}
-                    resizeMode='cover'
-                >
-                </ImageBackground>
+              {/*added logo image*/}
+              <ImageBackground
+                style={styles.logo}
+                source={require('./images/Hair_Done_Wright_LOGO.png')}
+                imageStyle = {styles.logo}
+                resizeMode='cover'
+              >
+              </ImageBackground>
+              <LinearGradient
+                locations={[0.7, 1]}
+                colors={['#DDA0DD', 'white']}
+                style={styles.background}
+              >
 
-                <LinearGradient
-                    locations={[0.7, 1]}
-                    colors={['#DDA0DD', 'white']}
-                    style={styles.background}
-                >
+                {/*Login error loginError in brackets*/}
+                <Text style={styles.errorTitle}>{loginError}</Text>
+                <Text style={styles.objectTitle}>Login</Text>
 
+                {/*user input for email or phone# partly functional //setEmail*/}
+                <TextInput
+                  placeholder=' Email or Phone '
+                  placeholderTextColor={'gray'}
+                  keyboardType='default'
+                  style={styles.inputBox}
+                  value={email}
+                  onChangeText={setPhoneNumFormat}
+                />
+                <View>
+              
+                  {/*user input for password partly functional*/}
+                  <TextInput
+                    placeholder=' Password '
+                    placeholderTextColor={'gray'}
+                    keyboardType='default'
+                    secureTextEntry={showPassword}
+                    style={styles.inputBox}
+                    value={password}
+                    onChangeText={setPassword}
+                  />
+                </View>
+                <View>
 
-                    {/*Login error loginError in brackets*/}
-                    <Text style={styles.errorTitle}>{loginError}</Text>
-                    <Text style={styles.objectTitle}>Login</Text>
+                  {/*button to show password is functional*/}
+                  <TouchableOpacity
+                    style={styles.showButton}
+                    onPress={onClickPW}
+                  >
+                    <Text style={styles.showButtonText}>{buttonClick}</Text>
+                  </TouchableOpacity>
 
-                    {/*user input for email or phone# partly functional //setEmail*/}
-                    <TextInput
-                        placeholder=' Email or Phone '
-                        placeholderTextColor={'gray'}
-                        keyboardType='default'
-                        style={styles.inputBox}
-                        value={email}
-                        onChangeText={setPhoneNumFormat}
-                    />
+                  {/*button for forgot password no functionality yet WIP*/}
+                  <TouchableOpacity
+                    onPress={onClickForgotLogin}
+                  >
+                    <Text style={styles.forgotPWButtonText}>Forgot Password?</Text>
+                  </TouchableOpacity>
+                </View>
 
-                    <View>
-                        {/*user input for password partly functional*/}
-                        <TextInput
-                            placeholder=' Password '
-                            placeholderTextColor={'gray'}
-                            keyboardType='default'
-                            secureTextEntry={showPassword}
-                            style={styles.inputBox}
-                            value={password}
-                            onChangeText={setPassword}
-                        />
-                    </View>
-                    <View>
-                        {/*button to show password is functional*/}
-                        <TouchableOpacity
-                            style={styles.showButton}
-                            onPress={onClickPW}
-                        >
-                            <Text style={styles.showButtonText}>{buttonClick}</Text>
-                        </TouchableOpacity>
-
-                        {/*button for forgot password no functionality yet WIP*/}
-                        <TouchableOpacity
-                            onPress={onClickForgotLogin}
-                        >
-                            <Text style={styles.forgotPWButtonText}>Forgot Password?</Text>
-                        </TouchableOpacity>
-
-                    </View>
-
-
-                    {/*button to login limited functionality
-                   Note from dru: to succesfully login, login button must be pressed twice. Not sure why*/}
-                    <View>
-                        <TouchableOpacity
-                            style={styles.loginButton}
-                            onPress={onClickLogin}
-                        >
-                            <Text style={styles.loginButtonText}>Login</Text>
-                        </TouchableOpacity>
-                    </View>
-
-                    <View style={styles.signUpContainer}>
-                        <Text style={styles.showButtonText}>Don't have an account?  </Text>
-                        <TouchableOpacity
-                            onPress={onClickSignUp}
-                        >
-                            <Text style={styles.signUpText}>Sign Up</Text>
-                        </TouchableOpacity>
-                    </View>
-
-                </LinearGradient>
-
+                {/*button to login limited functionality
+                  Note from dru: to succesfully login, login button must be 
+                  pressed twice. Not sure why*/}
+                <View>
+                  <TouchableOpacity
+                    style={styles.loginButton}
+                    onPress={onClickLogin}
+                  >
+                    <Text style={styles.loginButtonText}>Login</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.signUpContainer}>
+                  <Text style={styles.showButtonText}>Don't have an account?  </Text>
+                  <TouchableOpacity
+                    onPress={onClickSignUp}
+                  >
+                    <Text style={styles.signUpText}>Sign Up</Text>
+                  </TouchableOpacity>
+                </View>
+              </LinearGradient>
             </View>
-        </ScrollView>
+          </ScrollView>
         </RootSiblingParent>
-        </SafeAreaView>
+      </SafeAreaView>
     );
 }
 
