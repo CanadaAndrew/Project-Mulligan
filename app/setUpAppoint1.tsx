@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View, Pressable, Image, ImageBackground, ScrollView, Button, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View, Pressable, Image, ImageBackground, ScrollView, 
+    Button, TouchableOpacity, SafeAreaView} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Link, router, useLocalSearchParams } from 'expo-router';
 import React from 'react';
@@ -78,8 +79,9 @@ const renderSelectedDates = () => {
 
     return(
         <RootSiblingParent>
+            <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
         <>
-        <ScrollView>
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <View style = {styles.container}>
 
             {/*added logo image use imagebackground in order for back button to overlap image*/}
@@ -163,6 +165,7 @@ const renderSelectedDates = () => {
           </View>
         </ScrollView>
         </>
+        </SafeAreaView>
         </RootSiblingParent>
     );
 }
@@ -170,8 +173,9 @@ const renderSelectedDates = () => {
 
 const styles = StyleSheet.create({
     container:{
+        flex: 1,
         backgroundColor: 'white',
-        borderRadius: 90
+        //borderRadius: 90
     },
     // title styling for dropdown menu and calendar 
     objectTitle: {
@@ -279,7 +283,6 @@ const styles = StyleSheet.create({
         //paddingBottom: 5,
         //alignItems: 'center'
         
-
     },
     badgeStyle: {
         textAlign: 'center',
