@@ -1,18 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
-import {
-    StatusBar,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-    ScrollView,
-    Pressable,
-    FlatList,
-    Image,
-    TextInput,
-    Keyboard,
-} from 'react-native';
+import { StatusBar, StyleSheet, Text, TouchableOpacity, View, ScrollView, Pressable,
+    FlatList, Image, TextInput, Keyboard, SafeAreaView } from 'react-native';
 import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-list';
 import { router, useLocalSearchParams } from 'expo-router';
 import database from './axiosConfig'; // Import axios from the axiosConfig.js file
@@ -221,8 +210,9 @@ export default function NewClientInfo() {
     }, [])
     return (
     <RootSiblingParent>
+        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
     <>
-    <ScrollView>
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <LinearGradient locations={[0.7, 1]} colors={['#DDA0DD', 'white']} style={styles.container2}> 
             <Text >{'\n'}</Text>
             <View style = {[styles.appointBox, styles.boxShadowIOS, styles.boxShadowAndroid]}>
@@ -296,6 +286,7 @@ export default function NewClientInfo() {
         </LinearGradient>
         </ScrollView>
     </>  
+    </SafeAreaView>
     </RootSiblingParent>
 )}
 

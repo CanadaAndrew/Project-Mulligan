@@ -1,17 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
-import {
-    StatusBar,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-    Pressable,
-    FlatList,
-    Image,
-    ScrollView,
-    ImageBackground
-} from 'react-native';
+import { StatusBar, StyleSheet, Text, TouchableOpacity, View, Pressable,
+    FlatList, Image, ScrollView, ImageBackground, SafeAreaView } from 'react-native';
 import { Link, router, useLocalSearchParams} from 'expo-router';
 import database from './axiosConfig'; // Import axios from the axiosConfig.js file
 import { SERVICES, militaryHours, displayHours, funcObj, functionGetRetry, notify, stringToDate} from './Enums/Enums';
@@ -354,16 +344,19 @@ export default function SetupAppointment2() { // added route for page navigation
 
     return (
         <RootSiblingParent>
+            <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
             <>{showPageContent()}</>
+            </SafeAreaView>
         </RootSiblingParent>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         backgroundColor: 'white',
-        borderRadius: 90,
-        paddingBottom: 400
+        //borderRadius: 90,
+        //paddingBottom: 400
     },
     body: {
     },
