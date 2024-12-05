@@ -276,6 +276,7 @@ export default function HomeScreen(){
     return(
         <RootSiblingParent>
           <SafeAreaView style={{ flex: 1 }}>
+          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             <View style = {styles.container}>
                 {/*added logo image*/}
                 <ImageBackground
@@ -333,6 +334,7 @@ export default function HomeScreen(){
                     </View>
                 </LinearGradient>
             </View>
+            </ScrollView>
           </SafeAreaView>
         </RootSiblingParent>
     );
@@ -345,7 +347,8 @@ const styles = StyleSheet.create({
     },
     listView:{
         flex: 1,
-        height: 475
+        //height: 475,
+        marginVertical: 10,
     },
     // title styling 
     objectTitle: {

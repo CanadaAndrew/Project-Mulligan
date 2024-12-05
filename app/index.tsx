@@ -307,7 +307,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'white',
-        paddingBottom: 0,
     },
     // title styling 
     objectTitle: {
