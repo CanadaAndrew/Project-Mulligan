@@ -1,18 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
-import {
-    StatusBar,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-    ScrollView,
-    Pressable,
-    FlatList,
-    Image,
-    TextInput,
-    ImageBackground
-} from 'react-native';
+import { StatusBar, StyleSheet, Text, TouchableOpacity, View, ScrollView, Pressable,
+    FlatList, Image, TextInput, ImageBackground, SafeAreaView } from 'react-native';
 import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-list';
 import database from './axiosConfig'; // Import axios from the axiosConfig.js file
 //firebase imports VVV
@@ -312,8 +301,9 @@ export default function SignUp() { // added route for page navigation
     return (
         <>
         <RootSiblingParent>
+        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
             <StatusBar backgroundColor={'black'} />
-            <ScrollView style={styles.container}>
+            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                 <View style={styles.header}>
                     <ImageBackground source={require('./images/logo.png')} style={styles.logo} imageStyle={styles.logo} />
                 </View>
@@ -428,6 +418,7 @@ export default function SignUp() { // added route for page navigation
                     </View>
                 </LinearGradient>
             </ScrollView>
+            </SafeAreaView>
             </RootSiblingParent>
         </>
     );
