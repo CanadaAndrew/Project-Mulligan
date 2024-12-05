@@ -359,8 +359,10 @@ const styles = StyleSheet.create({
         //paddingBottom: 400
     },
     body: {
+        flex: 1,
     },
     linearGradientStyle:{
+        flex: 1,
         borderTopLeftRadius: 50,
         borderTopRightRadius: 50,
         borderColor: 'black',
@@ -414,6 +416,7 @@ const styles = StyleSheet.create({
     },
     // Schedule an Appointment styling
     appointmentInfoContainer: {
+        flex: 1,
         alignItems: 'center',
         minHeight: 170,
         justifyContent: 'space-evenly',
@@ -448,6 +451,7 @@ const styles = StyleSheet.create({
     },
     // Available Times styling
     availableContainer: {
+        flex: 1,
        //paddingTop: 5,
         //paddingBottom: 5
     },
@@ -458,6 +462,7 @@ const styles = StyleSheet.create({
     availableViewInFlatList: {
     },
     availableDateContainer: {
+        flex: 1,
         paddingLeft: 12,
     },
     availableDateText: {
@@ -466,7 +471,9 @@ const styles = StyleSheet.create({
         color: 'white',
     },
     availableTimeContainer: {
+        flex: 1,
         alignItems: 'center',
+        justifyContent: 'space-evenly',
         paddingLeft: 5,
         paddingRight: 5,
     },
