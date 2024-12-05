@@ -60,7 +60,7 @@ export default function HomeScreen(){
             >
             <Text style = {styles.homeButtonText}>Delete your account</Text>
         </TouchableOpacity>
-        if(userData.adminPriv == 'true') {
+        if(userData.adminPriv == 'true') { //admin user
             //Modifies Calendar Availability
             var modifyAvButton = <TouchableOpacity
                 style = {styles.homeButton}
@@ -120,7 +120,7 @@ export default function HomeScreen(){
             setButtonDisplay(buttons);
         }
         //This block constructs buttons that only old clients can see
-        else if(userData.newClient == 'false') {
+        else if(userData.newClient == 'false') { //existing client user
             //Takes you to the Set Up Appointment Page
             var scheduleAppointmentButton2 = <TouchableOpacity
                 style = {styles.homeButton}
@@ -165,7 +165,14 @@ export default function HomeScreen(){
             setButtonDisplay(buttons);
         }
         //This block constructs buttons that the new clients can see
-        else if(userData.newClient == 'true') {
+        else if(userData.newClient == 'true' && userData.approved == 'true') {
+        // Once Approved new client can view and fill out this page
+        var newClientInfoButton = <TouchableOpacity
+            style = {styles.homeButton}
+            onPress = {() => router.push({pathname:"newClientInfo", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved, returnMessage: null}})}
+            >
+            <Text style = {styles.homeButtonText}>Complete Sign-Up</Text>
+        </TouchableOpacity>
         //Takes you to the services offerd page
         var servicesOfferedButton3 = <TouchableOpacity
             style = {styles.homeButton}
@@ -180,6 +187,31 @@ export default function HomeScreen(){
             >
             <Text style = {styles.homeButtonText}>About Me</Text>
         </TouchableOpacity>
+            buttons.push(newClientInfoButton);
+        buttons.push(servicesOfferedButton3);
+        buttons.push(aboutMeButton3);
+        //buttons.push(FAQButton3);
+        buttons.push(deleteButton)
+        setButtonDisplay(buttons);
+        }
+        //else if(userData.newClient == 'true') {
+        else {
+            var servicesOfferedButton4 = <TouchableOpacity
+            style = {styles.homeButton}
+            onPress = {() => router.push({pathname: "ServicesOffered", params:{returnMessage: null}})}
+            >
+            <Text style = {styles.homeButtonText}>Services Offered</Text>
+        </TouchableOpacity>
+        //Takes you to the About Me page
+        var aboutMeButton4 = <TouchableOpacity
+            style = {styles.homeButton}
+            onPress = {() => router.push({pathname: "AboutMe", params:{returnMessage: null}})}
+            >
+            <Text style = {styles.homeButtonText}>About Me</Text>
+        </TouchableOpacity>
+        buttons.push(servicesOfferedButton4)
+        buttons.push(aboutMeButton4)
+        setButtonDisplay(buttons);
         //Takes you to the FAQ page !WIP! no functionality
         //var FAQButton3 = <TouchableOpacity
         //  style = {styles.homeButton}
@@ -187,20 +219,6 @@ export default function HomeScreen(){
         //  >
         //  <Text style = {styles.homeButtonText}>FAQ</Text>
         //</TouchableOpacity>
-        // Once Approved new client can view and fill out this page
-        var newClientInfoButton = <TouchableOpacity
-            style = {styles.homeButton}
-            onPress = {() => router.push({pathname:"newClientInfo", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved, returnMessage: null}})}
-            >
-            <Text style = {styles.homeButtonText}>Complete Sign-Up</Text>
-        </TouchableOpacity>
-        if(userData.approved == 'true')
-            buttons.push(newClientInfoButton);
-        buttons.push(servicesOfferedButton3);
-        buttons.push(aboutMeButton3);
-        //buttons.push(FAQButton3);
-        buttons.push(deleteButton)
-        setButtonDisplay(buttons);
         }
     }
 
