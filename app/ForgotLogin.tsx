@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View, TextInput, ImageBackground, TouchableOpacity, ScrollView} from 'react-native';
+import { StyleSheet, Text, View, TextInput, ImageBackground, TouchableOpacity, 
+    ScrollView, SafeAreaView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState } from 'react';
 import database from './axiosConfig'; // Import axios from the axiosConfig.js file
@@ -79,8 +80,9 @@ export default function ForgotLogin() {
 
     return (
         <RootSiblingParent>
+            <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
         <View style={styles.container}>
-            <ScrollView>
+            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             {/*added logo image*/}
             <ImageBackground
                 style={styles.logo}
@@ -125,12 +127,14 @@ export default function ForgotLogin() {
             </LinearGradient>
             </ScrollView>
         </View>
+        </SafeAreaView>
         </RootSiblingParent>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         backgroundColor: 'white',
         borderRadius: 90,
         paddingBottom: 0
