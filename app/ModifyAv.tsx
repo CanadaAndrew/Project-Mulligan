@@ -2,7 +2,7 @@ import React, { useEffect, useState, } from 'react';
 import {LinearGradient} from 'expo-linear-gradient';
 import { StatusBar, StyleSheet, Text, TouchableOpacity, View, Pressable,
     FlatList, ScrollView, Modal, Dimensions, useWindowDimensions, 
-    SectionList} from 'react-native';
+    SectionList, SafeAreaView} from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { Link } from 'expo-router';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -537,7 +537,9 @@ export default function ModifyAv() {
 
     return (
         <RootSiblingParent>
+            <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
             <>{showPageContent()}</>
+            </SafeAreaView>
         </RootSiblingParent>
     );
 };
@@ -545,7 +547,8 @@ export default function ModifyAv() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingBottom: 10
+        paddingBottom: 10,
+        justifyContent: 'flex-start',
         //backgroundColor: '#DDA0DD'
     },
     // header
@@ -679,6 +682,7 @@ const styles = StyleSheet.create({
         elevation: 15, 
     },
     listView: {
+        flexGrow: 1,
         width: '100%',
         paddingTop: 10,
         paddingBottom: 20,
