@@ -12,6 +12,9 @@ import { UTCtoPSTString, funcObj, functionGetRetry, notify} from './Enums/Enums'
 import { RootSiblingParent } from 'react-native-root-siblings'
 import { SERVICES } from './Enums/Enums'
 import { Dimensions } from 'react-native';
+import { getValidDateDayBack, getValidDateByWeeks, getValidDateByMonths,
+    getFutureDateByDay, getFutureDateByWeeks, getFutureDateByMonths,
+    getLastDateOfMonth } from './shared';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -99,20 +102,32 @@ export default function ClientHistory() {
         { key: 'Today', value: 'Today' },
         { key: 'This Week', value: 'This Week' },
         { key: 'This Month', value: 'This Month' },
-        { key: 'All', value: 'All' },
+        { key: 'Three Months', value: 'Three Months' },
     ]
 
     //handleSelection is called whenever a change is made in the drop down menu. 
     //It passes it back to the flatlist down below
     async function handleSelection(selected) {
-        if (selected == 'All') { //all appointments
+        if (selected == 'Three Months') { //a year of appointments
             let funcObj:funcObj;
             //past appointments
-            try {
+            /*try {
                     funcObj = {
                     entireFunction: () => database.get('/allPastAppointmentsQuery', {
                         params: {
                             todaysDate: todaysDate
+                        }
+                    }),
+                    type: 'get'
+                };*/
+            try {
+                let threeMonthsAgo = getValidDateByMonths(todaysDate, 3);
+                console.log('threeMonthsAgo', threeMonthsAgo);
+                funcObj = {
+                    entireFunction: () => database.get('/clientHistoryAppointmentsQuery', {
+                        params: {
+                            startDate: threeMonthsAgo,
+                            endDate: todaysDate
                         }
                     }),
                     type: 'get'
@@ -151,10 +166,18 @@ export default function ClientHistory() {
 
             //upcoming appointments
             try {
+                let threeMonthsFuture = getFutureDateByMonths( todaysDate, 3);
+                console.log('threeMonthsFuture', threeMonthsFuture);
                 funcObj = {
-                    entireFunction: () => database.get('/allUpcomingAppointmentsQuery', {
+                    /*entireFunction: () => database.get('/allUpcomingAppointmentsQuery', {
                         params: {
                             todaysDate: todaysDate
+                        }
+                    }),*/
+                    entireFunction: () => database.get('/clientHistoryAppointmentsQuery', {
+                        params: {
+                            startDate:  todaysDate,
+                            endDate: threeMonthsFuture
                         }
                     }),
                     type: 'get'
@@ -238,11 +261,15 @@ export default function ClientHistory() {
 
             //need to fix later for compensating for start/end of month
             //going three days back for past and three days forward for upcoming
-            const day = todaysDate.slice(8, 10);
-            const pastDay = String(parseInt(day) - 3);
-            const upcomingDay = String(parseInt(day) + 3);
-            const firstDayOfWeek = todaysDate.slice(0, 8) + pastDay + "T00:00:00.000Z"; //sql DateTime2 format
-            const lastDayOfWeek = todaysDate.slice(0, 8) + upcomingDay + "T23:59:59.999Z"; //sql DateTime2 format
+            //const day = todaysDate.slice(8, 10);
+            //const pastDay = String(parseInt(day) - 3);
+            //const upcomingDay = String(parseInt(day) + 3);
+            //const firstDayOfWeek = todaysDate.slice(0, 8) + pastDay + "T00:00:00.000Z"; //sql DateTime2 format
+            //const lastDayOfWeek = todaysDate.slice(0, 8) + upcomingDay + "T23:59:59.999Z"; //sql DateTime2 format
+            const firstDayOfWeek = getValidDateDayBack(todaysDate, 3);
+            const lastDayOfWeek = getFutureDateByDay(todaysDate, 3);
+            console.log('firstDayOfWeek', firstDayOfWeek);
+            console.log('lastDayOfWeek', lastDayOfWeek);
             let funcObj:funcObj;
             //past appointments
             try {
@@ -328,12 +355,15 @@ export default function ClientHistory() {
             //need to fix later to compensate for days in month
             //choosing start day of 01 and end day of 28 for now
 
-            const month = todaysDate.slice(5, 7); //will use later to get month from string
+            //const month = todaysDate.slice(5, 7); //will use later to get month from string
             const firstDay = '01';
-            const lastDay = '28';
+            //const lastDay = '28';
             const firstDayOfMonth = todaysDate.slice(0, 8) + firstDay + "T00:00:00.000Z"; //sql DateTime2 format
-            const lastDayOfMonth = todaysDate.slice(0, 8) + lastDay + "T23:59:59.999Z"; //sql DateTime2 format
-
+            //const lastDayOfMonth = todaysDate.slice(0, 8) + lastDay + "T23:59:59.999Z"; //sql DateTime2 format
+            //const lastDayOfMonth = getFutureDateByDay(todaysDate, 31);
+            const lastDayOfMonth = getLastDateOfMonth(todaysDate);
+            console.log('lastDayOfMonth', lastDayOfMonth);
+            
             //past appointments
             let funcObj:funcObj;
             try {
