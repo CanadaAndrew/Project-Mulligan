@@ -105,6 +105,14 @@ export default function ClientHistory() {
         { key: 'Three Months', value: 'Three Months' },
     ]
 
+    function addStartTime(time) {
+        return `${time}T00:00:00`;
+    }   
+    
+    function addEndTime(time) {
+        return `${time}T23:59:59`;
+    }
+
     //handleSelection is called whenever a change is made in the drop down menu. 
     //It passes it back to the flatlist down below
     async function handleSelection(selected) {
@@ -122,6 +130,7 @@ export default function ClientHistory() {
                 };*/
             try {
                 let threeMonthsAgo = getValidDateByMonths(todaysDate, 3);
+                threeMonthsAgo = addStartTime(threeMonthsAgo);
                 console.log('threeMonthsAgo', threeMonthsAgo);
                 funcObj = {
                     entireFunction: () => database.get('/clientHistoryAppointmentsQuery', {
@@ -167,6 +176,7 @@ export default function ClientHistory() {
             //upcoming appointments
             try {
                 let threeMonthsFuture = getFutureDateByMonths( todaysDate, 3);
+                threeMonthsFuture = addEndTime(threeMonthsFuture);
                 console.log('threeMonthsFuture', threeMonthsFuture);
                 funcObj = {
                     /*entireFunction: () => database.get('/allUpcomingAppointmentsQuery', {
@@ -266,8 +276,10 @@ export default function ClientHistory() {
             //const upcomingDay = String(parseInt(day) + 3);
             //const firstDayOfWeek = todaysDate.slice(0, 8) + pastDay + "T00:00:00.000Z"; //sql DateTime2 format
             //const lastDayOfWeek = todaysDate.slice(0, 8) + upcomingDay + "T23:59:59.999Z"; //sql DateTime2 format
-            const firstDayOfWeek = getValidDateDayBack(todaysDate, 3);
-            const lastDayOfWeek = getFutureDateByDay(todaysDate, 3);
+            let firstDayOfWeek = getValidDateDayBack(todaysDate, 3);
+            let lastDayOfWeek = getFutureDateByDay(todaysDate, 3);
+            firstDayOfWeek = addStartTime(firstDayOfWeek);
+            lastDayOfWeek = addEndTime(lastDayOfWeek);
             console.log('firstDayOfWeek', firstDayOfWeek);
             console.log('lastDayOfWeek', lastDayOfWeek);
             let funcObj:funcObj;
