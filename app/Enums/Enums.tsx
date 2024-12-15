@@ -208,10 +208,15 @@ async function functionGetRetry(jsonObj:funcObj){
         }catch(error){
             currentAttempts += 1;
             recentError = error;
-            if(currentAttempts < maxAttempts){
-                notify('There is a problem connecting to the server. Retrying in: ' + Math.pow(2, currentAttempts) + ' seconds')
+            if(currentAttempts <= maxAttempts){
+                //notify('There is a problem connecting to the server. Retrying in: ' + Math.pow(2, currentAttempts) + ' seconds')
+                console.error('There is a problem connecting to the server.  Retrying '
+                    + 'in: ' + Math.pow(2, currentAttempts) + ' seconds')
                 await wait(Math.pow(2, currentAttempts))
             }
+            else {
+                notify('There is a problem connecting to the server.')
+            };
         }
     }
     throw new Error(recentError);
