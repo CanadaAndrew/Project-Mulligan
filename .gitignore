@@ -83,3 +83,6 @@ yarn-error.*
 *.tsbuildinfo
 
 # @end expo-cli
+
+# jest tracking
+coverage/**/*

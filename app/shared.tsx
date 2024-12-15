@@ -1,4 +1,4 @@
-import { format, subDays, addDays, addMonths, subMonths } from 'date-fns';
+import { format, subDays, addDays, addMonths, subMonths, parseISO } from 'date-fns';
 
 /* getValidDateRangeDayBack
     input:  current date and number of days to be subtracted
@@ -24,7 +24,7 @@ import { format, subDays, addDays, addMonths, subMonths } from 'date-fns';
 
 export function getValidDateDayBack(currentDate, daysBack) {
   // Convert the current date to a Date object
-  const date = new Date(currentDate);
+  const date = parseISO(currentDate);
 
   // Subtract the required days
   const startDate = subDays(date, daysBack);
@@ -41,7 +41,7 @@ export function getValidDateDayBack(currentDate, daysBack) {
 
 export function getFutureDateByDay(currentDate, daysForward) {
   // Convert the current date to a Date object
-  const date = new Date(currentDate);
+  const date = parseISO(currentDate);
   
   // Add the required days
   const endDate = addDays(date, daysForward);
@@ -60,7 +60,7 @@ export function getValidDateByWeeks(currentDate, weeksBack) {
     // Convert weeks to days
     const daysBack = weeksBack * 7;
   
-    const date = new Date(currentDate);
+    const date = parseISO(currentDate);
     const startDate = subDays(date, daysBack);
   
     const formattedStartDate = format(startDate, 'yyyy-MM-dd');
@@ -76,7 +76,7 @@ export function getFutureDateByWeeks(currentDate, weeksForward) {
   // Convert weeks to days
   const daysForward = weeksForward * 7;
   
-  const date = new Date(currentDate);
+  const date = parseISO(currentDate);
   const endDate = addDays(date, daysForward);
   
   //const formattedStartDate = format(date, 'yyyy-MM-dd');
@@ -89,7 +89,7 @@ export function getFutureDateByWeeks(currentDate, weeksForward) {
 }
 
 export function getValidDateByMonths(currentDate, monthsBack) {
-  const date = new Date(currentDate);
+  const date = parseISO(currentDate);
   const startDate = subMonths(date, monthsBack);
   
   const formattedStartDate = format(startDate, 'yyyy-MM-dd');
@@ -102,7 +102,7 @@ export function getValidDateByMonths(currentDate, monthsBack) {
 }
   
 export function getFutureDateByMonths(currentDate, monthsForward) {
-  const date = new Date(currentDate);
+  const date = parseISO(currentDate);
   const endDate = addMonths(date, monthsForward);
   
   //const formattedStartDate = format(date, 'yyyy-MM-dd');
@@ -115,7 +115,7 @@ export function getFutureDateByMonths(currentDate, monthsForward) {
 }
 
 export function getLastDateOfMonth(currentDate) {
-  const date = new Date(currentDate);
+  const date = parseISO(currentDate);
 
   // Get the year and month
   const year = date.getFullYear();
