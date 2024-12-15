@@ -31,7 +31,8 @@ This project is being completed by a team from Sacramento State University calle
   - [Sprint 6](#sprint-6)
   - [Sprint 7](#sprint-7)
   - [Sprint 8](#sprint-8)
-
+- [Version]
+ - [1.1.0]
 
 
 ## Authors
@@ -405,3 +406,12 @@ Goals for the Sprint: Finish last bugs before the end of the semester and projec
 
 Completion Status: Complete
 
+## Version
+
+### 1.1.0
+- fixed iPad formatting bugs
+- improved date retrieval functions
+- added delete option for all users
+- modified messaging during loading
+- modified admin date availability to two days out
+- improved user notification
