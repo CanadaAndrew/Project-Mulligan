@@ -8,8 +8,9 @@ import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-lis
 import { useRef } from 'react';
 import { notify } from './Enums/Enums';
 import { RootSiblingParent } from 'react-native-root-siblings'
-
-
+import { UTCtoPST } from './Enums/Enums';
+import { getFutureDateByDay } from './shared';
+import { format } from 'date-fns';
 
 export default function SetUpAppoint1() { // add navigation to default function for data transfer between pages
 //made this available for all pages in the app
@@ -18,6 +19,24 @@ let hairStyleSelected: string[] = [];
 //Variable is interchangeable in terms of function with the calendar
 const calendarContainerRef = useRef(null);
 
+// verifyTwoDays 
+//input:  array of dates
+//output:  returns true if dates are more than two days out
+function verifyTwoDays(selectedDates: string[]): boolean {
+    const today = new Date();
+    //console.log('today', today); //for debugging
+    const todayPST = UTCtoPST(today);
+    //console.log('todayPST', todayPST);  //for debugging
+    const formattedTodayPST = format(todayPST, 'yyyy-MM-dd');
+    const twoDaysOut = getFutureDateByDay(formattedTodayPST, 2);
+    for (const date of selectedDates) {
+        if (date < twoDaysOut) {
+            return false; // Invalid if any date is too soon
+        }
+    }
+    return true; // All dates are valid
+}
+  
 //I made this function to try and render the dates separately from the component. Didn't seem to work
 //but is worth leaving for now
 const renderSelectedDates = () => {
@@ -137,9 +156,21 @@ const renderSelectedDates = () => {
                         style={styles.appointmentButton}
                         onPress={() => {
                             const selectedDates = calendarContainerRef.current?.markedDates;
-                            if(selectedDates.length == 0 || selected.length == 0){
+                            console.log('Selected Dates:', selectedDates);  // Log selectedDates
+                            /*if(selectedDates.length == 0 || selected.length == 0){
                                 notify('Please select at least one service and one day.');
-                                return;
+                                return;*/
+                            if (selectedDates.length == 0 && selected.length == 0) {
+                                notify('Please select at least one day and one service.');
+                            }
+                            else if (selectedDates.length == 0) {
+                                notify('Please select at least one day.');
+                            }
+                            else if (selected.length == 0) {
+                                notify('Please select at least one service.');
+                            }
+                            else if (!verifyTwoDays(selectedDates)) {
+                                notify('Appointment date must be at least two days out.');
                             }else{
                                 router.push({pathname:"setupAppointment2", params: {userID:userData.userID, adminPriv : userData.adminPriv, newClient : userData.newClient, approved : userData.approved,
                                     hairStyleData: hairStyleSelected.join(', '),
