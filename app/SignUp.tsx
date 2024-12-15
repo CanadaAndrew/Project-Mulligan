@@ -279,7 +279,7 @@ export default function SignUp() { // added route for page navigation
     async function handleSignUpPress() {
         //registers the user with Firebase first then if the function returns 0 meaning a successful user creation
         //it will post the user to the database and route them back to the login page
-        console.log('formComplete:', formComplete); //for testing
+        /*console.log('formComplete:', formComplete); //for testing
         console.log('firstNameValid:', firstNameValid); //for testing
         console.log('lastNameValid:', lastNameValid); //for testing
         console.log('emailValid:', emailValid); //for testing
@@ -289,13 +289,33 @@ export default function SignUp() { // added route for page navigation
         console.log('selected.length:', selected.length); //for testing
         console.log('selectedCont.length:', selectedCont.length); //for testing
         console.log('password:', password); //for testing
-        console.log('confirmPassword', confirmPassword); //for testing
-        let verify = await newUserSignUp();
+        console.log('confirmPassword', confirmPassword); //for testing*/
+        //verify form is filled out and valid
+        if (!firstNameValid) {
+            notify('Missing first name');
+        } else if (!lastNameValid) {
+            notify('Missing last name');
+        } else if (!emailValid) {
+            notify('Missing or invalid email');
+        } else if (!phoneNumberValid) {
+            notify('Missing or invalid phone number. Must include area code');
+        } else if (!passwordValid) {
+            notify('Missing or invalid password. Must be at least 8 characters long');
+        } else if (!confirmPasswordValid){
+            notify('Missing or invalid password confirmation');
+        } else if (selected.length == 0) {
+            notify('Must choose at least one preferred service');
+        } else if (selectedCont.length == 0) {
+            notify('Must choose preferred contact method');
+        } else {
 
-        if (verify == 0) {
-            await postNewUser();
-            //navigation.navigate("Login")
-            router.replace({pathname:"/", params: {returnMessage:"Account created successfully!"}});
+            let verify = await newUserSignUp();
+
+            if (verify == 0) {
+                await postNewUser();
+                //navigation.navigate("Login")
+                router.replace({pathname:"/", params: {returnMessage:"Account created successfully!"}});
+            }
         }
     }
     return (
@@ -409,7 +429,7 @@ export default function SignUp() { // added route for page navigation
                         </View>
                         <View style={styles.signUpContainer}>
                             <TouchableOpacity
-                                disabled={formComplete}
+                                //disabled={formComplete}
                                 style={styles.signUpButton}
                                 onPress={handleSignUpPress}>
                                 <Text style={styles.signUpText}>Sign Up</Text>

@@ -224,7 +224,7 @@ async function functionGetRetry(jsonObj:funcObj){
 
 function notify(message){
     Toast.show(message, {
-        duration: Toast.durations.SHORT,
+        duration: Toast.durations.LONG,
       });
 }
 

@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Pressable, Image, ImageBackground, ScrollView,
     Button, Touchable, FlatList, Alert, Modal, TouchableOpacity, SafeAreaView} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
-import { router, useGlobalSearchParams, useLocalSearchParams } from 'expo-router';
+import { router, useRouter, useLocalSearchParams } from 'expo-router';
 import { functionGetRetry, notify, funcObj } from './Enums/Enums';
 import {RootSiblingParent} from "react-native-root-siblings"
 import { deleteUser, getAuth } from 'firebase/auth';
@@ -245,18 +245,25 @@ export default function HomeScreen(){
         const user = auth.currentUser;
         try {
             await deleteUser(user)
-            const funcObj: funcObj = {
+            console.log('user deleted from Firebase Authentication');
+            const funcObj = {
                 entireFunction: () => database.delete('/deleteUsersByUserID', {
                     params: {
                         userID: userData.userID
-                    }
+                    },
                 }),
                 type: 'delete'
             };
             await functionGetRetry(funcObj);
-            router.replace({ pathname: "/", params: { returnMessage: "Account has been deleted" } });
+            console.log('user deleted from database');
+            
+            router.replace({ 
+                pathname: "/", 
+                params: { returnMessage: "Account has been deleted" } 
+            });
         } catch (error) {
-            notify(error.toString())
+            console.error('Error deleting account: ', error);
+            notify(`Failed to delete account: ${error.message}`);
         }
     }
 
