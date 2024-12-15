@@ -116,6 +116,7 @@ export default function HomeScreen(){
             buttons.push(ModifyClientInfoSearch);
             buttons.push(servicesOfferedButton);
             buttons.push(aboutMeButton);
+            buttons.push(deleteButton);
             //buttons.push(FAQButton);
             setButtonDisplay(buttons);
         }
@@ -211,6 +212,7 @@ export default function HomeScreen(){
         </TouchableOpacity>
         buttons.push(servicesOfferedButton4)
         buttons.push(aboutMeButton4)
+        buttons.push(deleteButton);
         setButtonDisplay(buttons);
         //Takes you to the FAQ page !WIP! no functionality
         //var FAQButton3 = <TouchableOpacity
